@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Yuta Bot — ArcadiaCorps</title>
+<meta name="description" content="Yuta Bot: el bot de WhatsApp de ArcadiaCorps. Economía, gacha, descargas, IA, sub-bots y administración de grupo." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0b0b12;
+    --bg-alt: #0f0e18;
+    --surface: #16121f;
+    --surface-2: #1c1729;
+    --border: #2a2438;
+    --magenta: #e619b8;
+    --violet: #7c3aed;
+    --green: #39ff88;
+    --text: #f1e9ff;
+    --text-dim: #9a8fb0;
+    --text-faint: #635a78;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --sans: 'Inter', system-ui, sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:
+      radial-gradient(1200px 600px at 15% -10%, rgba(230,25,184,.14), transparent 60%),
+      radial-gradient(900px 500px at 85% 10%, rgba(124,58,237,.14), transparent 60%),
+      var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+  .wrap{max-width:1080px; margin:0 auto; padding:0 24px;}
+  ::selection{background:var(--magenta); color:#0b0b12;}
+  :focus-visible{outline:2px solid var(--magenta); outline-offset:3px;}
+  @media (prefers-reduced-motion: reduce){ *{animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important;} }
+
+  /* ── Nav ── */
+  nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(11,11,18,.82); backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  nav .row{display:flex; align-items:center; justify-content:space-between; padding:16px 24px; max-width:1080px; margin:0 auto;}
+  .brand{display:flex; align-items:center; gap:10px; font-family:var(--mono); font-weight:700; letter-spacing:.02em;}
+  .brand .dot{width:9px; height:9px; border-radius:50%; background:var(--green); box-shadow:0 0 8px var(--green); animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
+  .navlinks{display:flex; gap:28px; font-size:14px; color:var(--text-dim);}
+  .navlinks a:hover{color:var(--text);}
+  .navlinks{display:none;}
+  @media(min-width:760px){.navlinks{display:flex;}}
+  .nav-cta{
+    font-family:var(--mono); font-size:13px; padding:9px 16px; border-radius:8px;
+    background:var(--magenta); color:#0b0b12; font-weight:700;
+  }
+
+  /* ── Hero / terminal ── */
+  .hero{padding:72px 0 56px;}
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; color:var(--magenta);
+    letter-spacing:.14em; text-transform:uppercase; margin-bottom:18px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{content:"◈"; color:var(--violet);}
+  h1{
+    font-family:var(--mono); font-weight:800; font-size:clamp(40px,7vw,74px);
+    line-height:.98; letter-spacing:-.02em; margin-bottom:20px;
+  }
+  h1 .accent{color:var(--magenta);}
+  .hero-sub{color:var(--text-dim); font-size:17px; max-width:520px; margin-bottom:32px;}
+  .hero-actions{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:56px;}
+  .btn{
+    font-family:var(--mono); font-size:14px; font-weight:700; padding:13px 22px;
+    border-radius:8px; display:inline-flex; align-items:center; gap:8px;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn-primary{background:var(--magenta); color:#0b0b12; box-shadow:0 0 0 rgba(230,25,184,0);}
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 8px 24px rgba(230,25,184,.35);}
+  .btn-ghost{border:1px solid var(--border); color:var(--text);}
+  .btn-ghost:hover{border-color:var(--violet); background:rgba(124,58,237,.08);}
+
+  /* Terminal window */
+  .term{
+    background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    overflow:hidden; box-shadow:0 30px 80px -30px rgba(230,25,184,.25), 0 0 0 1px rgba(255,255,255,.02);
+  }
+  .term-bar{
+    display:flex; align-items:center; gap:8px; padding:12px 16px;
+    background:var(--surface-2); border-bottom:1px solid var(--border);
+  }
+  .term-dot{width:11px; height:11px; border-radius:50%;}
+  .term-bar span:nth-child(1){background:#ff5f57;}
+  .term-bar span:nth-child(2){background:#febc2e;}
+  .term-bar span:nth-child(3){background:#28c840;}
+  .term-title{margin-left:8px; font-family:var(--mono); font-size:12px; color:var(--text-faint);}
+  .term-body{
+    padding:22px 20px; font-family:var(--mono); font-size:13px; line-height:1.7;
+    min-height:210px; color:#c9c0dd; white-space:pre-wrap; word-break:break-word;
+  }
+  .term-body .magenta{color:var(--magenta);}
+  .term-body .violet{color:var(--violet);}
+  .term-body .green{color:var(--green);}
+  .term-body .dim{color:var(--text-faint);}
+  .cursor{display:inline-block; width:8px; height:15px; background:var(--green); vertical-align:middle; animation:blink 1s step-end infinite;}
+  @keyframes blink{50%{opacity:0;}}
+
+  /* ── Stats ── */
+  .stats{
+    display:grid; grid-template-columns:repeat(2,1fr); gap:1px;
+    background:var(--border); border:1px solid var(--border); border-radius:12px; overflow:hidden;
+    margin-top:40px;
+  }
+  @media(min-width:640px){.stats{grid-template-columns:repeat(4,1fr);}}
+  .stat{background:var(--surface); padding:22px 18px;}
+  .stat b{display:block; font-family:var(--mono); font-size:28px; color:var(--magenta);}
+  .stat span{font-size:12px; color:var(--text-dim); text-transform:uppercase; letter-spacing:.06em;}
+
+  /* ── Section shared ── */
+  section{padding:88px 0;}
+  .sec-head{margin-bottom:44px; max-width:600px;}
+  .sec-eyebrow{font-family:var(--mono); font-size:12px; color:var(--violet); letter-spacing:.14em; text-transform:uppercase; margin-bottom:10px;}
+  .sec-title{font-family:var(--mono); font-size:clamp(26px,4vw,38px); font-weight:800; letter-spacing:-.01em;}
+  .sec-desc{color:var(--text-dim); margin-top:14px; font-size:15px;}
+  .divider{height:1px; background:linear-gradient(90deg, transparent, var(--border), transparent);}
+
+  /* ── Features ── */
+  .grid-features{display:grid; grid-template-columns:1fr; gap:1px; background:var(--border); border:1px solid var(--border); border-radius:12px; overflow:hidden;}
+  @media(min-width:700px){.grid-features{grid-template-columns:repeat(2,1fr);}}
+  .feature{background:var(--surface); padding:26px 24px;}
+  .feature .icon{font-size:20px; margin-bottom:12px;}
+  .feature h3{font-family:var(--mono); font-size:15px; margin-bottom:8px;}
+  .feature p{color:var(--text-dim); font-size:14px;}
+
+  /* ── Commands ── */
+  .cmd-tabs{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:26px;}
+  .cmd-tab{
+    font-family:var(--mono); font-size:12px; padding:7px 13px; border-radius:20px;
+    border:1px solid var(--border); color:var(--text-dim); cursor:pointer; background:transparent;
+    transition:all .15s ease;
+  }
+  .cmd-tab.active{background:var(--magenta); border-color:var(--magenta); color:#0b0b12; font-weight:700;}
+  .cmd-list{display:grid; gap:10px;}
+  .cmd-row{
+    display:flex; justify-content:space-between; align-items:center; gap:16px;
+    background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:14px 18px;
+  }
+  .cmd-row code{font-family:var(--mono); color:var(--green); font-size:13px; white-space:nowrap;}
+  .cmd-row p{color:var(--text-dim); font-size:13px; text-align:right;}
+
+  /* ── Planes ── */
+  .grid-plans{display:grid; grid-template-columns:1fr; gap:16px;}
+  @media(min-width:700px){.grid-plans{grid-template-columns:repeat(4,1fr);}}
+  .plan{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:26px 20px; position:relative;}
+  .plan.hi{border-color:var(--magenta); box-shadow:0 0 0 1px var(--magenta), 0 20px 50px -25px rgba(230,25,184,.4);}
+  .plan .emoji{font-size:26px; margin-bottom:10px;}
+  .plan h3{font-family:var(--mono); font-size:15px; letter-spacing:.04em; margin-bottom:10px;}
+  .plan p{color:var(--text-dim); font-size:13px;}
+
+  /* ── Subbot steps ── */
+  .steps{display:grid; grid-template-columns:1fr; gap:1px; background:var(--border); border:1px solid var(--border); border-radius:12px; overflow:hidden;}
+  @media(min-width:760px){.steps{grid-template-columns:repeat(4,1fr);}}
+  .step{background:var(--surface); padding:24px 20px;}
+  .step .n{font-family:var(--mono); color:var(--violet); font-size:12px; margin-bottom:10px;}
+  .step h4{font-family:var(--mono); font-size:14px; margin-bottom:8px;}
+  .step p{color:var(--text-dim); font-size:13px;}
+
+  /* ── Footer ── */
+  footer{border-top:1px solid var(--border); padding:48px 0 32px;}
+  .foot-grid{display:grid; grid-template-columns:1fr; gap:32px; margin-bottom:36px;}
+  @media(min-width:700px){.foot-grid{grid-template-columns:2fr 1fr 1fr;}}
+  footer h5{font-family:var(--mono); font-size:12px; color:var(--text-dim); letter-spacing:.1em; text-transform:uppercase; margin-bottom:14px;}
+  footer .team a{display:block; font-size:14px; color:var(--text); margin-bottom:8px; opacity:.85;}
+  footer .team a:hover{opacity:1; color:var(--magenta);}
+  .foot-bottom{display:flex; flex-direction:column; gap:8px; color:var(--text-faint); font-size:12px; font-family:var(--mono);}
+  @media(min-width:700px){.foot-bottom{flex-direction:row; justify-content:space-between;}}
+
+  .reveal{opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease;}
+  .reveal.show{opacity:1; transform:none;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="row">
+    <div class="brand"><span class="dot"></span> YUTA_BOT</div>
+    <div class="navlinks">
+      <a href="#info">info</a>
+      <a href="#comandos">comandos</a>
+      <a href="#premium">premium</a>
+      <a href="#subbot">sub-bot</a>
+      <a href="#contacto">contacto</a>
+    </div>
+    <a class="nav-cta" href="https://wa.me/51986121294">$ chat</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">whatsapp bot · arcadiacorps</div>
+    <h1>YUTA<span class="accent">_</span>BOT</h1>
+    <p class="hero-sub">Un solo número, todo lo que tu grupo necesita: economía, gacha, descargas, IA y administración — corriendo 24/7 desde su propio servidor.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#" id="join-link">⚡ Unirse al grupo</a>
+      <a class="btn btn-ghost" href="#" id="channel-link">📢 Canal oficial</a>
+    </div>
+
+    <div class="term">
+      <div class="term-bar">
+        <span class="term-dot"></span><span class="term-dot"></span><span class="term-dot"></span>
+        <span class="term-title">root@arcadiacorps: ~/Yuta-Bot</span>
+      </div>
+      <div class="term-body" id="termBody"></div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><b id="statCmds">0</b><span>Comandos</span></div>
+      <div class="stat"><b>99.9%</b><span>Uptime</span></div>
+      <div class="stat"><b>4</b><span>Planes premium</span></div>
+      <div class="stat"><b class="green" style="color:var(--green)">●&nbsp;ONLINE</b><span>Estado</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap"><div class="divider"></div></div>
+
+<section id="info">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-eyebrow">// información</div>
+      <h2 class="sec-title">¿Qué es Yuta Bot?</h2>
+      <p class="sec-desc">Un bot de WhatsApp multifuncional creado por el equipo de ArcadiaCorps, pensado para comunidades activas que quieren entretenimiento y herramientas útiles en un solo lugar.</p>
+    </div>
+
+    <div class="grid-features reveal">
+      <div class="feature">
+        <div class="icon">💰</div>
+        <h3>Economía &amp; Gacha</h3>
+        <p>Trabaja, apuesta y colecciona en un sistema de economía propio con su moneda, casino y gacha de personajes.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">⬇️</div>
+        <h3>Descargas con portada</h3>
+        <p>TikTok, YouTube, Facebook, Instagram, Twitter y más — con miniatura y selector de calidad.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">🤖</div>
+        <h3>IA integrada</h3>
+        <p>Consulta modelos de inteligencia artificial directo desde el chat, sin salir de WhatsApp.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">🛡️</div>
+        <h3>Administración de grupo</h3>
+        <p>Antilink, antidelete, antivista-única y auto-admin para mantener tu comunidad bajo control.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">🖼️</div>
+        <h3>Stickers</h3>
+        <p>Crea stickers animados y personalizados en segundos, con tu propio pack y autor.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">🔌</div>
+        <h3>Sub-bots</h3>
+        <p>Vincula tu propio número como sub-bot y responde los mismos comandos desde tu cuenta.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="divider"></div></div>
+
+<section id="comandos">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-eyebrow">// comandos</div>
+      <h2 class="sec-title">Todo con el prefijo <span style="color:var(--green)">.</span></h2>
+      <p class="sec-desc">Una muestra de lo que puedes escribir. La lista completa vive dentro del bot: envía <code style="font-family:var(--mono); color:var(--green)">.menu</code>.</p>
+    </div>
+
+    <div class="cmd-tabs reveal" id="cmdTabs"></div>
+    <div class="cmd-list reveal" id="cmdList"></div>
+  </div>
+</section>
+
+<div class="wrap"><div class="divider"></div></div>
+
+<section id="premium">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-eyebrow">// planes</div>
+      <h2 class="sec-title">Planes premium</h2>
+      <p class="sec-desc">Escribe <code style="font-family:var(--mono); color:var(--green)">.adqpremium</code> al bot o contacta a Zemo para adquirir uno.</p>
+    </div>
+    <div class="grid-plans reveal">
+      <div class="plan"><div class="emoji">🥈</div><h3>PLATA</h3><p>Comandos básicos premium, sin límite diario en los estándar.</p></div>
+      <div class="plan"><div class="emoji">🥇</div><h3>DORADO</h3><p>Todo Plata + comandos avanzados, stickers y descargas ilimitadas.</p></div>
+      <div class="plan hi"><div class="emoji">👑</div><h3>KING</h3><p>Acceso total, prioridad de soporte y 2 sub-bots.</p></div>
+      <div class="plan"><div class="emoji">🔱</div><h3>DIOS</h3><p>El plan máximo. Ilimitado en todo, 4 sub-bots y beneficios exclusivos.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="divider"></div></div>
+
+<section id="subbot">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-eyebrow">// sub-bot</div>
+      <h2 class="sec-title">Conecta tu propio Sub-Bot</h2>
+      <p class="sec-desc">Vincula tu número como sub-bot: responderá los mismos comandos que el bot principal, desde tu propia cuenta.</p>
+    </div>
+    <div class="steps reveal">
+      <div class="step"><div class="n">01</div><h4>Escribe al bot</h4><p><code style="color:var(--green); font-family:var(--mono)">.subbot add</code> al bot principal.</p></div>
+      <div class="step"><div class="n">02</div><h4>Recibe el código</h4><p>Te llega un código de vinculación al privado. Válido por 60 segundos.</p></div>
+      <div class="step"><div class="n">03</div><h4>Vincula desde WA</h4><p>Dispositivos vinculados → Vincular con número de teléfono.</p></div>
+      <div class="step"><div class="n">04</div><h4>Listo</h4><p>Tu sub-bot queda activo y responde todos los comandos.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer id="contacto">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="brand" style="margin-bottom:14px;"><span class="dot"></span> YUTA_BOT</div>
+        <p style="color:var(--text-dim); font-size:14px; max-width:340px;">Creado por el equipo de ArcadiaCorps. Corriendo 24/7 en nuestra propia infraestructura.</p>
+      </div>
+      <div class="team">
+        <h5>Equipo</h5>
+        <a href="https://wa.me/51917611323">👑 Owner Zemo</a>
+        <a href="#">🛠️ Sub-creador Smith</a>
+      </div>
+      <div class="team">
+        <h5>Soporte</h5>
+        <a href="#">🛡️ Andy</a>
+        <a href="#">🛡️ Mily</a>
+        <a href="#">🛡️ Kiwi</a>
+      </div>
+    </div>
+    <div class="divider" style="margin-bottom:24px;"></div>
+    <div class="foot-bottom">
+      <span>© 2026 Yuta Bot — ArcadiaCorps</span>
+      <span>node.js · baileys · v1.0.0</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ── Terminal boot sequence ──
+  const lines = [
+    { t: '$ node index.js', c: '' },
+    { t: '', c: '' },
+    { t: 'YUTA BOT', c: 'magenta', big: true },
+    { t: '', c: '' },
+    { t: 'v1.0.0  |  prefijo: .', c: 'dim' },
+    { t: '', c: '' },
+    { t: '[HANDLER] 622 comandos cargados.', c: '' },
+    { t: '[BOT] Usando Baileys v2.3000', c: 'violet' },
+    { t: '[BOT] ✅ Conectado como: Yuta Bot [ArcadiaCorps]', c: 'green' },
+    { t: '[BOT] 🤖 Yuta Bot está listo y escuchando...', c: 'green' },
+  ];
+
+  const termBody = document.getElementById('termBody');
+  let li = 0;
+
+  function typeLine() {
+    if (li >= lines.length) {
+      const cur = document.createElement('span');
+      cur.className = 'cursor';
+      termBody.appendChild(cur);
+      return;
+    }
+    const line = lines[li];
+    const div = document.createElement('div');
+    if (line.c) div.className = line.c;
+    if (line.big) div.style.fontWeight = '800';
+    termBody.appendChild(div);
+    let ci = 0;
+    const speed = line.t.length > 0 ? 14 : 0;
+    function typeChar() {
+      if (ci < line.t.length) {
+        div.textContent += line.t[ci];
+        ci++;
+        setTimeout(typeChar, speed);
+      } else {
+        li++;
+        setTimeout(typeLine, line.t ? 90 : 40);
+      }
+    }
+    typeChar();
+  }
+  typeLine();
+
+  // ── Contador de comandos animado ──
+  const statCmds = document.getElementById('statCmds');
+  let n = 0;
+  const target = 622;
+  const step = Math.ceil(target / 40);
+  const counter = setInterval(() => {
+    n += step;
+    if (n >= target) { n = target; clearInterval(counter); }
+    statCmds.textContent = n;
+  }, 30);
+
+  // ── Links de WhatsApp ──
+  document.getElementById('join-link').href = 'https://whatsapp.com/channel/0029VbADsUx6LwHo4wdirM0v';
+  document.getElementById('channel-link').href = 'https://whatsapp.com/channel/0029VbADsUx6LwHo4wdirM0v';
+
+  // ── Comandos por categoría ──
+  const commandData = {
+    'Básicos': [
+      ['.menu', 'Muestra el menú principal con botones'],
+      ['.perfil', 'Ver o editar tu perfil'],
+      ['.ping', 'Latencia y tiempo activo del bot'],
+    ],
+    'Economía': [
+      ['.work', 'Trabaja para ganar Coins'],
+      ['.crime', 'Roba para ganar (con riesgo)'],
+      ['.casino', 'Apuesta tus Coins'],
+    ],
+    'Descargas': [
+      ['.ytmp4', 'Descarga video de YouTube'],
+      ['.tiktok', 'Descarga video de TikTok'],
+      ['.spotify', 'Busca una canción y su link'],
+    ],
+    'Grupo': [
+      ['.antilink', 'Bloquea links en el grupo'],
+      ['.antidel', 'Reenvía mensajes borrados'],
+      ['.antione', 'Reenvía fotos de vista única'],
+    ],
+    'IA': [
+      ['.ia', 'Chatea con inteligencia artificial'],
+      ['.imagine', 'Genera una imagen con IA'],
+    ],
+  };
+
+  const tabsEl = document.getElementById('cmdTabs');
+  const listEl = document.getElementById('cmdList');
+
+  function renderCmds(cat) {
+    listEl.innerHTML = '';
+    commandData[cat].forEach(([cmd, desc]) => {
+      const row = document.createElement('div');
+      row.className = 'cmd-row';
+      row.innerHTML = `<code>${cmd}</code><p>${desc}</p>`;
+      listEl.appendChild(row);
+    });
+  }
+
+  Object.keys(commandData).forEach((cat, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'cmd-tab' + (i === 0 ? ' active' : '');
+    btn.textContent = cat;
+    btn.onclick = () => {
+      document.querySelectorAll('.cmd-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderCmds(cat);
+    };
+    tabsEl.appendChild(btn);
+  });
+  renderCmds(Object.keys(commandData)[0]);
+
+  // ── Reveal on scroll ──
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+
+</body>
+</html>
