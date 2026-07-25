@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pragmata Bot — ArcadiaCorps</title>
-<meta name="description" content="Pragmata Bot: bot de WhatsApp con RPG completo, gacha, economía y más de 400 comandos. Creado por ArcadiaCorps.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍄</text></svg>">
+<meta name="description" content="Pragmata Bot: bot de WhatsApp con casino, gacha, economía y más de 300 comandos. Creado por ArcadiaCorps.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
 <meta property="og:title" content="Pragmata Bot — ArcadiaCorps">
-<meta property="og:description" content="Bot de WhatsApp con RPG completo, casino con Coins, muro social y más de 400 comandos.">
+<meta property="og:description" content="Bot de WhatsApp con casino, gacha, economía, muro social y más de 300 comandos.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#0d0a12">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -674,157 +674,6 @@ section{
 }
 
 /* ══════════════════════════════════════════
-   ACTUALIZACIÓN RPG
-   ══════════════════════════════════════════ */
-#actualizacion-rpg{
-  background:var(--bg-deep);
-  border-top:1px solid var(--line); border-bottom:1px solid var(--line);
-  position:relative; overflow:hidden;
-}
-.update-glow-a{
-  position:absolute; top:-20%; left:-10%;
-  width:min(700px,80vw); height:500px;
-  background:radial-gradient(ellipse, rgba(124,92,255,0.22) 0%, transparent 70%);
-  z-index:0; pointer-events:none;
-  animation:heroPulse 8s ease-in-out infinite;
-}
-.update-glow-b{
-  position:absolute; bottom:-25%; right:-10%;
-  width:min(650px,80vw); height:480px;
-  background:radial-gradient(ellipse, rgba(255,210,63,0.16) 0%, transparent 70%);
-  z-index:0; pointer-events:none;
-  animation:heroPulse 9s ease-in-out infinite reverse;
-}
-#actualizacion-rpg .wrap{ position:relative; z-index:1; }
-
-.update-badge{
-  display:inline-flex; align-items:center; gap:8px;
-  font-family:var(--f-mono); font-size:11px; letter-spacing:0.1em;
-  color:#251a00; background:linear-gradient(100deg, var(--gold), #fff3c4, var(--gold));
-  background-size:200% auto;
-  padding:6px 14px; margin-bottom:18px;
-  box-shadow:3px 3px 0 0 var(--gold-dim), 0 0 22px rgba(255,210,63,0.35);
-  animation:badgeShimmer 3s linear infinite;
-}
-.update-badge::before{ content:'⚡'; }
-@keyframes badgeShimmer{ 0%{background-position:0% center;} 100%{background-position:200% center;} }
-
-.update-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit, minmax(270px, 1fr));
-  gap:16px;
-  margin-top:32px;
-}
-.update-card{
-  --acc: var(--violet);
-  background:linear-gradient(165deg, color-mix(in srgb, var(--acc) 8%, var(--panel)), var(--panel) 55%);
-  border:1px solid var(--line);
-  border-top:3px solid var(--acc);
-  padding:26px 22px 22px;
-  display:flex; flex-direction:column; gap:12px;
-  position:relative;
-  overflow:hidden;
-  opacity:0; transform:translateY(24px) scale(0.98);
-  transition:transform .45s cubic-bezier(.2,.8,.2,1), box-shadow .3s ease, border-color .3s ease, opacity .5s ease;
-}
-.reveal.in-view .update-card{ opacity:1; transform:translateY(0) scale(1); }
-.update-grid .update-card:nth-child(1){ transition-delay:.05s; }
-.update-grid .update-card:nth-child(2){ transition-delay:.12s; }
-.update-grid .update-card:nth-child(3){ transition-delay:.19s; }
-.update-grid .update-card:nth-child(4){ transition-delay:.26s; }
-.update-grid .update-card:nth-child(5){ transition-delay:.33s; }
-.update-grid .update-card:nth-child(6){ transition-delay:.4s; }
-.update-card::before{
-  content:'';
-  position:absolute; inset:0;
-  background:linear-gradient(115deg, transparent 40%, color-mix(in srgb, var(--acc) 22%, transparent) 50%, transparent 60%);
-  background-size:250% 250%;
-  background-position:120% 0;
-  opacity:0;
-  transition:opacity .3s ease;
-  pointer-events:none;
-}
-.update-card:hover{
-  transform:translateY(-6px) scale(1.015);
-  border-color:var(--acc);
-  box-shadow:0 14px 32px -12px rgba(0,0,0,0.6), 0 0 0 1px color-mix(in srgb, var(--acc) 40%, transparent), 0 0 30px -4px color-mix(in srgb, var(--acc) 55%, transparent);
-}
-.update-card:hover::before{ opacity:1; animation:shineSweep 1.1s ease forwards; }
-@keyframes shineSweep{ from{ background-position:120% 0; } to{ background-position:-20% 0; } }
-
-.update-card .uc-top{ display:flex; align-items:center; gap:14px; }
-.update-card .uc-ico{
-  font-size:26px; width:52px; height:52px; flex-shrink:0;
-  display:flex; align-items:center; justify-content:center;
-  background:var(--panel-2); border:1px solid color-mix(in srgb, var(--acc) 50%, var(--line));
-  box-shadow:0 0 0 1px rgba(0,0,0,0.3), 0 0 18px -4px color-mix(in srgb, var(--acc) 70%, transparent);
-  transition:transform .3s ease;
-}
-.update-card:hover .uc-ico{ transform:scale(1.1) rotate(-4deg); }
-.update-card h4{
-  font-family:var(--f-mono); font-weight:700; font-size:15.5px; color:var(--text);
-  letter-spacing:0.01em;
-}
-.update-card .uc-when{
-  font-family:var(--f-mono); font-size:10.5px; color:var(--acc);
-  letter-spacing:0.04em;
-  display:inline-flex; align-items:center; gap:6px;
-}
-.update-card .uc-when::before{
-  content:''; width:6px; height:6px; border-radius:50%;
-  background:var(--acc); box-shadow:0 0 8px var(--acc);
-  animation:blink 1.6s steps(2) infinite;
-}
-.update-card p{ font-size:13.5px; color:var(--text-dim); margin:0; line-height:1.55; }
-.update-card .uc-cmd{
-  font-family:var(--f-mono); font-size:12.5px; color:var(--acc);
-  background:color-mix(in srgb, var(--acc) 10%, transparent);
-  border:1px solid color-mix(in srgb, var(--acc) 45%, var(--line));
-  padding:9px 11px; margin-top:auto; word-break:break-word;
-  position:relative; z-index:1;
-}
-
-.update-card.c-historia{ --acc: var(--violet); }
-.update-card.c-saqueo{   --acc: var(--red); }
-.update-card.c-reyarena{ --acc: var(--gold); }
-.update-card.c-defiende{ --acc: var(--green); }
-.update-card.c-tronos{   --acc: var(--gold); }
-.update-card.c-eventos{  --acc: var(--violet); }
-
-.update-titles{
-  margin-top:36px;
-  border:1px solid var(--line);
-  background:linear-gradient(180deg, var(--panel), var(--panel-2));
-  padding:24px;
-  position:relative;
-}
-.update-titles::before{
-  content:''; position:absolute; top:0; left:0; right:0; height:2px;
-  background:linear-gradient(90deg, var(--violet), var(--gold), var(--green), var(--violet));
-  background-size:300% auto;
-  animation:badgeShimmer 5s linear infinite;
-}
-.update-titles h5{
-  font-family:var(--f-mono); font-size:13px; color:var(--violet);
-  letter-spacing:0.06em; margin-bottom:16px; text-transform:uppercase;
-}
-.update-titles-list{ display:flex; flex-wrap:wrap; gap:10px; }
-.update-title-chip{
-  font-family:var(--f-mono); font-size:12.5px; color:var(--text);
-  background:var(--panel-2); border:1px solid var(--line);
-  padding:8px 13px; display:flex; align-items:center; gap:6px;
-  transition:transform .2s ease, border-color .2s ease;
-}
-.update-title-chip:hover{ transform:translateY(-2px); border-color:var(--gold); }
-@media (max-width:600px){
-  .update-grid{ grid-template-columns:1fr; }
-}
-@supports not (background: color-mix(in srgb, red 10%, blue)){
-  .update-card{ background:var(--panel); }
-  .update-card .uc-cmd{ background:rgba(124,92,255,0.08); }
-}
-
-/* ══════════════════════════════════════════
    PREMIUM
    ══════════════════════════════════════════ */
 #premium{ background:var(--bg-deep); }
@@ -1219,8 +1068,62 @@ section{
 }
 .subbot-note-box b{ color:var(--gold); }
 
+/* ── Panel de conexión rápida (nuevo) ── */
+.subbot-connect{
+  margin-top:44px;
+  display:grid; grid-template-columns:1.1fr 0.9fr; gap:0;
+  background:var(--panel); border:1px solid var(--line); border-radius:16px;
+  overflow:hidden; box-shadow:0 30px 80px -35px rgba(124,92,255,0.3);
+}
+.subbot-connect-form{ padding:34px 32px; }
+.subbot-connect-side{
+  padding:34px 30px;
+  background:linear-gradient(160deg, rgba(124,92,255,0.12), rgba(57,255,136,0.06));
+  border-left:1px solid var(--line);
+  display:flex; flex-direction:column; justify-content:center;
+}
+.sc-badge{
+  width:46px; height:46px; border-radius:12px;
+  background:linear-gradient(135deg, var(--violet), var(--green));
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px; margin-bottom:16px;
+}
+.subbot-connect-form h3{ font-family:var(--f-display); font-size:15px; margin-bottom:6px; }
+.subbot-connect-form .sc-sub{ font-size:13px; color:var(--text-dim); margin-bottom:26px; }
+.sc-field label{
+  display:block; font-family:var(--f-mono); font-size:10.5px; color:var(--text-dim);
+  text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;
+}
+.sc-field input{
+  width:100%; background:var(--bg-deep); border:1px solid var(--line); border-radius:9px;
+  padding:13px 14px; color:var(--text); font-family:var(--f-mono); font-size:14px; margin-bottom:18px;
+}
+.sc-field input:focus{ outline:none; border-color:var(--violet); }
+.sc-submit{
+  width:100%; padding:14px; border:none; border-radius:10px; cursor:pointer;
+  background:linear-gradient(135deg, var(--violet), var(--green));
+  color:#04140a; font-family:var(--f-display); font-size:11px; letter-spacing:0.04em;
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+.sc-submit:hover{ transform:translateY(-2px); box-shadow:0 12px 28px rgba(124,92,255,0.35); }
+.sc-hint{ font-family:var(--f-mono); font-size:11px; color:var(--text-dim); margin-top:12px; }
+.subbot-connect-side h4{ font-family:var(--f-mono); font-size:14px; color:var(--text); margin-bottom:10px; }
+.subbot-connect-side p{ font-size:13px; color:var(--text-dim); margin-bottom:18px; }
+.sc-chat-link{
+  display:inline-flex; align-items:center; gap:8px;
+  font-family:var(--f-mono); font-size:12.5px; color:var(--green);
+  border:1px solid rgba(57,255,136,0.3); border-radius:9px; padding:10px 16px;
+  width:fit-content;
+}
+.sc-chat-link:hover{ background:rgba(57,255,136,0.08); }
+@media (max-width:760px){
+  .subbot-connect{ grid-template-columns:1fr; }
+  .subbot-connect-side{ border-left:none; border-top:1px solid var(--line); }
+}
+
 @media (max-width:880px){
   .subbot-grid{ grid-template-columns:1fr; }
+
 }
 
 /* ══════════════════════════════════════════
@@ -2521,7 +2424,6 @@ canvas#pachinkoCanvas {
     <div class="nav-links">
       <a href="#estado">Estado</a>
       <a href="#proyecto">Proyecto</a>
-      <a href="#actualizacion-rpg">🆕 Actualización</a>
       <a href="#premium">Premium</a>
       <a href="#tops">Tops</a>
       <a href="#comandos">Comandos</a>
@@ -2538,7 +2440,6 @@ canvas#pachinkoCanvas {
 <div class="mobile-menu" id="mobileMenu">
   <a href="#estado">Estado</a>
   <a href="#proyecto">Proyecto</a>
-  <a href="#actualizacion-rpg">🆕 Actualización</a>
   <a href="#premium">Premium</a>
   <a href="#tops">Tops</a>
   <a href="#comandos">Comandos</a>
@@ -2556,9 +2457,9 @@ canvas#pachinkoCanvas {
   <div class="hero-glow"></div>
   <div class="hero-glow-gold"></div>
   <div class="wrap hero-inner">
-    <span class="hero-tag">★ BOT DE WHATSAPP — RPG · GACHA · ECONOMÍA</span>
+    <span class="hero-tag">★ BOT DE WHATSAPP — GACHA · ECONOMÍA · CASINO</span>
     <h1 class="hero-title">PRAGMATA<br><span class="accent">BOT</span></h1>
-    <p class="hero-sub">Un universo RPG completo dentro de WhatsApp: clases, clanes, gacha, arena, dungeons y más de 400 comandos. Creado por <strong>ArcadiaCorps</strong>.</p>
+    <p class="hero-sub">Todo lo que tu grupo necesita dentro de WhatsApp: economía, casino, gacha, descargas e IA — más de 300 comandos. Creado por <strong>ArcadiaCorps</strong>.</p>
     <div class="hero-actions">
       <a href="#comandos" class="btn btn-primary">VER COMANDOS ▸</a>
       <a href="#premium" class="btn btn-gold">★ HAZTE PREMIUM</a>
@@ -2611,7 +2512,7 @@ canvas#pachinkoCanvas {
     <h2 class="section-title">¿Qué es Pragmata Bot?</h2>
     <div class="proyecto-grid">
       <div class="proyecto-text">
-        <p><strong>Pragmata Bot</strong> es un bot de WhatsApp construido alrededor de un sistema de rol (RPG) completo: clases de personaje, clanes con territorios, un sistema de gacha con banners y pity, economía con oro, gemas y cripto interna, arena PvP, dungeons por niveles y mucho más.</p>
+        <p><strong>Pragmata Bot</strong> es un bot de WhatsApp construido alrededor de un sistema de economía completo: casino con más de 10 juegos, gacha con banners y pity, economía con oro, gemas y cripto interna, sub-bots, descargas e inteligencia artificial.</p>
         <p>Todo corre directo en tus chats de WhatsApp — sin apps externas, sin instalar nada. Solo escribes un comando y el bot responde al instante.</p>
         <div class="proyecto-credit">
           <span class="badge">AC</span>
@@ -2620,11 +2521,11 @@ canvas#pachinkoCanvas {
       </div>
       <div class="feature-list">
         <div class="feature-item" style="--acc:var(--violet)">
-          <span class="ico">⚔️</span>
-          <div><h4>RPG completo</h4><p>Clases, clanes, territorios, dungeons y arena PvP.</p></div>
+          <span class="ico">🎰</span>
+          <div><h4>Yuka'sino completo</h4><p>Tragamonedas, blackjack, dados, ruleta y más de 10 juegos.</p></div>
         </div>
         <div class="feature-item" style="--acc:var(--gold)">
-          <span class="ico">🎰</span>
+          <span class="ico">🎴</span>
           <div><h4>Sistema de Gacha</h4><p>Banners con pity garantizado y objetos con estadísticas reales.</p></div>
         </div>
         <div class="feature-item" style="--acc:var(--green)">
@@ -2633,95 +2534,13 @@ canvas#pachinkoCanvas {
         </div>
         <div class="feature-item" style="--acc:var(--red)">
           <span class="ico">🤖</span>
-          <div><h4>Sub-Bots</h4><p>Conecta tu propio número como sub-bot con sesión QR real.</p></div>
+          <div><h4>Sub-Bots</h4><p>Conecta tu propio número como sub-bot con código de vinculación real.</p></div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════
-     ACTUALIZACIÓN RPG
-     ═══════════════════════════════════════ -->
-<section id="actualizacion-rpg" class="reveal">
-  <div class="update-glow-a" aria-hidden="true"></div>
-  <div class="update-glow-b" aria-hidden="true"></div>
-  <div class="wrap">
-    <span class="update-badge">NUEVA ACTUALIZACIÓN · JULIO 2026</span>
-    <h2 class="section-title">Actualización RPG — Nuevos Modos de Juego</h2>
-    <p class="section-sub">Un capítulo entero de contenido nuevo: modo historia, tres eventos con horario fijo y un salón de tronos para presumir tu poder. Todos los eventos programados se pueden consultar en un solo lugar con <strong>!rpgeventos</strong>.</p>
-
-    <div class="update-grid">
-      <div class="update-card c-historia">
-        <div class="uc-top">
-          <span class="uc-ico">📜</span>
-          <div><h4>Modo Historia</h4><span class="uc-when">La Grieta del Abismo</span></div>
-        </div>
-        <p>10 capítulos con diálogos, elecciones que dejan huella y jefes de historia. Termina la saga y obtén el arma mítica exclusiva <strong>Fragmento Abismal</strong>.</p>
-        <div class="uc-cmd">!rpghistoria</div>
-      </div>
-
-      <div class="update-card c-saqueo">
-        <div class="uc-top">
-          <span class="uc-ico">🗺️</span>
-          <div><h4>Saqueo del Abismo</h4><span class="uc-when">Todos los días · 5:00 PM (Perú)</span></div>
-        </div>
-        <p>4 jefes aparecen en el mapa. Entra solo o con tu clan — la recompensa es para quien (o el clan que) más daño le haga a cada jefe.</p>
-        <div class="uc-cmd">!rpgsaqueo</div>
-      </div>
-
-      <div class="update-card c-reyarena">
-        <div class="uc-top">
-          <span class="uc-ico">👑</span>
-          <div><h4>Rey de la Arena</h4><span class="uc-when">Sábados · 6:30 PM (Perú)</span></div>
-        </div>
-        <p>Un boss brutal con 6 barras de vida y PvP real habilitado entre los que entran. Quien más daño le haga se corona <strong>Dios de la Guerra</strong> por una semana.</p>
-        <div class="uc-cmd">!rpgreyarena</div>
-      </div>
-
-      <div class="update-card c-defiende">
-        <div class="uc-top">
-          <span class="uc-ico">💎</span>
-          <div><h4>Defiende la Gema</h4><span class="uc-when">Todos los días · 8:00 PM (Perú)</span></div>
-        </div>
-        <p>Oleadas de enemigos van por tu gema. Juega solo o invita a un equipo de 3. Cada oleada superada paga más que la anterior — retírate cuando quieras y conserva lo ganado.</p>
-        <div class="uc-cmd">!rpgdefiende</div>
-      </div>
-
-      <div class="update-card c-tronos">
-        <div class="uc-top">
-          <span class="uc-ico">🏛️</span>
-          <div><h4>Los Tronos</h4><span class="uc-when">Disponible siempre</span></div>
-        </div>
-        <p>El top 1 de poder de cada una de las 10 clases, tallado en piedra. Venera el trono de tu clase favorita y gana 1,000 de oro por tu devoción.</p>
-        <div class="uc-cmd">!rpgtronos</div>
-      </div>
-
-      <div class="update-card c-eventos">
-        <div class="uc-top">
-          <span class="uc-ico">📅</span>
-          <div><h4>Eventos Programados</h4><span class="uc-when">Todos los horarios en un vistazo</span></div>
-        </div>
-        <p>Consulta todos los eventos activos, su horario y la cuenta regresiva para el próximo, sin tener que memorizar nada.</p>
-        <div class="uc-cmd">!rpgeventos</div>
-      </div>
-    </div>
-
-    <div class="update-titles">
-      <h5>🏅 Títulos nuevos</h5>
-      <div class="update-titles-list">
-        <span class="update-title-chip">📜 El Elegido → Portador de la Grieta (Historia, cap. 1-10)</span>
-        <span class="update-title-chip">👑 Dios de la Guerra (Rey de la Arena)</span>
-        <span class="update-title-chip">🛡️ Guardián de la Gema (Defiende la Gema, oleada 15)</span>
-        <span class="update-title-chip">⚔️ Campeón de la Arena (Top 1 Arena PvP)</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════════════════════
-     PREMIUM
-     ═══════════════════════════════════════ -->
 <section id="premium" class="reveal">
   <div class="wrap">
     <span class="eyebrow">Mejora tu experiencia</span>
@@ -2742,7 +2561,7 @@ canvas#pachinkoCanvas {
           <ul class="plan-list">
             <li>Acceso básico a comandos premium</li>
             <li>10 usos premium por día</li>
-            <li>XP bonus leve en RPG</li>
+            <li>Bono leve en Yuka's Coins diarias</li>
           </ul>
           <a class="plan-cta" href="https://wa.me/51917611323?text=Hola%2C%20quiero%20el%20plan%20RAGE-SEMANAL" target="_blank" rel="noopener">ADQUIRIR ▸</a>
         </div>
@@ -2768,9 +2587,9 @@ canvas#pachinkoCanvas {
           <ul class="plan-list">
             <li>Todo el plan Rage-Plata</li>
             <li>30 usos premium por día</li>
-            <li>+50% XP en RPG</li>
-            <li>+30% Oro en RPG</li>
-            <li>Bonus en todas las batallas</li>
+            <li>+50% Yuka's Coins en trabajos</li>
+            <li>+30% en recompensas del casino</li>
+            <li>Bonus en todos los minijuegos</li>
           </ul>
           <a class="plan-cta" href="https://wa.me/51917611323?text=Hola%2C%20quiero%20el%20plan%20RAGE-DORADO" target="_blank" rel="noopener">ADQUIRIR ▸</a>
         </div>
@@ -2847,7 +2666,6 @@ canvas#pachinkoCanvas {
 
     <div class="top-tabs" id="topTabs">
       <button class="top-tab active" data-tab="xp">⭐ Experiencia</button>
-      <button class="top-tab" data-tab="rpg">⚔️ RPG</button>
       <button class="top-tab" data-tab="poder">💪 Poder</button>
       <button class="top-tab" data-tab="arena">🏆 Arena</button>
       <button class="top-tab" data-tab="coins">💰 Coins</button>
@@ -2871,61 +2689,6 @@ canvas#pachinkoCanvas {
         <div class="top-row"><span class="rank">10</span><span class="name">Jean Franco</span><span class="meta">XP <b>3,411</b> · LVL 12</span></div>
       </div>
       <p class="top-note">Página 1 de 306 — <code>!top [n]</code> para ver más</p>
-    </div>
-
-    <!-- TOP RPG -->
-    <div class="top-panel" data-panel="rpg">
-      <div class="top-podium">
-        <div class="podium-card gold"><div class="podium-rank">🥇</div><div class="podium-name">ᵒʷⁿᵉʳSMITH</div><div class="podium-meta">👑 El Legendario · 🐙 Thalassar<br>Nv.25 · 🏆75V · 💀16K</div></div>
-        <div class="podium-card silver"><div class="podium-rank">🥈</div><div class="podium-name">JHK.nvs</div><div class="podium-meta">🌍 Cazador Mundial · 🐺 Hombrelobo<br>Nv.22 · 🏆416V · 💀230K</div></div>
-        <div class="podium-card bronze"><div class="podium-rank">🥉</div><div class="podium-name">🍃꧁𝕜𝕚𝕨𝕚꧂🍃</div><div class="podium-meta">🥉 El Élite · 🗡️ Asesino<br>Nv.21 · 🏆121V · 💀132K</div></div>
-      </div>
-      <div class="top-list">
-        <div class="top-row"><span class="rank">4</span><span class="name">Andy</span><span class="meta">🔵 Aventurero · 💀 Nigromante · Nv.20 · 🏆123V 💀165K</span></div>
-        <div class="top-row"><span class="rank">5</span><span class="name">Mily</span><span class="meta">💎 Acumulador · ✨ Sacerdote · Nv.19 · 🏆61V 💀60K</span></div>
-        <div class="top-row"><span class="rank">6</span><span class="name">Maximiliano</span><span class="meta">💎 Acumulador · 🐺 Hombrelobo · Nv.19 · 🏆6V 💀254K</span></div>
-        <div class="top-row"><span class="rank">7</span><span class="name">M</span><span class="meta">🟢 Iniciado · 🐙 Thalassar · Nv.18 · 🏆37V 💀11K</span></div>
-        <div class="top-row"><span class="rank">8</span><span class="name">🩵🌻 100 mil de oro</span><span class="meta">💰 Comerciante · ✨ Sacerdote · Nv.18 · 🏆2V 💀156K</span></div>
-        <div class="top-row"><span class="rank">9</span><span class="name">TwofacedAxis427</span><span class="meta">🔮 Coleccionista · 💀 Nigromante · Nv.17 · 🏆8V 💀111K</span></div>
-        <div class="top-row"><span class="rank">10</span><span class="name">꧁𝑺𝒂𝒎꧂</span><span class="meta">🗺️ Explorador Nato · 💀 Nigromante · Nv.17 · 🏆1V 💀212K</span></div>
-      </div>
-    </div>
-
-    <!-- TOP PODER -->
-    <div class="top-panel" data-panel="poder">
-      <div class="top-podium">
-        <div class="podium-card gold"><div class="podium-rank">🥇</div><div class="podium-name">ᵒʷⁿᵉʳSMITH</div><div class="podium-meta">🐙 Thalassar<br>💪 <b>1923</b> · ATK 1215 · DEF 708</div></div>
-        <div class="podium-card silver"><div class="podium-rank">🥈</div><div class="podium-name">M</div><div class="podium-meta">🐙 Thalassar<br>💪 <b>1485</b> · ATK 1121 · DEF 364</div></div>
-        <div class="podium-card bronze"><div class="podium-rank">🥉</div><div class="podium-name">🍃꧁𝕜𝕚𝕨𝕚꧂🍃</div><div class="podium-meta">🗡️ Asesino<br>💪 <b>1238</b> · ATK 866 · DEF 372</div></div>
-      </div>
-      <div class="top-list">
-        <div class="top-row"><span class="rank">4</span><span class="name">Andy</span><span class="meta">💀 Nigromante · 💪 <b>1129</b> · ATK 792 DEF 337</span></div>
-        <div class="top-row"><span class="rank">5</span><span class="name">JHK.nvs</span><span class="meta">🐺 Hombrelobo · 💪 <b>990</b> · ATK 590 DEF 400</span></div>
-        <div class="top-row"><span class="rank">6</span><span class="name">Mily</span><span class="meta">✨ Sacerdote · 💪 <b>640</b> · ATK 391 DEF 249</span></div>
-        <div class="top-row"><span class="rank">7</span><span class="name">Maximiliano</span><span class="meta">🐺 Hombrelobo · 💪 <b>597</b> · ATK 354 DEF 243</span></div>
-        <div class="top-row"><span class="rank">8</span><span class="name">🩵🌻 100 mil de oro</span><span class="meta">✨ Sacerdote · 💪 <b>544</b> · ATK 322 DEF 222</span></div>
-        <div class="top-row"><span class="rank">9</span><span class="name">Leo</span><span class="meta">🏹 Arquero · 💪 <b>442</b> · ATK 272 DEF 170</span></div>
-        <div class="top-row"><span class="rank">10</span><span class="name">TwofacedAxis427</span><span class="meta">💀 Nigromante · 💪 <b>431</b> · ATK 291 DEF 140</span></div>
-      </div>
-      <p class="top-note">Poder = ATK total + DEF total (incluye equipo, mascota y mejoras)</p>
-    </div>
-
-    <!-- TOP ARENA -->
-    <div class="top-panel" data-panel="arena">
-      <div class="top-podium">
-        <div class="podium-card gold"><div class="podium-rank">🥇</div><div class="podium-name">ᵒʷⁿᵉʳSMITH</div><div class="podium-meta">👑 El Legendario 🐙<br>🏆 <b>2520 pts</b> · ✅78V ❌4D</div></div>
-        <div class="podium-card silver"><div class="podium-rank">🥈</div><div class="podium-name">🍃꧁𝕜𝕚𝕨𝕚꧂🍃</div><div class="podium-meta">🥉 El Élite 🗡️<br>🏆 <b>1580 pts</b> · ✅60V ❌62D</div></div>
-        <div class="podium-card bronze"><div class="podium-rank">🥉</div><div class="podium-name">JHK.nvs</div><div class="podium-meta">🌍 Cazador Mundial 🐺<br>🏆 <b>1430 pts</b> · ✅36V ❌29D</div></div>
-      </div>
-      <div class="top-list">
-        <div class="top-row"><span class="rank">4</span><span class="name">TwofacedAxis427</span><span class="meta">🏆 <b>1200pts</b> · ✅13V ❌6D</span></div>
-        <div class="top-row"><span class="rank">5</span><span class="name">And</span><span class="meta">🏆 <b>1040pts</b> · ✅4V ❌4D</span></div>
-        <div class="top-row"><span class="rank">6</span><span class="name">Leo</span><span class="meta">🏆 <b>1040pts</b> · ✅7V ❌10D</span></div>
-        <div class="top-row"><span class="rank">7</span><span class="name">¡¡Liam el más guapo😎🔠!!</span><span class="meta">🏆 <b>1020pts</b> · ✅5V ❌8D</span></div>
-        <div class="top-row"><span class="rank">8</span><span class="name">M</span><span class="meta">🏆 <b>1010pts</b> · ✅8V ❌15D</span></div>
-        <div class="top-row"><span class="rank">9</span><span class="name">ig: miqueas_cc2026</span><span class="meta">🏆 <b>1000pts</b> · ✅0V ❌0D</span></div>
-        <div class="top-row"><span class="rank">10</span><span class="name">Alemox</span><span class="meta">🏆 <b>1000pts</b> · ✅1V ❌2D</span></div>
-      </div>
     </div>
 
     <!-- TOP COINS -->
@@ -2969,160 +2732,6 @@ canvas#pachinkoCanvas {
     <input type="text" class="cmd-search" id="cmdSearch" placeholder="🔍 Buscar un comando... (ej: gacha, clan, perfil)">
 
     <div class="accordion" id="cmdAccordion">
-      <div class="accordion-item" data-cat="rpg">
-        <button class="accordion-head">
-          <span class="left">⚔️ RPG</span>
-          <span class="left"><span class="count">147 comandos</span><span class="chev">▾</span></span>
-        </button>
-        <div class="accordion-body">
-          <div class="cmd-grid">
-            <div class="cmd-chip" data-name="menurpg"><span class="nm">!menurpg</span><span class="ds">Ver todos los comandos RPG</span></div>
-            <div class="cmd-chip" data-name="rpg"><span class="nm">!rpg</span><span class="ds">Menú RPG</span></div>
-            <div class="cmd-chip" data-name="rpgregistro"><span class="nm">!rpgregistro</span><span class="ds">Crear personaje — !rpgregistro [clase]</span></div>
-            <div class="cmd-chip" data-name="rpgperfil"><span class="nm">!rpgperfil</span><span class="ds">Ver perfil RPG con tarjeta visual</span></div>
-            <div class="cmd-chip" data-name="rpgexplorar"><span class="nm">!rpgexplorar</span><span class="ds">Explorar zona — !rpgexplorar [zona]</span></div>
-            <div class="cmd-chip" data-name="rpghabilidad"><span class="nm">!rpghabilidad</span><span class="ds">Usar habilidad especial — !rpghabilidad [1/2/3]</span></div>
-            <div class="cmd-chip" data-name="rpgcurar"><span class="nm">!rpgcurar</span><span class="ds">Cura a un aliado (solo sacerdote) — !rpgcurar @usuario</span></div>
-            <div class="cmd-chip" data-name="rpgdescansar"><span class="nm">!rpgdescansar</span><span class="ds">Recuperar HP automáticamente — +10% HP/min hasta full</span></div>
-            <div class="cmd-chip" data-name="rpgataccar"><span class="nm">!rpgataccar</span><span class="ds">Atacar jugador — !rpgataccar @usuario</span></div>
-            <div class="cmd-chip" data-name="rpgduelo"><span class="nm">!rpgduelo</span><span class="ds">Duelo con apuesta — !rpgduelo @usuario [oro]</span></div>
-            <div class="cmd-chip" data-name="rpginventario"><span class="nm">!rpginventario</span><span class="ds">Ver inventario</span></div>
-            <div class="cmd-chip" data-name="invaccesorios"><span class="nm">!invaccesorios</span><span class="ds">Ver accesorios en inventario</span></div>
-            <div class="cmd-chip" data-name="invarmas"><span class="nm">!invarmas</span><span class="ds">Ver armas en inventario con stats</span></div>
-            <div class="cmd-chip" data-name="invarmaduras"><span class="nm">!invarmaduras</span><span class="ds">Ver armaduras en inventario con stats</span></div>
-            <div class="cmd-chip" data-name="invmascotas"><span class="nm">!invmascotas</span><span class="ds">Ver mascotas en inventario con stats</span></div>
-            <div class="cmd-chip" data-name="invpociones"><span class="nm">!invpociones</span><span class="ds">Ver pociones en inventario</span></div>
-            <div class="cmd-chip" data-name="rpgtienda"><span class="nm">!rpgtienda</span><span class="ds">Ver tienda — !rpgtienda [calidad]</span></div>
-            <div class="cmd-chip" data-name="rpgcomprar"><span class="nm">!rpgcomprar</span><span class="ds">Comprar item — !rpgcomprar [id]</span></div>
-            <div class="cmd-chip" data-name="rpgusar"><span class="nm">!rpgusar</span><span class="ds">Usar poción — !rpgusar [id]</span></div>
-            <div class="cmd-chip" data-name="rpgvender"><span class="nm">!rpgvender</span><span class="ds">Vender item del inventario — !rpgvender [id] [cantidad]</span></div>
-            <div class="cmd-chip" data-name="rpgequipar"><span class="nm">!rpgequipar</span><span class="ds">Equipar item — !rpgequipar [id]</span></div>
-            <div class="cmd-chip" data-name="rpgdesequipar"><span class="nm">!rpgdesequipar</span><span class="ds">Desequipar arma, armadura, accesorio o mascota — !rpgdesequipar [arma/armadura/accesorio/mascota/todo]</span></div>
-            <div class="cmd-chip" data-name="rpgcambiarclase"><span class="nm">!rpgcambiarclase</span><span class="ds">Cambiar de clase — !rpgcambiarclase [clase]</span></div>
-            <div class="cmd-chip" data-name="rpgmejorar"><span class="nm">!rpgmejorar</span><span class="ds">Mejorar stats con Orbe Azul — !rpgmejorar [stat]</span></div>
-            <div class="cmd-chip" data-name="rpgmejorarequipo"><span class="nm">!rpgmejorarequipo</span><span class="ds">Mejorar arma/armadura con Orbe Dorado — !rpgmejorarequipo [arma/armadura] [atk/def]</span></div>
-            <div class="cmd-chip" data-name="rpgmision"><span class="nm">!rpgmision</span><span class="ds">Misión diaria — !rpgmision</span></div>
-            <div class="cmd-chip" data-name="rpgmascota"><span class="nm">!rpgmascota</span><span class="ds">Sistema de mascotas — !rpgmascota [ver/comprar/equipar/soltar]</span></div>
-            <div class="cmd-chip" data-name="rpgelemental"><span class="nm">!rpgelemental</span><span class="ds">Mascotas elementales (gemas 💎) — !rpgelemental [tienda/comprar/equipar/soltar/ver]</span></div>
-            <div class="cmd-chip" data-name="rpggemas"><span class="nm">!rpggemas</span><span class="ds">Cambiar 1000 💰 por 100 💎 (máx 5 veces por día)</span></div>
-            <div class="cmd-chip" data-name="rpgclan"><span class="nm">!rpgclan</span><span class="ds">Sistema de clanes — !rpgclan [sub]</span></div>
-            <div class="cmd-chip" data-name="donarclanmedallas"><span class="nm">!donarclanmedallas</span><span class="ds">Donar medallas al banco del clan — !donarclanmedallas [cantidad]</span></div>
-            <div class="cmd-chip" data-name="clanhabilidades"><span class="nm">!clanhabilidades</span><span class="ds">Ver árbol de habilidades del clan</span></div>
-            <div class="cmd-chip" data-name="clanmejorar"><span class="nm">!clanmejorar</span><span class="ds">Mejorar habilidad del clan [Líder] — !clanmejorar [atk/def/damage/dodge]</span></div>
-            <div class="cmd-chip" data-name="daritem"><span class="nm">!daritem</span><span class="ds">Regalar un ítem a otro jugador</span></div>
-            <div class="cmd-chip" data-name="rpgmercado"><span class="nm">!rpgmercado</span><span class="ds">Mercado entre jugadores — compra/vende ítems</span></div>
-            <div class="cmd-chip" data-name="rpgtitulos"><span class="nm">!rpgtitulos</span><span class="ds">Ver y equipar títulos — !rpgtitulos [equipar/desequipar] [id]</span></div>
-            <div class="cmd-chip" data-name="rpgtop"><span class="nm">!rpgtop</span><span class="ds">Ranking de jugadores</span></div>
-            <div class="cmd-chip" data-name="eventostatus"><span class="nm">!eventostatus</span><span class="ds">Ver eventos activos actualmente</span></div>
-            <div class="cmd-chip" data-name="rpgboss"><span class="nm">!rpgboss</span><span class="ds">Atacar al jefe activo o ver su estado — !rpgboss [atacar/status]</span></div>
-            <div class="cmd-chip" data-name="gachaarma"><span class="nm">!gachaarma</span><span class="ds">Banner Espada del Señor Oscuro — !gachaarma [x1/x10]</span></div>
-            <div class="cmd-chip" data-name="gachamascota"><span class="nm">!gachamascota</span><span class="ds">Banner Dragón Ancestral — !gachamascota [x1/x10]</span></div>
-            <div class="cmd-chip" data-name="ssrgoku"><span class="nm">!ssrgoku</span><span class="ds">Ver la carta SSR Mono Goku y si la obtuviste</span></div>
-            <div class="cmd-chip" data-name="gachaevento"><span class="nm">!gachaevento</span><span class="ds">Invocación Z — Banner colaboración Mono Goku SSR</span></div>
-            <div class="cmd-chip" data-name="gachaarmadura"><span class="nm">!gachaarmadura</span><span class="ds">Banner Peto Caballero Oscuro — !gachaarmadura [x1/x10]</span></div>
-            <div class="cmd-chip" data-name="rpgtorre"><span class="nm">!rpgtorre</span><span class="ds">Torre de los Elegidos — submenú del evento</span></div>
-            <div class="cmd-chip" data-name="torrentrar"><span class="nm">!torrentrar</span><span class="ds">Entrar solo a la Torre de los Elegidos</span></div>
-            <div class="cmd-chip" data-name="invitartorre"><span class="nm">!invitartorre</span><span class="ds">Invitar a un jugador a tu grupo de torre — !invitartorre @usuario</span></div>
-            <div class="cmd-chip" data-name="torreaceptar"><span class="nm">!torreaceptar</span><span class="ds">Aceptar invitación a grupo de torre</span></div>
-            <div class="cmd-chip" data-name="torregrupo"><span class="nm">!torregrupo</span><span class="ds">Ver tu grupo actual de torre. Usa </span></div>
-            <div class="cmd-chip" data-name="torreavanzar"><span class="nm">!torreavanzar</span><span class="ds">Iniciar el combate del siguiente piso (solo el líder)</span></div>
-            <div class="cmd-chip" data-name="torreatacar"><span class="nm">!torreatacar</span><span class="ds">Atacar al enemigo del piso actual en la torre</span></div>
-            <div class="cmd-chip" data-name="torreabandonar"><span class="nm">!torreabandonar</span><span class="ds">Abandonar la torre (guarda progreso del último piso superado)</span></div>
-            <div class="cmd-chip" data-name="rpgdungeon"><span class="nm">!rpgdungeon</span><span class="ds">Dungeon de 10 pisos — !rpgdungeon [entrar/atacar/huir/revivir]</span></div>
-            <div class="cmd-chip" data-name="rpgarena"><span class="nm">!rpgarena</span><span class="ds">⚔️ Arena PvP — !rpgarena [@usuario/top]</span></div>
-            <div class="cmd-chip" data-name="rpgafk"><span class="nm">!rpgafk</span><span class="ds">Modo AFK — !rpgafk / !rpgafk off</span></div>
-            <div class="cmd-chip" data-name="rpgpremium"><span class="nm">!rpgpremium</span><span class="ds">Menú de beneficios premium del RPG</span></div>
-            <div class="cmd-chip" data-name="afkpremium"><span class="nm">!afkpremium</span><span class="ds">AFK premium — sin cooldown ni límite de tiempo [Premium]</span></div>
-            <div class="cmd-chip" data-name="rpgmapa"><span class="nm">!rpgmapa</span><span class="ds">Ver el mapa de territorios y quién los controla</span></div>
-            <div class="cmd-chip" data-name="rpgterritorio"><span class="nm">!rpgterritorio</span><span class="ds">Ver detalles de un territorio — !rpgterritorio [id]</span></div>
-            <div class="cmd-chip" data-name="rpgconquistar"><span class="nm">!rpgconquistar</span><span class="ds">Atacar un territorio con tu clan — !rpgconquistar [id]</span></div>
-            <div class="cmd-chip" data-name="rpgmisbonos"><span class="nm">!rpgmisbonos</span><span class="ds">Ver bonos activos por territorios de tu clan</span></div>
-            <div class="cmd-chip" data-name="rpgrecolectar"><span class="nm">!rpgrecolectar</span><span class="ds">Reclamar producción acumulada de los territorios del clan</span></div>
-            <div class="cmd-chip" data-name="rpgbossterreno"><span class="nm">!rpgbossterreno</span><span class="ds">Atacar al boss de un territorio — !rpgbossterreno [id]</span></div>
-            <div class="cmd-chip" data-name="rpgbossstatus"><span class="nm">!rpgbossstatus</span><span class="ds">Ver estado actual del boss de un territorio</span></div>
-            <div class="cmd-chip" data-name="rpghistorial"><span class="nm">!rpghistorial</span><span class="ds">Ver historial de conquistas de territorios</span></div>
-            <div class="cmd-chip" data-name="rpgbanco"><span class="nm">!rpgbanco</span><span class="ds">Banco del Reino — ahorros, préstamos, BTC, seguro</span></div>
-            <div class="cmd-chip" data-name="rpgdefender"><span class="nm">!rpgdefender</span><span class="ds">Defender tu territorio cuando está bajo ataque — !rpgdefender [id]</span></div>
-            <div class="cmd-chip" data-name="rpgestadodefensa"><span class="nm">!rpgestadodefensa</span><span class="ds">Ver el estado de defensa activa de un territorio</span></div>
-            <div class="cmd-chip" data-name="rpgtoppoder"><span class="nm">!rpgtoppoder</span><span class="ds">Top 10 jugadores con mayor poder (ATK+DEF total)</span></div>
-            <div class="cmd-chip" data-name="rpgtoppodermascota"><span class="nm">!rpgtoppodermascota</span><span class="ds">Top 10 jugadores con mascota más poderosa</span></div>
-            <div class="cmd-chip" data-name="rpgtoppoderarma"><span class="nm">!rpgtoppoderarma</span><span class="ds">Top 10 jugadores con arma más poderosa</span></div>
-            <div class="cmd-chip" data-name="rpgtoppoderamadura"><span class="nm">!rpgtoppoderamadura</span><span class="ds">Top 10 jugadores con armadura más poderosa</span></div>
-            <div class="cmd-chip" data-name="torregemas"><span class="nm">!torregemas</span><span class="ds">Torre de Gemas — 100 pisos de pura recompensa</span></div>
-            <div class="cmd-chip" data-name="gtentrar"><span class="nm">!gtentrar</span><span class="ds">Entrar a la Torre de Gemas</span></div>
-            <div class="cmd-chip" data-name="gtatacar"><span class="nm">!gtatacar</span><span class="ds">Atacar en la Torre de Gemas</span></div>
-            <div class="cmd-chip" data-name="gtavanzar"><span class="nm">!gtavanzar</span><span class="ds">Avanzar al siguiente piso (Torre de Gemas)</span></div>
-            <div class="cmd-chip" data-name="gtsalir"><span class="nm">!gtsalir</span><span class="ds">Salir de la Torre de Gemas (conservas piso)</span></div>
-            <div class="cmd-chip" data-name="torremascota"><span class="nm">!torremascota</span><span class="ds">Torre Mascota — 100 pisos, bosses fijos, drops de frutos 🐾</span></div>
-            <div class="cmd-chip" data-name="tmentrar"><span class="nm">!tmentrar</span><span class="ds">Entrar a la Torre Mascota</span></div>
-            <div class="cmd-chip" data-name="tmatacar"><span class="nm">!tmatacar</span><span class="ds">Atacar en la Torre Mascota</span></div>
-            <div class="cmd-chip" data-name="tmavanzar"><span class="nm">!tmavanzar</span><span class="ds">Ver info del piso actual (Torre Mascota)</span></div>
-            <div class="cmd-chip" data-name="tmsalir"><span class="nm">!tmsalir</span><span class="ds">Salir de la Torre Mascota (conservas el piso)</span></div>
-            <div class="cmd-chip" data-name="tmfrutos"><span class="nm">!tmfrutos</span><span class="ds">Ver tus frutos para mascotas</span></div>
-            <div class="cmd-chip" data-name="tmusar"><span class="nm">!tmusar</span><span class="ds">Aplicar fruto a tu mascota para subirla de nivel — !tmusar [id_fruto]</span></div>
-            <div class="cmd-chip" data-name="mascotanivel"><span class="nm">!mascotanivel</span><span class="ds">Ver el nivel actual de tu mascota</span></div>
-            <div class="cmd-chip" data-name="medallas"><span class="nm">!medallas</span><span class="ds">Ver tus Medallas de Honor 🏅</span></div>
-            <div class="cmd-chip" data-name="bossclan"><span class="nm">!bossclan</span><span class="ds">Ver / invocar el Boss del Clan 🏅</span></div>
-            <div class="cmd-chip" data-name="rpgatacarbossclan"><span class="nm">!rpgatacarbossclan</span><span class="ds">Atacar el Boss del Clan — !rpgatacarbossclan</span></div>
-            <div class="cmd-chip" data-name="tiendaclan"><span class="nm">!tiendaclan</span><span class="ds">Tienda del Clan — compra con Medallas de Honor 🏅</span></div>
-            <div class="cmd-chip" data-name="medallas2gemas"><span class="nm">!medallas2gemas</span><span class="ds">Cambiar 500 Medallas de Honor por 100 💎</span></div>
-            <div class="cmd-chip" data-name="misionclan"><span class="nm">!misionclan</span><span class="ds">Misión diaria del clan — ¡gana Medallas de Honor! 🏅</span></div>
-            <div class="cmd-chip" data-name="clansubirnivel"><span class="nm">!clansubirnivel</span><span class="ds">Subir el nivel del clan donando Medallas de Honor 🏅</span></div>
-            <div class="cmd-chip" data-name="buzon"><span class="nm">!buzon</span><span class="ds">Ver tu buzón de mensajes del sistema</span></div>
-            <div class="cmd-chip" data-name="buzonver"><span class="nm">!buzonver</span><span class="ds">Leer un mensaje del buzón y reclamar recompensa</span></div>
-            <div class="cmd-chip" data-name="vip"><span class="nm">!vip</span><span class="ds">Ver información del sistema VIP y tus beneficios</span></div>
-            <div class="cmd-chip" data-name="vipcomprar"><span class="nm">!vipcomprar</span><span class="ds">Comprar o subir tu nivel VIP (!vipcomprar &lt;nivel&gt;)</span></div>
-            <div class="cmd-chip" data-name="vipdiario"><span class="nm">!vipdiario</span><span class="ds">Reclamar tu recompensa diaria VIP</span></div>
-            <div class="cmd-chip" data-name="viptop"><span class="nm">!viptop</span><span class="ds">Ver los jugadores con mayor nivel VIP</span></div>
-            <div class="cmd-chip" data-name="torreoro"><span class="nm">!torreoro</span><span class="ds">Torre de Oro — 50 pisos con jefes fijos y oro generoso</span></div>
-            <div class="cmd-chip" data-name="otentrar"><span class="nm">!otentrar</span><span class="ds">Entrar a la Torre de Oro</span></div>
-            <div class="cmd-chip" data-name="otatacar"><span class="nm">!otatacar</span><span class="ds">Atacar en la Torre de Oro</span></div>
-            <div class="cmd-chip" data-name="otavanzar"><span class="nm">!otavanzar</span><span class="ds">Ver info del piso actual (Torre de Oro)</span></div>
-            <div class="cmd-chip" data-name="otsalir"><span class="nm">!otsalir</span><span class="ds">Salir de la Torre de Oro (conservas piso)</span></div>
-            <div class="cmd-chip" data-name="merry"><span class="nm">!merry</span><span class="ds">Proponer matrimonio — !merry @usuario</span></div>
-            <div class="cmd-chip" data-name="aceptarboda"><span class="nm">!aceptarboda</span><span class="ds">Aceptar propuesta de matrimonio</span></div>
-            <div class="cmd-chip" data-name="rechazarboda"><span class="nm">!rechazarboda</span><span class="ds">Rechazar propuesta de matrimonio</span></div>
-            <div class="cmd-chip" data-name="divorcio"><span class="nm">!divorcio</span><span class="ds">Divorciarse (cuesta ${MARRY_COSTO_DIVORCIO} oro)</span></div>
-            <div class="cmd-chip" data-name="verpareja"><span class="nm">!verpareja</span><span class="ds">Ver estado de tu matrimonio y beneficios activos</span></div>
-            <div class="cmd-chip" data-name="darpro"><span class="nm">!darpro</span><span class="ds">Transferir oro o gemas a tu pareja — !darpro [cantidad] [oro/gemas]</span></div>
-            <div class="cmd-chip" data-name="misionpareja"><span class="nm">!misionpareja</span><span class="ds">Ver misión diaria de pareja y reclamar recompensa</span></div>
-            <div class="cmd-chip" data-name="revivirpareja"><span class="nm">!revivirpareja</span><span class="ds">Gastar 40% de tu HP para revivir a tu pareja caída</span></div>
-            <div class="cmd-chip" data-name="exparmadura"><span class="nm">!exparmadura</span><span class="ds">Dungeon de armaduras (hasta 3 jugadores, 3 etapas, boss final)</span></div>
-            <div class="cmd-chip" data-name="jefemundial"><span class="nm">!jefemundial</span><span class="ds">Ver el estado de todos los Jefes Mundiales</span></div>
-            <div class="cmd-chip" data-name="jefemundialatacar"><span class="nm">!jefemundialatacar</span><span class="ds">Atacar un Jefe Mundial. Uso: !jefemundialatacar [id]</span></div>
-            <div class="cmd-chip" data-name="rpgtiendageneral"><span class="nm">!rpgtiendageneral</span><span class="ds">Tienda general: pociones, accesorios, orbes</span></div>
-            <div class="cmd-chip" data-name="tiendaguerrero"><span class="nm">!tiendaguerrero</span><span class="ds">Tienda exclusiva de Guerrero</span></div>
-            <div class="cmd-chip" data-name="tiendamago"><span class="nm">!tiendamago</span><span class="ds">Tienda exclusiva de Mago</span></div>
-            <div class="cmd-chip" data-name="tiendaarquero"><span class="nm">!tiendaarquero</span><span class="ds">Tienda exclusiva de Arquero</span></div>
-            <div class="cmd-chip" data-name="tiendaasesino"><span class="nm">!tiendaasesino</span><span class="ds">Tienda exclusiva de Asesino</span></div>
-            <div class="cmd-chip" data-name="tiendasacerdote"><span class="nm">!tiendasacerdote</span><span class="ds">Tienda exclusiva de Sacerdote</span></div>
-            <div class="cmd-chip" data-name="tiendapaladin"><span class="nm">!tiendapaladin</span><span class="ds">Tienda exclusiva de Paladín</span></div>
-            <div class="cmd-chip" data-name="tiendanigromante"><span class="nm">!tiendanigromante</span><span class="ds">Tienda exclusiva de Nigromante</span></div>
-            <div class="cmd-chip" data-name="tiendahombrelobo"><span class="nm">!tiendahombrelobo</span><span class="ds">Tienda exclusiva de Hombre Lobo</span></div>
-            <div class="cmd-chip" data-name="tiendanomuerto"><span class="nm">!tiendanomuerto</span><span class="ds">Tienda exclusiva de No-Muerto</span></div>
-            <div class="cmd-chip" data-name="dungeon"><span class="nm">!dungeon</span><span class="ds">Dungeon Infinita — elige tu modalidad</span></div>
-            <div class="cmd-chip" data-name="dungeonentrar"><span class="nm">!dungeonentrar</span><span class="ds">Entrar a la Dungeon Infinita</span></div>
-            <div class="cmd-chip" data-name="dungeonatacar"><span class="nm">!dungeonatacar</span><span class="ds">Atacar en la Dungeon Infinita</span></div>
-            <div class="cmd-chip" data-name="dungeonsalir"><span class="nm">!dungeonsalir</span><span class="ds">Salir de la Dungeon (guarda tu récord)</span></div>
-            <div class="cmd-chip" data-name="rpghistoria"><span class="nm">!rpghistoria</span><span class="ds">Modo Historia — La Grieta del Abismo, 10 capítulos — !rpghistoria [avanzar/elegir/entregar/atacar]</span></div>
-            <div class="cmd-chip" data-name="rpgeventos"><span class="nm">!rpgeventos</span><span class="ds">Ver todos los eventos programados y su horario</span></div>
-            <div class="cmd-chip" data-name="rpgsaqueo"><span class="nm">!rpgsaqueo</span><span class="ds">Saqueo del Abismo (5:00 PM diario) — 4 jefes, solo o en clan — !rpgsaqueo [entrar/atacar]</span></div>
-            <div class="cmd-chip" data-name="rpgreyarena"><span class="nm">!rpgreyarena</span><span class="ds">Rey de la Arena (sábados 6:30 PM) — boss + PvP real — !rpgreyarena [entrar/atacar]</span></div>
-            <div class="cmd-chip" data-name="rpgdefiende"><span class="nm">!rpgdefiende</span><span class="ds">Defiende la Gema (8:00 PM diario) — oleadas PvE, solo o equipo de 3 — !rpgdefiende [solo/invitar/aceptar/atacar/retirarse]</span></div>
-            <div class="cmd-chip" data-name="rpgtronos"><span class="nm">!rpgtronos</span><span class="ds">Los Tronos — top 1 de poder de cada clase</span></div>
-            <div class="cmd-chip" data-name="venerarmago"><span class="nm">!venerarmago</span><span class="ds">Venera el trono de Mago — gana 1,000 oro</span></div>
-            <div class="cmd-chip" data-name="venerarguerrero"><span class="nm">!venerarguerrero</span><span class="ds">Venera el trono de Guerrero — gana 1,000 oro</span></div>
-            <div class="cmd-chip" data-name="venerararquero"><span class="nm">!venerararquero</span><span class="ds">Venera el trono de Arquero — gana 1,000 oro</span></div>
-            <div class="cmd-chip" data-name="venerarasesino"><span class="nm">!venerarasesino</span><span class="ds">Venera el trono de Asesino — gana 1,000 oro</span></div>
-            <div class="cmd-chip" data-name="venerarsacerdote"><span class="nm">!venerarsacerdote</span><span class="ds">Venera el trono de Sacerdote — gana 1,000 oro</span></div>
-            <div class="cmd-chip" data-name="venerarpaladin"><span class="nm">!venerarpaladin</span><span class="ds">Venera el trono de Paladín — gana 1,000 oro</span></div>
-            <div class="cmd-chip" data-name="venerarnigromante"><span class="nm">!venerarnigromante</span><span class="ds">Venera el trono de Nigromante — gana 1,000 oro</span></div>
-            <div class="cmd-chip" data-name="venerarhombrelobo"><span class="nm">!venerarhombrelobo</span><span class="ds">Venera el trono de Hombre Lobo — gana 1,000 oro</span></div>
-            <div class="cmd-chip" data-name="venerarnomuerto"><span class="nm">!venerarnomuerto</span><span class="ds">Venera el trono de No-Muerto — gana 1,000 oro</span></div>
-            <div class="cmd-chip" data-name="venerarthalassar"><span class="nm">!venerarthalassar</span><span class="ds">Venera el trono de Kraken Humanoide — gana 1,000 oro</span></div>
-          </div>
-        </div>
-      </div>
       <div class="accordion-item" data-cat="reacciones">
         <button class="accordion-head">
           <span class="left">🎭 Reacciones</span>
@@ -3290,7 +2899,7 @@ canvas#pachinkoCanvas {
             <div class="cmd-chip" data-name="trivia"><span class="nm">!trivia</span><span class="ds">Juega trivia de preguntas y respuestas</span></div>
             <div class="cmd-chip" data-name="wordle"><span class="nm">!wordle</span><span class="ds">Adivina la palabra del día (5 letras, 6 intentos)</span></div>
             <div class="cmd-chip" data-name="ruleta"><span class="nm">!ruleta</span><span class="ds">Ruleta rusa entre usuarios del grupo</span></div>
-            <div class="cmd-chip" data-name="casino"><span class="nm">!casino</span><span class="ds">Casino con oro del RPG — !casino dados/blackjack [cantidad]</span></div>
+            <div class="cmd-chip" data-name="casino"><span class="nm">!casino</span><span class="ds">Casino con Yuka's Coins — !casino dados/blackjack [cantidad]</span></div>
             <div class="cmd-chip" data-name="encuesta"><span class="nm">!encuesta</span><span class="ds">Crea una encuesta en el grupo</span></div>
             <div class="cmd-chip" data-name="cumpleanos"><span class="nm">!cumpleanos</span><span class="ds">Registra y recuerda cumpleaños de miembros</span></div>
             <div class="cmd-chip" data-name="stats"><span class="nm">!stats</span><span class="ds">Estadísticas del grupo (mensajes, usuarios activos)</span></div>
@@ -3682,7 +3291,7 @@ canvas#pachinkoCanvas {
   <div class="wrap">
     <span class="eyebrow">Tu propio bot</span>
     <h2 class="section-title">Cómo hacerte Sub-Bot</h2>
-    <p class="section-sub">Conecta tu propio número de WhatsApp como una extensión de Pragmata Bot, con sesión real vía código QR.</p>
+    <p class="section-sub">Conecta tu propio número de WhatsApp como una extensión de Pragmata Bot, con sesión real vía código de vinculación.</p>
 
     <div class="subbot-grid">
       <div class="subbot-steps">
@@ -3696,11 +3305,11 @@ canvas#pachinkoCanvas {
         </div>
         <div class="subbot-step">
           <span class="snum">03</span>
-          <div><h4>Escanea el código QR</h4><p>El bot te enviará un código QR. Ábrelo desde <strong>WhatsApp → Dispositivos vinculados → Vincular dispositivo</strong>.</p></div>
+          <div><h4>Recibe tu código</h4><p>El bot te enviará un código de vinculación al privado. Ábrelo desde <strong>WhatsApp → Dispositivos vinculados → Vincular con número de teléfono</strong>.</p></div>
         </div>
         <div class="subbot-step">
           <span class="snum">04</span>
-          <div><h4>Tienes 90 segundos</h4><p>Si no escaneas a tiempo, el bot genera un nuevo QR automáticamente (máximo 3 intentos antes de cancelar).</p></div>
+          <div><h4>Tienes 60 segundos</h4><p>Si no lo usas a tiempo, el bot genera un nuevo código automáticamente.</p></div>
         </div>
         <div class="subbot-step">
           <span class="snum">05</span>
@@ -3724,6 +3333,27 @@ canvas#pachinkoCanvas {
         <div class="subbot-note-box">
           <b>Nota:</b> cada sub-bot mantiene su sesión activa incluso después de reiniciar el bot principal. Si pierdes acceso a tu número, usa <code>!subbot remove</code> antes de vincular uno nuevo.
         </div>
+      </div>
+    </div>
+
+    <div class="subbot-connect">
+      <div class="subbot-connect-form">
+        <div class="sc-badge">🔌</div>
+        <h3>Conecta tu Sub-Bot ahora</h3>
+        <p class="sc-sub">Escribe tu número y te llevamos directo a WhatsApp con el comando ya listo para enviar.</p>
+        <form id="subbotConnectForm">
+          <div class="sc-field">
+            <label>Tu número de WhatsApp</label>
+            <input type="tel" id="subbotPhone" placeholder="Ej: 51987654321 (con código de país, sin +)" required />
+          </div>
+          <button type="submit" class="sc-submit">⚡ VINCULAR CON WHATSAPP</button>
+        </form>
+        <p class="sc-hint">Al tocar el botón se abre WhatsApp con el mensaje ya escrito — solo tienes que enviarlo.</p>
+      </div>
+      <div class="subbot-connect-side">
+        <h4>🤖 ¿Prefieres hacerlo por chat?</h4>
+        <p>Escribe directo <code>!subbot add</code> al bot principal desde tu WhatsApp, sin pasar por este formulario.</p>
+        <a class="sc-chat-link" href="https://wa.me/51917611323?text=!subbot%20add" target="_blank" rel="noopener">💬 Abrir chat con el bot →</a>
       </div>
     </div>
   </div>
@@ -4403,14 +4033,14 @@ canvas#pachinkoCanvas {
         <div class="cshop-card">
           <div class="cshop-ico">💎</div>
           <div class="cshop-name">50 Gemas</div>
-          <div class="cshop-desc">Lote pequeño de gemas RPG</div>
+          <div class="cshop-desc">Lote pequeño de gemas del gacha</div>
           <div class="cshop-price">500 🪙</div>
           <button class="cshop-redeem-btn" data-cat="gems" data-item="50 Gemas" data-cost="500">Canjear</button>
         </div>
         <div class="cshop-card">
           <div class="cshop-ico">💎💎</div>
           <div class="cshop-name">150 Gemas</div>
-          <div class="cshop-desc">Lote mediano de gemas RPG</div>
+          <div class="cshop-desc">Lote mediano de gemas del gacha</div>
           <div class="cshop-price">1,200 🪙</div>
           <button class="cshop-redeem-btn" data-cat="gems" data-item="150 Gemas" data-cost="1200">Canjear</button>
         </div>
@@ -4418,14 +4048,14 @@ canvas#pachinkoCanvas {
           <div class="cshop-hot-badge">⭐ Popular</div>
           <div class="cshop-ico">💎💎💎</div>
           <div class="cshop-name">400 Gemas</div>
-          <div class="cshop-desc">Lote grande de gemas RPG</div>
+          <div class="cshop-desc">Lote grande de gemas del gacha</div>
           <div class="cshop-price">2,800 🪙</div>
           <button class="cshop-redeem-btn" data-cat="gems" data-item="400 Gemas" data-cost="2800">Canjear</button>
         </div>
         <div class="cshop-card">
           <div class="cshop-ico">🌌</div>
           <div class="cshop-name">1,000 Gemas</div>
-          <div class="cshop-desc">Caja épica de gemas RPG</div>
+          <div class="cshop-desc">Caja épica de gemas del gacha</div>
           <div class="cshop-price">6,000 🪙</div>
           <button class="cshop-redeem-btn" data-cat="gems" data-item="1,000 Gemas" data-cost="6000">Canjear</button>
         </div>
@@ -4443,14 +4073,14 @@ canvas#pachinkoCanvas {
         <div class="cshop-card">
           <div class="cshop-ico">🥇</div>
           <div class="cshop-name">500 Oro</div>
-          <div class="cshop-desc">Lote pequeño de oro RPG</div>
+          <div class="cshop-desc">Lote pequeño de oro</div>
           <div class="cshop-price">500 🪙</div>
           <button class="cshop-redeem-btn" data-cat="gold" data-item="500 Oro" data-cost="500">Canjear</button>
         </div>
         <div class="cshop-card">
           <div class="cshop-ico">🥇🥇</div>
           <div class="cshop-name">1,500 Oro</div>
-          <div class="cshop-desc">Lote mediano de oro RPG</div>
+          <div class="cshop-desc">Lote mediano de oro</div>
           <div class="cshop-price">1,200 🪙</div>
           <button class="cshop-redeem-btn" data-cat="gold" data-item="1,500 Oro" data-cost="1200">Canjear</button>
         </div>
@@ -4458,14 +4088,14 @@ canvas#pachinkoCanvas {
           <div class="cshop-hot-badge">⭐ Popular</div>
           <div class="cshop-ico">💰</div>
           <div class="cshop-name">4,000 Oro</div>
-          <div class="cshop-desc">Lote grande de oro RPG</div>
+          <div class="cshop-desc">Lote grande de oro</div>
           <div class="cshop-price">2,800 🪙</div>
           <button class="cshop-redeem-btn" data-cat="gold" data-item="4,000 Oro" data-cost="2800">Canjear</button>
         </div>
         <div class="cshop-card">
           <div class="cshop-ico">🏆</div>
           <div class="cshop-name">10,000 Oro</div>
-          <div class="cshop-desc">Arcas épicas de oro RPG</div>
+          <div class="cshop-desc">Arcas épicas de oro</div>
           <div class="cshop-price">6,000 🪙</div>
           <button class="cshop-redeem-btn" data-cat="gold" data-item="10,000 Oro" data-cost="6000">Canjear</button>
         </div>
@@ -6272,7 +5902,7 @@ canvas#pachinkoCanvas {
     });
   });
 
-  // Abrir la primera categoría (RPG) por defecto
+  // Abrir la primera categoría por defecto
   const first = document.querySelector('.accordion-item');
   if(first) first.classList.add('open');
 
@@ -6513,10 +6143,10 @@ canvas#pachinkoCanvas {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if(reduceMotion) return;
 
-  // Mayoría hongos (estilo Mario), mezclados con estrellas, monedas y gemas
-  const SYMBOLS = ['🍄','🍄','🍄','⭐','🪙','💎','🍄','⭐'];
+  // Mayoría cerezas (clásico de casino), mezcladas con estrellas, monedas y gemas
+  const SYMBOLS = ['🍒','🍒','🍒','⭐','🪙','💎','🍒','⭐'];
   const GLOWS = {
-    '🍄': 'rgba(255,77,77,0.55)',
+    '🍒': 'rgba(255,77,77,0.55)',
     '⭐': 'rgba(255,210,63,0.6)',
     '🪙': 'rgba(255,210,63,0.6)',
     '💎': 'rgba(124,92,255,0.55)'
@@ -8404,7 +8034,7 @@ canvas#pachinkoCanvas {
   });
 
   // ── Stickers ──
-  const STICKERS = ['🍄','⭐','🪙','💎','🎰','🃏','🎲','🕹️','👑','🔥','💀','🎉','😂','😎','🥳','🤑','😭','👀','💪','🙏','🤝','🫡','🎯','🍷','🎀','✨','🚀','🐉','⚔️','🛡️'];
+  const STICKERS = ['🎮','⭐','🪙','💎','🎰','🃏','🎲','🕹️','👑','🔥','💀','🎉','😂','😎','🥳','🤑','😭','👀','💪','🙏','🤝','🫡','🎯','🍷','🎀','✨','🚀','🐉','⚔️','🛡️'];
   const stickerBtn = document.getElementById('stickerToggleBtn');
   const stickerPicker = document.getElementById('stickerPicker');
   if(stickerPicker){
@@ -8767,6 +8397,28 @@ canvas#pachinkoCanvas {
 })();
 </script>
 
+<script>
+(function(){
+  const form = document.getElementById('subbotConnectForm');
+  const phoneInput = document.getElementById('subbotPhone');
+  if(!form) return;
+
+  const BOT_NUMBER = '51917611323'; // número del bot principal, sin +
+
+  form.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const raw = phoneInput.value.trim().replace(/[^0-9]/g, '');
+    if(raw.length < 8){
+      phoneInput.style.borderColor = 'var(--red)';
+      phoneInput.focus();
+      return;
+    }
+    phoneInput.style.borderColor = '';
+    const msg = encodeURIComponent(`!subbot add ${raw}`);
+    window.open(`https://wa.me/${BOT_NUMBER}?text=${msg}`, '_blank', 'noopener');
+  });
+})();
+</script>
 </body>
 </html>
 
