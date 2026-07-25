@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Yuta Bot — ArcadiaCorps</title>
-<meta name="description" content="Yuta Bot: el bot de WhatsApp de ArcadiaCorps. Economía, gacha, descargas, IA, sub-bots y administración de grupo." />
+<meta name="description" content="Yuta Bot: el bot de WhatsApp de ArcadiaCorps. Economía, casino, gacha, descargas, IA, sub-bots y administración de grupo." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -43,31 +43,59 @@
   ::selection{background:var(--magenta); color:#0b0b12;}
   :focus-visible{outline:2px solid var(--magenta); outline-offset:3px;}
   @media (prefers-reduced-motion: reduce){ *{animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important;} }
+  input, button{font-family:inherit;}
 
-  #loader{
+  /* ── Login gate ── */
+  #loginGate{
     position:fixed; inset:0; z-index:999; background:var(--bg);
-    display:flex; align-items:center; justify-content:center; flex-direction:column;
-    transition:opacity .5s ease, visibility .5s ease;
+    display:flex; align-items:center; justify-content:center; padding:24px;
+    transition:opacity .45s ease, visibility .45s ease;
   }
-  #loader.hide{opacity:0; visibility:hidden; pointer-events:none;}
-  .loader-glyph{
-    font-family:var(--mono); font-weight:800; font-size:15px; letter-spacing:.3em;
-    color:var(--text-faint); margin-bottom:22px; text-transform:uppercase;
+  #loginGate.hide{opacity:0; visibility:hidden; pointer-events:none;}
+  .login-card{
+    width:100%; max-width:380px; background:var(--surface); border:1px solid var(--border);
+    border-radius:14px; overflow:hidden; box-shadow:0 40px 100px -30px rgba(230,25,184,.3);
   }
-  .loader-bar-track{
-    width:220px; height:2px; background:var(--border); border-radius:2px; overflow:hidden; margin-bottom:16px;
+  .login-bar{
+    display:flex; align-items:center; gap:8px; padding:12px 16px;
+    background:var(--surface-2); border-bottom:1px solid var(--border);
   }
-  .loader-bar-fill{
-    height:100%; width:0%; background:linear-gradient(90deg, var(--violet), var(--magenta));
-    box-shadow:0 0 12px var(--magenta);
-    transition:width .12s linear;
+  .login-bar span{width:10px; height:10px; border-radius:50%;}
+  .login-bar span:nth-child(1){background:#ff5f57;}
+  .login-bar span:nth-child(2){background:#febc2e;}
+  .login-bar span:nth-child(3){background:#28c840;}
+  .login-bar b{margin-left:8px; font-family:var(--mono); font-size:11px; color:var(--text-faint); font-weight:500;}
+  .login-body{padding:32px 28px;}
+  .login-glyph{
+    font-family:var(--mono); font-weight:800; font-size:20px; letter-spacing:.06em;
+    margin-bottom:6px; display:flex; align-items:center; gap:8px;
   }
-  .loader-pct{font-family:var(--mono); font-size:12px; color:var(--text-dim);}
-  .loader-log{
-    position:absolute; bottom:36px; left:50%; transform:translateX(-50%);
-    font-family:var(--mono); font-size:11px; color:var(--text-faint); white-space:nowrap;
+  .login-glyph .dot{width:8px; height:8px; border-radius:50%; background:var(--green); box-shadow:0 0 8px var(--green);}
+  .login-sub{font-family:var(--mono); font-size:12px; color:var(--text-faint); margin-bottom:26px;}
+  .login-field{margin-bottom:16px;}
+  .login-field label{
+    display:block; font-family:var(--mono); font-size:11px; color:var(--text-dim);
+    text-transform:uppercase; letter-spacing:.08em; margin-bottom:7px;
   }
+  .login-field input{
+    width:100%; background:var(--bg); border:1px solid var(--border); border-radius:8px;
+    padding:11px 13px; color:var(--text); font-family:var(--mono); font-size:14px;
+  }
+  .login-field input:focus{outline:none; border-color:var(--magenta);}
+  .login-btn{
+    width:100%; margin-top:8px; padding:13px; border-radius:8px; border:none;
+    background:var(--magenta); color:#0b0b12; font-family:var(--mono); font-weight:700;
+    font-size:14px; cursor:pointer; transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .login-btn:hover{transform:translateY(-2px); box-shadow:0 8px 24px rgba(230,25,184,.35);}
+  .login-skip{
+    display:block; text-align:center; margin-top:16px; font-family:var(--mono);
+    font-size:12px; color:var(--text-faint);
+  }
+  .login-skip:hover{color:var(--text-dim);}
+  .login-status{font-family:var(--mono); font-size:11px; color:var(--green); margin-top:14px; min-height:14px;}
 
+  /* ── Nav ── */
   nav{
     position:sticky; top:0; z-index:50;
     background:rgba(11,11,18,.82); backdrop-filter:blur(10px);
@@ -77,14 +105,15 @@
   .brand{display:flex; align-items:center; gap:10px; font-family:var(--mono); font-weight:700; letter-spacing:.02em;}
   .brand .dot{width:9px; height:9px; border-radius:50%; background:var(--green); box-shadow:0 0 8px var(--green); animation:pulse 2s infinite;}
   @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
-  .navlinks{display:none; gap:24px; font-size:13px; color:var(--text-dim);}
+  .navlinks{display:none; gap:22px; font-size:13px; color:var(--text-dim);}
   .navlinks a:hover{color:var(--text);}
-  @media(min-width:820px){.navlinks{display:flex;}}
+  @media(min-width:860px){.navlinks{display:flex;}}
   .nav-cta{
     font-family:var(--mono); font-size:13px; padding:9px 16px; border-radius:8px;
     background:var(--magenta); color:#0b0b12; font-weight:700;
   }
 
+  /* ── Hero ── */
   .hero{padding:72px 0 56px;}
   .eyebrow{
     font-family:var(--mono); font-size:12px; color:var(--magenta);
@@ -94,9 +123,10 @@
   .eyebrow::before{content:"◈"; color:var(--violet);}
   h1{
     font-family:var(--mono); font-weight:800; font-size:clamp(40px,7vw,74px);
-    line-height:.98; letter-spacing:-.02em; margin-bottom:20px;
+    line-height:.98; letter-spacing:-.02em; margin-bottom:10px;
   }
   h1 .accent{color:var(--magenta);}
+  .hero-tag{font-family:var(--mono); font-size:13px; color:var(--text-faint); letter-spacing:.08em; text-transform:uppercase; margin-bottom:22px;}
   .hero-sub{color:var(--text-dim); font-size:17px; max-width:520px; margin-bottom:32px;}
   .hero-actions{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:56px;}
   .btn{
@@ -113,19 +143,13 @@
     background:var(--surface); border:1px solid var(--border); border-radius:12px;
     overflow:hidden; box-shadow:0 30px 80px -30px rgba(230,25,184,.25), 0 0 0 1px rgba(255,255,255,.02);
   }
-  .term-bar{
-    display:flex; align-items:center; gap:8px; padding:12px 16px;
-    background:var(--surface-2); border-bottom:1px solid var(--border);
-  }
+  .term-bar{display:flex; align-items:center; gap:8px; padding:12px 16px; background:var(--surface-2); border-bottom:1px solid var(--border);}
   .term-dot{width:11px; height:11px; border-radius:50%;}
   .term-bar span:nth-child(1){background:#ff5f57;}
   .term-bar span:nth-child(2){background:#febc2e;}
   .term-bar span:nth-child(3){background:#28c840;}
   .term-title{margin-left:8px; font-family:var(--mono); font-size:12px; color:var(--text-faint);}
-  .term-body{
-    padding:22px 20px; font-family:var(--mono); font-size:13px; line-height:1.7;
-    min-height:210px; color:#c9c0dd; white-space:pre-wrap; word-break:break-word;
-  }
+  .term-body{padding:22px 20px; font-family:var(--mono); font-size:13px; line-height:1.7; min-height:190px; color:#c9c0dd; white-space:pre-wrap; word-break:break-word;}
   .term-body .magenta{color:var(--magenta);}
   .term-body .violet{color:var(--violet);}
   .term-body .green{color:var(--green);}
@@ -140,38 +164,42 @@
   }
   @media(min-width:640px){.stats{grid-template-columns:repeat(4,1fr);}}
   .stat{background:var(--surface); padding:22px 18px;}
-  .stat b{display:block; font-family:var(--mono); font-size:28px; color:var(--magenta);}
-  .stat span{font-size:12px; color:var(--text-dim); text-transform:uppercase; letter-spacing:.06em;}
+  .stat b{display:block; font-family:var(--mono); font-size:26px; color:var(--magenta);}
+  .stat span{font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:.06em;}
 
-  section{padding:88px 0;}
-  .sec-head{margin-bottom:44px; max-width:600px;}
+  section{padding:84px 0;}
+  .sec-head{margin-bottom:40px; max-width:640px;}
   .sec-eyebrow{font-family:var(--mono); font-size:12px; color:var(--violet); letter-spacing:.14em; text-transform:uppercase; margin-bottom:10px;}
-  .sec-title{font-family:var(--mono); font-size:clamp(26px,4vw,38px); font-weight:800; letter-spacing:-.01em;}
+  .sec-title{font-family:var(--mono); font-size:clamp(24px,4vw,36px); font-weight:800; letter-spacing:-.01em;}
   .sec-desc{color:var(--text-dim); margin-top:14px; font-size:15px;}
   .divider{height:1px; background:linear-gradient(90deg, transparent, var(--border), transparent);}
   code.k{font-family:var(--mono); color:var(--green);}
 
   .grid-features{display:grid; grid-template-columns:1fr; gap:1px; background:var(--border); border:1px solid var(--border); border-radius:12px; overflow:hidden;}
   @media(min-width:700px){.grid-features{grid-template-columns:repeat(2,1fr);}}
-  .feature{background:var(--surface); padding:26px 24px;}
-  .feature .icon{font-size:20px; margin-bottom:12px;}
-  .feature h3{font-family:var(--mono); font-size:15px; margin-bottom:8px;}
-  .feature p{color:var(--text-dim); font-size:14px;}
+  .feature{background:var(--surface); padding:24px 22px;}
+  .feature .icon{font-size:19px; margin-bottom:10px;}
+  .feature h3{font-family:var(--mono); font-size:14px; margin-bottom:7px;}
+  .feature p{color:var(--text-dim); font-size:13px;}
 
-  .cmd-tabs{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:26px;}
+  /* ── Comandos ── */
+  .cmd-tabs{display:flex; gap:7px; flex-wrap:wrap; margin-bottom:16px;}
   .cmd-tab{
-    font-family:var(--mono); font-size:12px; padding:7px 13px; border-radius:20px;
+    font-family:var(--mono); font-size:11.5px; padding:7px 12px; border-radius:20px;
     border:1px solid var(--border); color:var(--text-dim); cursor:pointer; background:transparent;
-    transition:all .15s ease;
+    transition:all .15s ease; white-space:nowrap;
   }
   .cmd-tab.active{background:var(--magenta); border-color:var(--magenta); color:#0b0b12; font-weight:700;}
-  .cmd-list{display:grid; gap:10px;}
+  .cmd-count{font-family:var(--mono); font-size:12px; color:var(--text-faint); margin-bottom:18px;}
+  .cmd-list{display:grid; gap:8px; max-height:560px; overflow-y:auto; padding-right:4px;}
+  .cmd-list::-webkit-scrollbar{width:6px;}
+  .cmd-list::-webkit-scrollbar-thumb{background:var(--border); border-radius:3px;}
   .cmd-row{
     display:flex; justify-content:space-between; align-items:center; gap:16px;
-    background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:14px 18px;
+    background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:12px 16px;
   }
-  .cmd-row code{font-family:var(--mono); color:var(--green); font-size:13px; white-space:nowrap;}
-  .cmd-row p{color:var(--text-dim); font-size:13px; text-align:right;}
+  .cmd-row code{font-family:var(--mono); color:var(--green); font-size:12.5px; white-space:nowrap;}
+  .cmd-row p{color:var(--text-dim); font-size:12.5px; text-align:right;}
 
   .grid-plans{display:grid; grid-template-columns:1fr; gap:16px;}
   @media(min-width:700px){.grid-plans{grid-template-columns:repeat(4,1fr);}}
@@ -181,7 +209,8 @@
   .plan h3{font-family:var(--mono); font-size:15px; letter-spacing:.04em; margin-bottom:10px;}
   .plan p{color:var(--text-dim); font-size:13px;}
 
-  .rank-tabs{display:flex; gap:8px; margin-bottom:22px;}
+  /* ── Rankings ── */
+  .rank-tabs{display:flex; gap:8px; margin-bottom:22px; flex-wrap:wrap;}
   .rank-tab{
     font-family:var(--mono); font-size:12px; padding:8px 16px; border-radius:8px;
     border:1px solid var(--border); color:var(--text-dim); cursor:pointer; background:var(--surface);
@@ -199,11 +228,17 @@
 
   .steps{display:grid; grid-template-columns:1fr; gap:1px; background:var(--border); border:1px solid var(--border); border-radius:12px; overflow:hidden;}
   @media(min-width:760px){.steps{grid-template-columns:repeat(4,1fr);}}
-  .step{background:var(--surface); padding:24px 20px;}
+  .step{background:var(--surface); padding:22px 20px;}
   .step .n{font-family:var(--mono); color:var(--violet); font-size:12px; margin-bottom:10px;}
   .step h4{font-family:var(--mono); font-size:14px; margin-bottom:8px;}
   .step p{color:var(--text-dim); font-size:13px;}
+  .subbot-limits{display:grid; grid-template-columns:1fr; gap:1px; background:var(--border); border:1px solid var(--border); border-radius:12px; overflow:hidden; margin-bottom:32px;}
+  @media(min-width:700px){.subbot-limits{grid-template-columns:repeat(5,1fr);}}
+  .limit-card{background:var(--surface); padding:18px; text-align:center;}
+  .limit-card b{display:block; font-family:var(--mono); font-size:22px; color:var(--magenta);}
+  .limit-card span{font-size:11px; color:var(--text-dim); text-transform:uppercase; letter-spacing:.04em;}
 
+  /* ── Contacto ── */
   .team-grid{display:grid; grid-template-columns:1fr; gap:1px; background:var(--border); border:1px solid var(--border); border-radius:12px; overflow:hidden;}
   @media(min-width:700px){.team-grid{grid-template-columns:repeat(3,1fr);}}
   .team-cat{background:var(--surface); padding:24px 22px;}
@@ -225,11 +260,28 @@
 </head>
 <body class="locked">
 
-<div id="loader">
-  <div class="loader-glyph">YUTA_BOT</div>
-  <div class="loader-bar-track"><div class="loader-bar-fill" id="loaderFill"></div></div>
-  <div class="loader-pct" id="loaderPct">0%</div>
-  <div class="loader-log" id="loaderLog">iniciando...</div>
+<div id="loginGate">
+  <div class="login-card">
+    <div class="login-bar">
+      <span></span><span></span><span></span>
+      <b>auth@arcadiacorps</b>
+    </div>
+    <div class="login-body">
+      <div class="login-glyph"><span class="dot"></span> YUTA_BOT</div>
+      <div class="login-sub">Inicia sesión para entrar al sitio</div>
+      <div class="login-field">
+        <label>Usuario</label>
+        <input type="text" id="loginUser" placeholder="tu_usuario" autocomplete="off" />
+      </div>
+      <div class="login-field">
+        <label>Contraseña</label>
+        <input type="password" id="loginPass" placeholder="••••••••" />
+      </div>
+      <button class="login-btn" id="loginBtn">$ Iniciar sesión</button>
+      <div class="login-status" id="loginStatus"></div>
+      <a href="#" class="login-skip" id="loginSkip">continuar como invitado →</a>
+    </div>
+  </div>
 </div>
 
 <nav>
@@ -251,10 +303,11 @@
   <div class="wrap">
     <div class="eyebrow">whatsapp bot · arcadiacorps</div>
     <h1>YUTA<span class="accent">_</span>BOT</h1>
-    <p class="hero-sub">Un solo número, todo lo que tu grupo necesita: economía, gacha, descargas, IA y administración — corriendo 24/7 desde su propio servidor.</p>
+    <div class="hero-tag">EL BOT DE WHATSAPP MÁS COMPLETO</div>
+    <p class="hero-sub">Un solo número, todo lo que tu grupo necesita: economía, casino, gacha, descargas, IA y administración — corriendo 24/7 desde su propio servidor.</p>
     <div class="hero-actions">
-      <a class="btn btn-primary" href="https://whatsapp.com/channel/0029VbADsUx6LwHo4wdirM0v">⚡ Unirse al grupo</a>
-      <a class="btn btn-ghost" href="https://whatsapp.com/channel/0029VbADsUx6LwHo4wdirM0v">📢 Canal oficial</a>
+      <a class="btn btn-primary" href="https://whatsapp.com/channel/0029VbADsUx6LwHo4wdirM0v">⚡ Unirse al Grupo</a>
+      <a class="btn btn-ghost" href="https://whatsapp.com/channel/0029VbADsUx6LwHo4wdirM0v">📢 Canal Oficial</a>
     </div>
 
     <div class="term">
@@ -281,41 +334,22 @@
     <div class="sec-head reveal">
       <div class="sec-eyebrow">// información</div>
       <h2 class="sec-title">¿Qué es Yuta Bot?</h2>
-      <p class="sec-desc">Un bot de WhatsApp multifuncional creado por el equipo de ArcadiaCorps, pensado para comunidades activas que quieren entretenimiento y herramientas útiles en un solo lugar. Agrega el número oficial y envía <code class="k">.menu</code> para empezar.</p>
+      <p class="sec-desc">Yuta Bot es un bot de WhatsApp multifuncional creado por el equipo de <b>ArcadiaCorps</b>. Cerca de 300 comandos que cubren economía, casino, gacha, descargas, IA y administración de grupos.</p>
     </div>
 
     <div class="grid-features reveal">
-      <div class="feature">
-        <div class="icon">💰</div>
-        <h3>Economía &amp; Gacha</h3>
-        <p>Trabaja, apuesta y colecciona en un sistema de economía propio con su moneda, casino y gacha de personajes.</p>
-      </div>
-      <div class="feature">
-        <div class="icon">⬇️</div>
-        <h3>Descargas con portada</h3>
-        <p>TikTok, YouTube, Facebook, Instagram, Twitter y más — con miniatura y selector de calidad.</p>
-      </div>
-      <div class="feature">
-        <div class="icon">🤖</div>
-        <h3>IA integrada</h3>
-        <p>Consulta modelos de inteligencia artificial directo desde el chat, sin salir de WhatsApp.</p>
-      </div>
-      <div class="feature">
-        <div class="icon">🛡️</div>
-        <h3>Administración de grupo</h3>
-        <p>Antilink, antidelete, antivista-única y auto-admin para mantener tu comunidad bajo control.</p>
-      </div>
-      <div class="feature">
-        <div class="icon">🖼️</div>
-        <h3>Stickers</h3>
-        <p>Crea stickers animados y personalizados en segundos, con tu propio pack y autor.</p>
-      </div>
-      <div class="feature">
-        <div class="icon">🔌</div>
-        <h3>Sub-bots</h3>
-        <p>Vincula tu propio número como sub-bot y responde los mismos comandos desde tu cuenta.</p>
-      </div>
+      <div class="feature"><div class="icon">💰</div><h3>Economía completa</h3><p>Trabajo, empleos, crimen y minería con la moneda propia Yuka's Coins.</p></div>
+      <div class="feature"><div class="icon">🎰</div><h3>Yuka'sino</h3><p>Tragamonedas, ruleta, blackjack y más de 20 juegos de casino.</p></div>
+      <div class="feature"><div class="icon">🎴</div><h3>Gacha de personajes</h3><p>Tira, reclama y colecciona waifus/husbandos con rarezas.</p></div>
+      <div class="feature"><div class="icon">⬇️</div><h3>Descargas con portada</h3><p>TikTok, YouTube, Facebook, Instagram, Twitter y más.</p></div>
+      <div class="feature"><div class="icon">🤖</div><h3>IAs integradas</h3><p>Gemini, Claude AI y otros modelos directo desde el chat.</p></div>
+      <div class="feature"><div class="icon">🛡️</div><h3>Administración de grupo</h3><p>Antilink, antidelete, antivista-única y auto-admin.</p></div>
+      <div class="feature"><div class="icon">🖼️</div><h3>Stickers</h3><p>Crea stickers animados y personalizados en segundos.</p></div>
+      <div class="feature"><div class="icon">🔌</div><h3>Sub-bots</h3><p>Vincula tu número y responde los mismos comandos.</p></div>
     </div>
+
+    <p class="sec-desc reveal" style="margin-top:28px;">◈ Número oficial — agrega este número y envía <code class="k">.menu</code> para comenzar.</p>
+    <a class="btn btn-primary reveal" style="margin-top:14px;" href="https://wa.me/51986121294">💬 Escribir al Bot</a>
   </div>
 </section>
 
@@ -325,11 +359,12 @@
   <div class="wrap">
     <div class="sec-head reveal">
       <div class="sec-eyebrow">// comandos</div>
-      <h2 class="sec-title">Todo con el prefijo <span style="color:var(--green)">.</span></h2>
-      <p class="sec-desc">Una muestra por categoría. La lista completa vive dentro del bot: envía <code class="k">.menu</code>.</p>
+      <h2 class="sec-title">Lista de Comandos</h2>
+      <p class="sec-desc">Todos con el prefijo <code class="k">.</code> — lista completa, extraída directo del código del bot.</p>
     </div>
 
     <div class="cmd-tabs reveal" id="cmdTabs"></div>
+    <p class="cmd-count reveal" id="cmdCount"></p>
     <div class="cmd-list reveal" id="cmdList"></div>
   </div>
 </section>
@@ -340,14 +375,14 @@
   <div class="wrap">
     <div class="sec-head reveal">
       <div class="sec-eyebrow">// planes</div>
-      <h2 class="sec-title">Planes premium</h2>
-      <p class="sec-desc">Escribe <code class="k">.adqpremium</code> al bot o contacta a Zemo para adquirir uno.</p>
+      <h2 class="sec-title">Planes Premium</h2>
+      <p class="sec-desc">Escribe <code class="k">.adqpremium</code> al bot o contacta a Zemo para adquirir un plan.</p>
     </div>
     <div class="grid-plans reveal">
-      <div class="plan"><div class="emoji">🥈</div><h3>PLATA</h3><p>Comandos básicos premium, sin límite diario en los estándar.</p></div>
+      <div class="plan"><div class="emoji">🥈</div><h3>PLATA</h3><p>Acceso a comandos básicos premium. Sin límite diario en comandos estándar.</p></div>
       <div class="plan"><div class="emoji">🥇</div><h3>DORADO</h3><p>Todo Plata + comandos avanzados, stickers y descargas ilimitadas.</p></div>
-      <div class="plan hi"><div class="emoji">👑</div><h3>KING</h3><p>Acceso total, prioridad de soporte y 2 sub-bots.</p></div>
-      <div class="plan"><div class="emoji">🔱</div><h3>DIOS</h3><p>El plan máximo. Ilimitado en todo, 4 sub-bots y beneficios exclusivos.</p></div>
+      <div class="plan hi"><div class="emoji">👑</div><h3>KING</h3><p>Acceso total a todas las funciones, prioridad de soporte y 2 sub-bots.</p></div>
+      <div class="plan"><div class="emoji">🔱</div><h3>DIOS</h3><p>El plan máximo. Acceso ilimitado y beneficios exclusivos únicos.</p></div>
     </div>
   </div>
 </section>
@@ -358,15 +393,15 @@
   <div class="wrap">
     <div class="sec-head reveal">
       <div class="sec-eyebrow">// rankings</div>
-      <h2 class="sec-title">Top jugadores</h2>
+      <h2 class="sec-title">Top Jugadores</h2>
       <p class="sec-desc">Ranking en vivo dentro del bot: <code class="k">.topcoins</code> · <code class="k">.topwallet</code></p>
     </div>
     <div class="rank-tabs reveal">
       <button class="rank-tab active" data-r="coins">🪙 Yuka's Coins</button>
-      <button class="rank-tab" data-r="wallet">€ Euros</button>
+      <button class="rank-tab" data-r="wallet">€ Euros (Wallet)</button>
     </div>
     <div class="rank-list reveal" id="rankList"></div>
-    <p class="rank-note">Datos de ejemplo — el ranking real se actualiza en vivo dentro del bot.</p>
+    <p class="rank-note">⚠ Datos de ejemplo — el ranking real se actualiza en vivo dentro del bot.</p>
   </div>
 </section>
 
@@ -376,15 +411,26 @@
   <div class="wrap">
     <div class="sec-head reveal">
       <div class="sec-eyebrow">// sub-bot</div>
-      <h2 class="sec-title">Conecta tu propio Sub-Bot</h2>
-      <p class="sec-desc">Vincula tu número como sub-bot: responderá los mismos comandos que el bot principal, desde tu propia cuenta.</p>
+      <h2 class="sec-title">Conecta tu Sub-Bot</h2>
+      <p class="sec-desc">◈ ¿Qué es un Sub-Bot? Puedes vincular tu propio número de WhatsApp como sub-bot de Yuta. Tu número actuará como bot secundario y responderá todos los comandos igual que el bot principal. El límite depende de tu plan premium.</p>
     </div>
+
+    <p class="sec-eyebrow reveal" style="margin-bottom:14px;">◈ Límites por plan</p>
+    <div class="subbot-limits reveal">
+      <div class="limit-card"><b>1</b><span>Sin plan</span></div>
+      <div class="limit-card"><b>1</b><span>Plata/Dorado</span></div>
+      <div class="limit-card"><b>2</b><span>King</span></div>
+      <div class="limit-card"><b>4</b><span>Dios</span></div>
+      <div class="limit-card"><b>6</b><span>Creador</span></div>
+    </div>
+
     <div class="steps reveal">
-      <div class="step"><div class="n">01</div><h4>Escribe al bot</h4><p><code class="k">.subbot add</code> al bot principal.</p></div>
-      <div class="step"><div class="n">02</div><h4>Recibe el código</h4><p>Te llega un código de vinculación al privado. Válido por 60 segundos.</p></div>
-      <div class="step"><div class="n">03</div><h4>Vincula desde WA</h4><p>Dispositivos vinculados → Vincular con número de teléfono.</p></div>
-      <div class="step"><div class="n">04</div><h4>Listo</h4><p>Tu sub-bot queda activo y responde todos los comandos.</p></div>
+      <div class="step"><div class="n">01</div><h4>Escribe al bot</h4><p>Envía <code class="k">.code [número]</code> al bot principal.</p></div>
+      <div class="step"><div class="n">02</div><h4>Recibe el código</h4><p>El bot te envía un código de vinculación al privado, válido 60 segundos.</p></div>
+      <div class="step"><div class="n">03</div><h4>Vincula desde WA</h4><p>En el número secundario: Dispositivos vinculados → Vincular con número de teléfono.</p></div>
+      <div class="step"><div class="n">04</div><h4>¡Listo!</h4><p>Tu sub-bot está activo y responde todos los comandos de Yuta.</p></div>
     </div>
+    <p class="rank-note" style="margin-top:16px;">¿Problemas al conectar? Contacta al soporte del equipo ArcadiaCorps. El código expira en 60 segundos — si expira, repite el comando.</p>
   </div>
 </section>
 
@@ -411,8 +457,9 @@
       </div>
       <div class="team-cat">
         <h4>Enlaces</h4>
-        <div class="team-member"><span class="role">📢 Canal oficial</span><a href="https://whatsapp.com/channel/0029VbADsUx6LwHo4wdirM0v">abrir →</a></div>
-        <div class="team-member"><span class="role">💬 Escribir al bot</span><a href="https://wa.me/51986121294">chat →</a></div>
+        <div class="team-member"><span class="role">💬 Escribir al Bot</span><a href="https://wa.me/51986121294">abrir →</a></div>
+        <div class="team-member"><span class="role">📢 Canal Oficial</span><a href="https://whatsapp.com/channel/0029VbADsUx6LwHo4wdirM0v">abrir →</a></div>
+        <div class="team-member"><span class="role">👑 Contactar a Zemo</span><a href="https://wa.me/51917611323">chat →</a></div>
       </div>
     </div>
   </div>
@@ -422,41 +469,45 @@
   <div class="wrap">
     <div class="divider" style="margin-bottom:24px;"></div>
     <div class="foot-bottom">
-      <span>© 2026 Yuta Bot — ArcadiaCorps</span>
-      <span>node.js · baileys · v1.0.0</span>
+      <span>© 2026 Yuta Bot — Creado por el equipo de ArcadiaCorps</span>
+      <span>v1.0.0 · Node.js · Baileys</span>
     </div>
   </div>
 </footer>
 
 <script>
-  const loader = document.getElementById('loader');
-  const fill = document.getElementById('loaderFill');
-  const pct = document.getElementById('loaderPct');
-  const log = document.getElementById('loaderLog');
-  const bootMsgs = [
-    'resolviendo dependencias...',
-    'conectando a whatsapp...',
-    'cargando 622 comandos...',
-    'iniciando sesión...',
-    'listo.'
-  ];
-  let p = 0;
-  const loadTimer = setInterval(() => {
-    p += Math.random() * 14 + 6;
-    if (p >= 100) p = 100;
-    fill.style.width = p + '%';
-    pct.textContent = Math.floor(p) + '%';
-    const idx = Math.min(bootMsgs.length - 1, Math.floor((p / 100) * bootMsgs.length));
-    log.textContent = bootMsgs[idx];
-    if (p >= 100) {
-      clearInterval(loadTimer);
-      setTimeout(() => {
-        loader.classList.add('hide');
-        document.body.classList.remove('locked');
-      }, 250);
-    }
-  }, 140);
+  // ── Login gate ──
+  const loginGate = document.getElementById('loginGate');
+  const loginBtn = document.getElementById('loginBtn');
+  const loginUser = document.getElementById('loginUser');
+  const loginPass = document.getElementById('loginPass');
+  const loginStatus = document.getElementById('loginStatus');
+  const loginSkip = document.getElementById('loginSkip');
 
+  function enterSite() {
+    loginGate.classList.add('hide');
+    document.body.classList.remove('locked');
+  }
+
+  loginBtn.addEventListener('click', () => {
+    if (!loginUser.value.trim()) {
+      loginStatus.style.color = 'var(--magenta)';
+      loginStatus.textContent = '✗ Ingresa un usuario';
+      return;
+    }
+    loginBtn.textContent = '$ autenticando...';
+    loginStatus.style.color = 'var(--green)';
+    loginStatus.textContent = '';
+    setTimeout(() => {
+      loginStatus.textContent = '✓ Acceso concedido';
+      setTimeout(enterSite, 400);
+    }, 700);
+  });
+
+  loginPass.addEventListener('keydown', (e) => { if (e.key === 'Enter') loginBtn.click(); });
+  loginSkip.addEventListener('click', (e) => { e.preventDefault(); enterSite(); });
+
+  // ── Terminal boot sequence (hero) ──
   const lines = [
     { t: '$ node index.js', c: '' },
     { t: '', c: '' },
@@ -464,7 +515,7 @@
     { t: '', c: '' },
     { t: 'v1.0.0  |  prefijo: .', c: 'dim' },
     { t: '', c: '' },
-    { t: '[HANDLER] 622 comandos cargados.', c: '' },
+    { t: '[HANDLER] 279 comandos cargados.', c: '' },
     { t: '[BOT] Usando Baileys v2.3000', c: 'violet' },
     { t: '[BOT] ✅ Conectado como: Yuta Bot [ArcadiaCorps]', c: 'green' },
     { t: '[BOT] 🤖 Yuta Bot está listo y escuchando...', c: 'green' },
@@ -497,11 +548,12 @@
     }
     typeChar();
   }
-  setTimeout(typeLine, 900);
+  typeLine();
 
+  // ── Contador de comandos animado ──
   const statCmds = document.getElementById('statCmds');
   let n = 0;
-  const target = 622;
+  const target = 279;
   const step = Math.ceil(target / 40);
   const counter = setInterval(() => {
     n += step;
@@ -509,55 +561,339 @@
     statCmds.textContent = n;
   }, 30);
 
+  // ── Comandos reales, extraídos del código del bot ──
   const commandData = {
-    'Básicos': [
-      ['.menu', 'Muestra el menú principal con botones'],
-      ['.perfil', 'Ver o editar tu perfil'],
-      ['.ping', 'Latencia y tiempo activo del bot'],
-    ],
-    'Economía': [
-      ['.work', 'Trabaja para ganar Coins'],
-      ['.crime', 'Roba para ganar (con riesgo)'],
-      ['.casino', 'Apuesta tus Coins'],
-    ],
-    'Gacha': [
-      ['.gacha', 'Tira la ruleta de personajes'],
-      ['.coleccion', 'Ver tu colección'],
-    ],
-    'Descargas': [
-      ['.ytmp4', 'Descarga video de YouTube'],
-      ['.tiktok', 'Descarga video de TikTok'],
-      ['.spotify', 'Busca una canción y su link'],
-    ],
-    'Grupo': [
-      ['.antilink', 'Bloquea links en el grupo'],
-      ['.antidel', 'Reenvía mensajes borrados'],
-      ['.antione', 'Reenvía fotos de vista única'],
-    ],
-    'IA': [
-      ['.ia', 'Chatea con inteligencia artificial'],
-      ['.imagine', 'Genera una imagen con IA'],
-    ],
-    'Sub-bot': [
-      ['.subbot add', 'Vincula tu número como sub-bot'],
-      ['.subbot list', 'Ver tus sub-bots activos'],
-    ],
-  };
+  "Básicos": [
+    ["reg", "Regístrate en el bot: .reg nombre.edad"],
+    ["perfil", "Muestra o personaliza tu perfil"],
+    ["saldo", "Muestra tu saldo de Yuka's Coins"],
+    ["topcoins", "Top 10 usuarios con más Yuka's Coins"],
+    ["ping", "Verifica que el bot esté activo"],
+    ["menu", "Muestra el menú de comandos (botones)"],
+    ["menucompleto", "Muestra el menú de comandos (texto completo)"],
+    ["menuadm", "Muestra los comandos de administración de grupo"],
+    ["menuherramientas", "Muestra los comandos de herramientas y utilidades"],
+    ["menudiversion", "Muestra los minijuegos y comandos de diversión"],
+    ["menuowner", "Muestra los comandos exclusivos del owner"],
+    ["menueconomia", "Muestra los comandos de economía"],
+    ["menugacha", "Muestra los comandos de gacha y colección de personajes"],
+    ["menudescargas", "Muestra los comandos de descarga de archivos"],
+    ["menuia", "Muestra los comandos de inteligencia artificial"],
+    ["menusticker", "Muestra los comandos para creación de stickers"],
+    ["web", "Muestra los links oficiales del bot"],
+    ["owner", "Muestra los contactos de los owners y soporte del bot"],
+    ["menusub", "Muestra los comandos del sistema de Sub-Bots"],
+  ],
+  "Casino 🎰": [
+    ["yukasino", "Muestra todos los juegos del Yuka'sino"],
+    ["casinodiario", "Reclama 200£ gratis cada 24 horas"],
+    ["tragamonedas", "Tragamonedas de 3 rodillos"],
+    ["blackjack", "Juega Blackjack (21) contra la casa"],
+    ["hit", "Pide una carta en tu partida de Blackjack"],
+    ["stand", "Plántate y deja jugar al dealer"],
+    ["doblar", "Dobla tu apuesta en Blackjack (solo en tu primera jugada)"],
+    ["dados", "Tira dos dados: alto, bajo o siete"],
+    ["ruletacasino", "Ruleta europea (0-36) con Yuka's Coins"],
+    ["poker", "Video Póker (Jacks or Better)"],
+    ["cambiar", "Cambia cartas en tu partida de Video Póker"],
+    ["coinflip", "Cara o cruz con tus Yuka's Coins"],
+    ["minas", "Destapa casillas evitando las bombas"],
+    ["destapar", "Destapa una casilla en tu partida de Minas"],
+    ["torrecasino", "Sube pisos evitando la trampa"],
+    ["subir", "Sube un piso en tu partida de Torre"],
+    ["crash", "El multiplicador sube, retírate antes de que explote"],
+    ["cobrar", "Cobra tu partida activa de Crash, Minas o Torre"],
+    ["rasca", "Rasca y gana instantáneo"],
+    ["carreras", "Apuesta a un caballo ganador (1-5)"],
+    ["rueda", "Rueda de la fortuna con multiplicadores"],
+    ["ruedadoble", "Rueda grande con casilla de Jackpot"],
+    ["baccarat", "Baccarat: jugador, banca o empate"],
+    ["guerra", "Guerra de cartas: la más alta gana"],
+    ["dragontiger", "Dragon Tiger: una carta cada uno"],
+    ["keno", "Elige hasta 6 números (1-40) y compara con el sorteo"],
+    ["plinko", "Deja caer la ficha y mira dónde cae"],
+    ["jackpot", "Ver el jackpot progresivo actual"],
+    ["casinotop", "Top de jugadores del Yuka'sino"],
+  ],
+  "Descargas 📥": [
+    ["tiktok", "Descarga un video de TikTok"],
+    ["ttimg", "Descarga las fotos de un post de TikTok"],
+    ["ttmp3", "Descarga el audio de un video de TikTok"],
+    ["spotify", "Busca canciones en Spotify y muestra el link oficial"],
+    ["tts", "Busca videos en TikTok"],
+    ["ytbuscar", "Busca videos en YouTube"],
+    ["yts", "Busca en YouTube y muestra un menú con varios resultados (audio/video)"],
+    ["ytspick", "Entrega el audio/video elegido desde el menú de .yts"],
+    ["ytmp3", "Busca en YouTube y muestra un menú combinado de audio y video"],
+    ["playget", "Entrega el audio de YouTube en el formato elegido"],
+    ["ytmp4", "Descarga video de YouTube (nombre o url), elige calidad"],
+    ["ytget", "Entrega el video de YouTube en la calidad elegida"],
+    ["fb", "Descarga un video de Facebook"],
+    ["ig", "Descarga contenido de Instagram"],
+    ["twitter", "Descarga un video o foto de Twitter/X"],
+    ["hitube", "Descarga de Facebook, Instagram, TikTok, X/Twitter o Pinterest (multi-API)"],
+    ["mediafire", "Descarga un archivo de MediaFire"],
+    ["mega", "Descarga un archivo de Mega.nz"],
+    ["terabox", "Descarga un archivo de Terabox"],
+    ["apk", "Descarga un APK moddeado por nombre"],
+    ["gitclone", "Descarga un repositorio de GitHub en .zip"],
+    ["npmdl", "Descarga el tarball de un paquete de NPM"],
+    ["animelinks", "Links de descarga de un episodio de anime"],
+    ["pinterest", "Busca imágenes en Pinterest o descarga por URL"],
+  ],
+  "Diversión 🎲": [
+    ["ahorcado", "Juega al ahorcado"],
+    ["adivina", "Adivina el número secreto"],
+    ["suitpvp", "Reta a un usuario a una batalla PvP"],
+    ["voa", "Juega verdad o reto"],
+    ["dado", "Tira un dado virtual"],
+    ["moneda", "Lanza una moneda: cara o sello"],
+    ["8ball", "Pregúntale a la bola mágica"],
+    ["insulto", "Genera un insulto creativo"],
+    ["ttt", "Juega TicTacToe contra otro usuario. Uso: .ttt sala <nombre>"],
+    ["movie", "Adivina la película por sus emojis"],
+    ["cancion", "Adivina la canción por sus emojis"],
+    ["trivia", "Responde preguntas de trivia y gana coins"],
+    ["ppt", "Reta a alguien a Piedra, Papel o Tijera. Uso: .ppt @usuario"],
+    ["piedra", "Elige piedra en un reto de Piedra, Papel o Tijera activo"],
+    ["papel", "Elige papel en un reto de Piedra, Papel o Tijera activo"],
+    ["tijera", "Elige tijera en un reto de Piedra, Papel o Tijera activo"],
+    ["anime", "Adivina el anime por su descripción"],
+    ["personaje", "Adivina el personaje de anime por su descripción"],
+  ],
+  "Economía 💰": [
+    ["trabajo", "Elige o cambia tu empleo"],
+    ["w", "Trabaja para ganar Euros"],
+    ["slut", "Trabaja como prostituta y gana Euros"],
+    ["crime", "Trabaja como ladrón para ganar Euros"],
+    ["cf", "Apuesta tus Euros a cara o cruz"],
+    ["ruleta", "Apuesta Euros al color rojo o negro"],
+    ["casino", "Apuesta tus Euros en el casino"],
+    ["slot", "Apuesta tus Euros en la tragamonedas"],
+    ["cartera", "Ver tus Euros en la cartera"],
+    ["banco", "Ver tus Euros en el banco"],
+    ["deposit", "Deposita tus Euros al banco"],
+    ["with", "Retira tus Euros del banco"],
+    ["transfer", "Transfiere Euros o XP a otros usuarios"],
+    ["miming", "Trabaja como minero y recolecta recursos"],
+    ["buyall", "Compra Euros con tu XP"],
+    ["daily", "Reclama tu recompensa diaria"],
+    ["weekly", "Reclama tu regalo semanal"],
+    ["monthly", "Reclama tu recompensa mensual"],
+    ["cofre", "Reclama un cofre diario lleno de recursos"],
+    ["interes", "Cobra intereses diarios por ahorrar en el banco"],
+    ["premiumbonus", "Bonus exclusivo para usuarios premium cada 8h"],
+    ["premiumpack", "Pack diario premium con monedas y EXP"],
+    ["steal", "Intenta robarle Euros a alguien"],
+    ["robarxp", "Intenta robar XP a un usuario"],
+    ["eboard", "Ver el ranking de usuarios con más Euros"],
+    ["aventura", "Aventúrate en un nuevo reino y recolecta recursos"],
+    ["mazmorra", "Explorar mazmorras para ganar Euros"],
+    ["curar", "Cura tu salud para volverte aventurero"],
+    ["inv", "Ver tu inventario con todos tus ítems"],
+    ["halloween", "Reclama tu dulce o truco (Solo en Halloween)"],
+    ["christmas", "Reclama tu regalo navideño (Solo en Navidad)"],
+  ],
+  "Gacha 🎴": [
+    ["roll", "Waifu o husbando aleatorio"],
+    ["claim", "Reclamar un personaje"],
+    ["setclaim", "Modificar el mensaje al reclamar un personaje"],
+    ["delclaimmsg", "Restablecer el mensaje al reclamar un personaje"],
+    ["harem", "Ver tus personajes reclamados"],
+    ["sell", "Poner un personaje a la venta"],
+    ["removerwaifu", "Eliminar un personaje en venta"],
+    ["buycharacter", "Comprar un personaje en venta"],
+    ["charimage", "Ver una imagen aleatoria de un personaje"],
+    ["charinfo", "Ver información de un personaje"],
+    ["serieinfo", "Ver todos los personajes de una serie"],
+    ["setfav", "Poner de favorito a un personaje"],
+    ["favoritetop", "Ver el top de personajes favoritos del sistema"],
+    ["givechar", "Regalar un personaje a otro usuario"],
+    ["giveallharem", "Regalar todos tus personajes a otro usuario"],
+    ["trade", "Intercambiar personajes de forma segura entre usuarios"],
+    ["robwaifu", "Intenta robar un personaje del harem de otro usuario"],
+    ["comprarproteccion", "Compra protección para tus personajes del harem"],
+    ["renovarproteccion", "Renueva la protección activa de tus personajes"],
+    ["vote", "Votar por un personaje para subir su valor"],
+    ["waifusboard", "Ver el top de personajes con mayor valor"],
+    ["infogacha", "Ver tu información personal del gacha"],
+    ["delwaifu", "Eliminar un personaje reclamado"],
+  ],
+  "Grupo 🛡️": [
+    ["everyone", "Menciona a todos en el grupo [ADMIN]"],
+    ["kick", "Expulsa a un usuario del grupo [ADMIN]"],
+    ["promote", "Da admin a un usuario [ADMIN]"],
+    ["demote", "Quita admin a un usuario [ADMIN]"],
+    ["abrirgrupo", "Abre el grupo para que todos escriban [ADMIN]"],
+    ["cerrargrupo", "Cierra el grupo, solo admins escriben [ADMIN]"],
+    ["del", "Elimina un mensaje citado [ADMIN]"],
+    ["antilink", "Activa/desactiva el antilink: .antilink on/off [ADMIN]"],
+    ["antidel", "Reenvía los mensajes que borren en el grupo: .antidel on/off [ADMIN]"],
+    ["antione", "Reenvía fotos/videos de vista única antes de que se destruyan: .antione on/off [ADMIN]"],
+    ["groupinfo", "Muestra información del grupo"],
+    ["warn", "Da una advertencia a un usuario, a la 3ra lo expulsa [ADMIN]"],
+    ["delwarn", "Elimina las advertencias de un usuario [ADMIN]"],
+    ["welcome", "Activa/desactiva el mensaje de bienvenida [ADMIN]"],
+    ["bye", "Activa/desactiva el mensaje de despedida [ADMIN]"],
+    ["setwelcome", "Configura un mensaje personalizado de bienvenida [ADMIN]"],
+    ["setbye", "Configura un mensaje personalizado de despedida [ADMIN]"],
+    ["delwelcome", "Elimina el mensaje de bienvenida personalizado (vuelve al de por defecto) [ADMIN]"],
+    ["delbye", "Elimina el mensaje de despedida personalizado (vuelve al de por defecto) [ADMIN]"],
+    ["activos", "Muestra quién estuvo activo en el grupo [ADMIN]"],
+    ["limpiargrupo", "Expulsa a los miembros inactivos del grupo [ADMIN]. Uso: !limpiargrupo [días] [confirmar]"],
+  ],
+  "Herramientas 🛠️": [
+    ["wikipedia", "Busca un artículo en Wikipedia y muestra su resumen"],
+  ],
+  "IA 🤖": [
+    ["bot", "Pregúntale algo a la IA, puedes mencionar a alguien en la pregunta"],
+    ["gemini", "Habla con Gemini"],
+    ["claudeai", "Habla con Claude"],
+    ["gptprompt", "Habla con ChatGPT"],
+    ["copilotai", "Habla con Copilot"],
+    ["qwen", "Habla con Qwen"],
+    ["gpt4", "Habla con GPT-4 (con memoria)"],
+    ["gpt4reset", "Reinicia la memoria de tu sesión GPT-4"],
+    ["nanobanana", "Genera una imagen con IA (Evogb)"],
+    ["generar", "Genera una imagen con IA (Stability AI)"],
+  ],
+  "Owner 👑": [
+    ["setpremium", "Activa o desactiva el premium de un usuario [OWNER]"],
+    ["addcoins", "Da Yuka's Coins a un usuario [OWNER]"],
+    ["delcoins", "Quita Yuka's Coins a un usuario [OWNER]"],
+    ["setcoins", "Fija el saldo exacto de un usuario [OWNER]"],
+    ["block", "Bloquea a un usuario del bot [OWNER]"],
+    ["unblock", "Desbloquea a un usuario del bot [OWNER]"],
+    ["userinfo", "Ver info completa de un usuario [OWNER]"],
+    ["stats", "Estadísticas globales del bot [OWNER]"],
+    ["bc", "Envía un mensaje a todos los chats [OWNER]"],
+    ["reload", "Recarga todos los comandos sin reiniciar [OWNER]"],
+    ["setvip", "Otorga un plan VIP a un usuario [OWNER] — .setvip @u vip3 [dias]"],
+    ["delvip", "Quita el plan VIP a un usuario [OWNER] — .delvip @u"],
+    ["estadovip", "Muestra el plan VIP (suscripción) de un usuario — .estadovip [@u]"],
+    ["autoadm", "El owner se auto-otorga admin del grupo [OWNER]"],
+    ["restart", "Reinicia el proceso del bot [OWNER]"],
+  ],
+  "Reacciones 🎭": [
+    ["kiss", "Besa a alguien — .kiss @usuario"],
+    ["hug", "Abraza — .hug @usuario"],
+    ["pat", "Palmadita — .pat @usuario"],
+    ["cuddle", "Hace mimos — .cuddle @usuario"],
+    ["handhold", "Toma de la mano — .handhold @usuario"],
+    ["wave", "Saluda — .wave @usuario"],
+    ["highfive", "Choca los cinco — .highfive @usuario"],
+    ["wink", "Guiña el ojo — .wink @usuario"],
+    ["feed", "Da de comer — .feed @usuario"],
+    ["poke", "Molesta — .poke @usuario"],
+    ["lick", "Lame — .lick @usuario"],
+    ["stare", "Mira fijamente — .stare @usuario"],
+    ["nom", "Nom nom — .nom @usuario"],
+    ["tickle", "Hace cosquillas — .tickle @usuario"],
+    ["slap", "Bofetada — .slap @usuario"],
+    ["punch", "Golpea — .punch @usuario"],
+    ["patear", "Patea — .patear @usuario"],
+    ["bite", "Muerde — .bite @usuario"],
+    ["shoot", "Dispara — .shoot @usuario"],
+    ["yeet", "Lanza — .yeet @usuario"],
+    ["cry", "Llora"],
+    ["laugh", "Ríe"],
+    ["sleep", "Se queda dormido"],
+    ["dance", "Baila"],
+    ["angry", "Está enojado"],
+    ["happy", "Está feliz"],
+    ["sad", "Está triste"],
+    ["blush", "Se ruboriza"],
+    ["think", "Está pensando"],
+    ["facepalm", "Facepalm"],
+    ["shrug", "Se encoge de hombros"],
+    ["bored", "Está aburrido"],
+    ["nod", "Asiente"],
+    ["nope", "Niega"],
+    ["smug", "Cara de suficiente"],
+    ["thumbsup", "Pulgar arriba"],
+    ["nervous", "Está nervioso"],
+    ["panic", "Está en pánico"],
+    ["pout", "Hace morritos"],
+    ["woah", "Está sorprendido"],
+    ["yawn", "Bosteza"],
+    ["run", "Sale corriendo — .run @usuario"],
+    ["confused", "Está confundido"],
+    ["bath", "Bañarse"],
+    ["bleh", "Sacar la lengua"],
+    ["call", "Llamar a alguien"],
+    ["clap", "Aplaudir"],
+    ["coffee", "Tomar café"],
+    ["cold", "Tener frío"],
+    ["cook", "Cocinar"],
+    ["dramatic", "Modo drama activado"],
+    ["draw", "Dibujar"],
+    ["drunk", "Estar borracho"],
+    ["eat", "Comer algo delicioso"],
+    ["gaming", "Jugar videojuegos"],
+    ["greet", "Saludar a alguien"],
+    ["heat", "Tener calor"],
+    ["impregnate", "Embarazar a alguien"],
+    ["jump", "Saltar"],
+    ["kill", "Matar a alguien"],
+    ["kisscheek", "Beso en la mejilla"],
+    ["lewd", "Hacer algo lascivo"],
+    ["love", "Sentirse enamorado"],
+    ["psycho", "Modo psicópata"],
+    ["push", "Empujar a alguien"],
+    ["scared", "Estar asustado"],
+    ["scream", "Gritar"],
+    ["seduce", "Seducir a alguien"],
+    ["shy", "Sentir timidez"],
+    ["sing", "Cantar"],
+    ["smoke", "Fumar"],
+    ["spit", "Escupir"],
+    ["step", "Pisar a alguien"],
+    ["walk", "Caminar"],
+    ["menureacciones", "Lista todos los comandos de reacción con GIF"],
+  ],
+  "Stickers 🖼️": [
+    ["sticker", "Crea un sticker a partir de una imagen o video"],
+    ["setmeta", "Establece el pack y autor para tus stickers"],
+    ["delmeta", "Elimina tu pack de stickers guardado"],
+    ["pfp", "Obtén la foto de perfil de un usuario"],
+    ["qc", "Crea un sticker de tipo 'quote' con el mensaje citado"],
+    ["toimg", "Convierte un sticker en imagen"],
+    ["brat", "Crea un sticker de texto (brat=estático, attp=animado)"],
+    ["emojimix", "Mezcla 2 emojis para crear un sticker"],
+    ["wm", "Cambia el pack/autor de un sticker existente"],
+  ],
+  "Sub-Bots 🌌": [
+    ["soloprincipal", "Activa/desactiva que solo el bot principal responda en este grupo"],
+    ["subbot", "Menú del sistema de Sub-Bots"],
+    ["code", "Genera un código para vincular un Sub-Bot"],
+    ["subbotlist", "Lista las sesiones de Sub-Bots activas"],
+  ],
+};
+
+  const allFlat = Object.entries(commandData).flatMap(([cat, list]) => list.map(([name, desc]) => ({ cat, name, desc })));
+
   const tabsEl = document.getElementById('cmdTabs');
   const listEl = document.getElementById('cmdList');
+  const countEl = document.getElementById('cmdCount');
+
   function renderCmds(cat) {
+    const items = cat === 'Todos' ? allFlat : allFlat.filter(c => c.cat === cat);
+    countEl.textContent = `Mostrando ${items.length} comando${items.length === 1 ? '' : 's'}`;
     listEl.innerHTML = '';
-    commandData[cat].forEach(([cmd, desc]) => {
+    items.forEach(({ name, desc }) => {
       const row = document.createElement('div');
       row.className = 'cmd-row';
-      row.innerHTML = `<code>${cmd}</code><p>${desc}</p>`;
+      row.innerHTML = `<code>.${name}</code><p>${desc}</p>`;
       listEl.appendChild(row);
     });
   }
-  Object.keys(commandData).forEach((cat, i) => {
+
+  const cats = ['Todos', ...Object.keys(commandData)];
+  cats.forEach((cat, i) => {
     const btn = document.createElement('button');
     btn.className = 'cmd-tab' + (i === 0 ? ' active' : '');
-    btn.textContent = cat;
+    const count = cat === 'Todos' ? allFlat.length : commandData[cat].length;
+    btn.textContent = `${cat} (${count})`;
     btn.onclick = () => {
       document.querySelectorAll('.cmd-tab').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
@@ -565,23 +901,12 @@
     };
     tabsEl.appendChild(btn);
   });
-  renderCmds(Object.keys(commandData)[0]);
+  renderCmds('Todos');
 
+  // ── Rankings (datos de ejemplo, la fuente real vive en el bot) ──
   const rankData = {
-    coins: [
-      ['Zemo', '128,400 🪙'],
-      ['Smith', '94,200 🪙'],
-      ['Andy', '71,050 🪙'],
-      ['Mily', '58,900 🪙'],
-      ['Kiwi', '42,300 🪙'],
-    ],
-    wallet: [
-      ['Zemo', '3,120 €'],
-      ['Andy', '2,480 €'],
-      ['Smith', '1,990 €'],
-      ['Kiwi', '1,340 €'],
-      ['Mily', '980 €'],
-    ],
+    coins: [ ['Zemo','128,400 🪙'], ['Smith','94,200 🪙'], ['Andy','71,050 🪙'], ['Mily','58,900 🪙'], ['Kiwi','42,300 🪙'] ],
+    wallet: [ ['Zemo','3,120 €'], ['Andy','2,480 €'], ['Smith','1,990 €'], ['Kiwi','1,340 €'], ['Mily','980 €'] ],
   };
   const rankList = document.getElementById('rankList');
   function renderRank(key) {
@@ -602,6 +927,7 @@
   });
   renderRank('coins');
 
+  // ── Reveal on scroll ──
   const obs = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); });
   }, { threshold: 0.15 });
