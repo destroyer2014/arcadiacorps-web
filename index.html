@@ -1306,6 +1306,34 @@ section{
 }
 .sc-submit:hover{ transform:translateY(-2px); box-shadow:0 12px 28px rgba(124,92,255,0.35); }
 .sc-hint{ font-family:var(--f-mono); font-size:11px; color:var(--text-dim); margin-top:12px; }
+.sc-submit:disabled{ opacity:0.55; cursor:default; transform:none; box-shadow:none; }
+.sc-result{
+  margin-top:20px; padding:20px; border-radius:12px;
+  background:var(--bg-deep); border:1px solid var(--violet);
+  text-align:center;
+}
+.sc-result-label{
+  font-family:var(--f-mono); font-size:10px; color:var(--text-dim);
+  text-transform:uppercase; letter-spacing:0.1em; margin-bottom:10px;
+}
+.sc-code{
+  font-family:var(--f-display); font-size:26px; letter-spacing:0.12em;
+  color:var(--green); margin-bottom:14px; word-break:break-all;
+}
+.sc-copy{
+  background:var(--panel-2); border:1px solid var(--line); color:var(--text);
+  font-family:var(--f-mono); font-size:11.5px; padding:8px 16px; border-radius:8px; cursor:pointer;
+  margin-bottom:12px;
+}
+.sc-copy:hover{ border-color:var(--violet); }
+.sc-timer{
+  font-family:var(--f-mono); font-size:12px; color:var(--gold); margin-bottom:16px;
+}
+.sc-timer.expired{ color:var(--red); }
+.sc-steps-mini{ text-align:left; font-size:12.5px; color:var(--text-dim); padding-left:18px; }
+.sc-steps-mini li{ margin-bottom:6px; }
+.sc-steps-mini b{ color:var(--text); }
+
 .subbot-connect-side h4{ font-family:var(--f-mono); font-size:14px; color:var(--text); margin-bottom:10px; }
 .subbot-connect-side p{ font-size:13px; color:var(--text-dim); margin-bottom:18px; }
 .sc-chat-link{
@@ -3605,15 +3633,29 @@ canvas#pachinkoCanvas {
       <div class="subbot-connect-form">
         <div class="sc-badge">🔌</div>
         <h3>Conecta tu Sub-Bot ahora</h3>
-        <p class="sc-sub">Escribe tu número y te llevamos directo a WhatsApp con el comando ya listo para enviar.</p>
+        <p class="sc-sub">Escribe tu número y te generamos el código de vinculación aquí mismo, en vivo.</p>
         <form id="subbotConnectForm">
           <div class="sc-field">
             <label>Tu número de WhatsApp</label>
             <input type="tel" id="subbotPhone" placeholder="Ej: 51987654321 (con código de país, sin +)" required />
           </div>
-          <button type="submit" class="sc-submit">⚡ VINCULAR CON WHATSAPP</button>
+          <button type="submit" class="sc-submit" id="subbotSubmitBtn">🔑 OBTENER CÓDIGO</button>
         </form>
-        <p class="sc-hint">Al tocar el botón se abre WhatsApp con el mensaje ya escrito — solo tienes que enviarlo.</p>
+
+        <div class="sc-result" id="subbotResult" style="display:none;">
+          <div class="sc-result-label">TU CÓDIGO DE VINCULACIÓN</div>
+          <div class="sc-code" id="subbotCode">— — — —</div>
+          <button class="sc-copy" id="subbotCopy">📋 Copiar código</button>
+          <div class="sc-timer" id="subbotTimer"></div>
+          <ol class="sc-steps-mini">
+            <li>Abre <b>WhatsApp</b> en tu teléfono.</li>
+            <li>Ve a <b>Ajustes → Dispositivos vinculados</b>.</li>
+            <li>Toca <b>Vincular un dispositivo → Vincular con número de teléfono</b>.</li>
+            <li>Escribe el código de arriba.</li>
+          </ol>
+        </div>
+
+        <p class="sc-hint" id="subbotHint">El código dura 60 segundos una vez generado. Si expira, pide uno nuevo.</p>
       </div>
       <div class="subbot-connect-side">
         <h4>🤖 ¿Prefieres hacerlo por chat?</h4>
@@ -8648,11 +8690,34 @@ canvas#pachinkoCanvas {
 (function(){
   const form = document.getElementById('subbotConnectForm');
   const phoneInput = document.getElementById('subbotPhone');
+  const submitBtn = document.getElementById('subbotSubmitBtn');
+  const resultBox = document.getElementById('subbotResult');
+  const codeEl = document.getElementById('subbotCode');
+  const copyBtn = document.getElementById('subbotCopy');
+  const timerEl = document.getElementById('subbotTimer');
+  const hintEl = document.getElementById('subbotHint');
   if(!form) return;
 
-  const BOT_NUMBER = '51917611323'; // número del bot principal, sin +
+  let countdownInterval = null;
 
-  form.addEventListener('submit', (e)=>{
+  function startCountdown(seconds){
+    clearInterval(countdownInterval);
+    let remaining = seconds;
+    timerEl.classList.remove('expired');
+    timerEl.textContent = `⏱️ Expira en ${remaining}s`;
+    countdownInterval = setInterval(()=>{
+      remaining--;
+      if(remaining <= 0){
+        clearInterval(countdownInterval);
+        timerEl.classList.add('expired');
+        timerEl.textContent = '✗ Código expirado — pide uno nuevo';
+        return;
+      }
+      timerEl.textContent = `⏱️ Expira en ${remaining}s`;
+    }, 1000);
+  }
+
+  form.addEventListener('submit', async (e)=>{
     e.preventDefault();
     const raw = phoneInput.value.trim().replace(/[^0-9]/g, '');
     if(raw.length < 8){
@@ -8661,8 +8726,40 @@ canvas#pachinkoCanvas {
       return;
     }
     phoneInput.style.borderColor = '';
-    const msg = encodeURIComponent(`!subbot add ${raw}`);
-    window.open(`https://wa.me/${BOT_NUMBER}?text=${msg}`, '_blank', 'noopener');
+    submitBtn.disabled = true;
+    submitBtn.textContent = '⏳ Generando código...';
+    resultBox.style.display = 'none';
+    hintEl.textContent = 'Esto puede tardar hasta 20 segundos, no cierres esta pestaña.';
+
+    try{
+      const res = await fetch('/api/subbot/code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phoneNumber: raw }),
+      });
+      const data = await res.json();
+
+      if(!res.ok || !data.ok){
+        hintEl.textContent = '✗ ' + (data.error || 'No se pudo generar el código. Intenta de nuevo.');
+        return;
+      }
+
+      codeEl.textContent = data.code;
+      resultBox.style.display = 'block';
+      hintEl.textContent = 'Sigue los pasos de abajo antes de que expire.';
+      startCountdown(60);
+    }catch(err){
+      hintEl.textContent = '✗ No se pudo conectar con el bot. Intenta de nuevo en un momento.';
+    }finally{
+      submitBtn.disabled = false;
+      submitBtn.textContent = '🔑 OBTENER CÓDIGO';
+    }
+  });
+
+  copyBtn?.addEventListener('click', ()=>{
+    navigator.clipboard?.writeText(codeEl.textContent.trim());
+    copyBtn.textContent = '✓ Copiado';
+    setTimeout(()=>{ copyBtn.textContent = '📋 Copiar código'; }, 1500);
   });
 })();
 </script>
