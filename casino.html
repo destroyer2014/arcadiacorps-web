@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Casino — ArcadiaCorps</title>
+<meta name="description" content="Pragmata Bot: bot de WhatsApp con casino, gacha, economía y más de 300 comandos. Creado por ArcadiaCorps.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+<meta property="og:title" content="Pragmata Bot — ArcadiaCorps">
+<meta property="og:description" content="Bot de WhatsApp con casino, gacha, economía, muro social y más de 300 comandos.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0d0a12">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<section id="casino" class="reveal">
+  <div class="wrap">
+    <span class="eyebrow">Suerte y recompensas</span>
+    <h2 class="section-title">🎰 Casino Pragmata</h2>
+    <p class="section-sub">Prueba tu suerte cada día. Gana Oro, Gemas, Premium o intentos extra. Solo 3 turnos diarios — úsalos bien.</p>
+
+    <div class="casino-header-row">
+      <div><!-- espacio --></div>
+      <div class="casino-attempts">
+        <div>
+          <div class="hearts" id="casinoHearts">❤️ ❤️ ❤️</div>
+          <div class="reset-info" id="casinoResetInfo">Intentos disponibles hoy</div>
+        </div>
+        <!-- Triple clic en este punto oculto resetea intentos (owner only) -->
+        <span id="casinoResetDot" title="" style="cursor:default; user-select:none; opacity:0; width:18px; height:18px; display:inline-block;"></span>
+      </div>
+    </div>
+
+    <div class="casino-tabs">
+      <button class="casino-tab active" data-game="slots">🎰 Tragamonedas</button>
+      <button class="casino-tab" data-game="blackjack">🃏 Blackjack</button>
+      <button class="casino-tab" data-game="dice">🎲 Duelo de Dados</button>
+      <button class="casino-tab" data-game="pachinko">🕹️ Pachinko</button>
+      <button class="casino-tab" data-game="cardpick">🂠 Adivina la Carta</button>
+      <button class="casino-tab" data-game="roulette">🎡 Ruleta Europea</button>
+      <button class="casino-tab" data-game="coinflip">🪙 Cara o Cruz</button>
+      <button class="casino-tab" data-game="hilodice">🎲 High &amp; Low</button>
+      <button class="casino-tab" data-game="hilocards">🃏 Hi-Lo Cartas</button>
+      <button class="casino-tab" data-game="crash">📈 Crash</button>
+      <button class="casino-tab" data-game="mines">💣 Mines</button>
+      <button class="casino-tab" data-game="boss">⚔️ Boss Battle</button>
+    </div>
+
+    <!-- ── TRAGAMONEDAS ── -->
+    <div class="casino-game active" id="game-slots">
+      <div class="game-wrap">
+        <div class="game-title">TRAGAMONEDAS 7️⃣7️⃣7️⃣</div>
+        <div class="game-desc">Haz girar los carretes. Tres iguales = premio. Siete-siete-siete = JACKPOT.</div>
+        <div class="prize-pool">
+          <div class="prize-chip gold">7️⃣7️⃣7️⃣ JACKPOT → Mega Gemas</div>
+          <div class="prize-chip violet">💎💎💎 → 500 Gemas</div>
+          <div class="prize-chip gold">⭐⭐⭐ → 1 semana Premium (raro)</div>
+          <div class="prize-chip green">🍀🍀🍀 → +1 intento</div>
+          <div class="prize-chip green">🍋🍋🍋 → 200 Oro</div>
+          <div class="prize-chip red">Resto → Sin premio</div>
+        </div>
+
+        <div class="slots-machine" id="slotsMachine">
+          <div class="slot-reel" id="reel0"><div class="reel-inner"><span>7️⃣</span></div></div>
+          <div class="slot-reel" id="reel1"><div class="reel-inner"><span>7️⃣</span></div></div>
+          <div class="slot-reel" id="reel2"><div class="reel-inner"><span>7️⃣</span></div></div>
+        </div>
+        <div class="slot-line">Presiona GIRAR para usar 1 intento</div>
+
+        <button class="btn-play" id="slotsBtn">🎰 GIRAR</button>
+        <div class="result-banner" id="slotsResult">
+          <div class="res-title" id="slotsResTitle"></div>
+          <div class="res-prize" id="slotsResPrize"></div>
+          <div class="res-body" id="slotsResBody"></div>
+        </div>
+        <div class="no-attempts-notice" id="slotsNoAttempts">
+          <b>😴 Sin intentos</b>Vuelve mañana o contacta a un Owner para reiniciar.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── BLACKJACK ── -->
+    <div class="casino-game" id="game-blackjack">
+      <div class="game-wrap">
+        <div class="game-title">BLACKJACK — 21</div>
+        <div class="game-desc">Acércate a 21 sin pasarte. La banca se planta en 17. Gana para obtener un premio.</div>
+        <div class="prize-pool">
+          <div class="prize-chip violet">Blackjack natural → Mega Gemas</div>
+          <div class="prize-chip violet">Ganar con 20 → 300 Gemas</div>
+          <div class="prize-chip gold">Ganar → 150 Oro</div>
+          <div class="prize-chip green">Empate → +1 intento</div>
+          <div class="prize-chip red">Perder → Sin premio</div>
+        </div>
+
+        <div class="bj-table">
+          <div class="bj-hand">
+            <div class="bj-hand-label">🏦 Banca <span class="bj-score" id="dealerScore"></span></div>
+            <div class="bj-cards" id="dealerCards"></div>
+          </div>
+          <div class="bj-hand">
+            <div class="bj-hand-label">👤 Tú <span class="bj-score" id="playerScore"></span></div>
+            <div class="bj-cards" id="playerCards"></div>
+          </div>
+        </div>
+
+        <div class="bj-actions">
+          <button class="btn-play" id="bjDealBtn">🃏 REPARTIR</button>
+          <button class="bj-btn" id="bjHitBtn" disabled>PEDIR</button>
+          <button class="bj-btn danger" id="bjStandBtn" disabled>PLANTARSE</button>
+        </div>
+
+        <div class="result-banner" id="bjResult">
+          <div class="res-title" id="bjResTitle"></div>
+          <div class="res-prize" id="bjResPrize"></div>
+          <div class="res-body" id="bjResBody"></div>
+        </div>
+        <div class="no-attempts-notice" id="bjNoAttempts">
+          <b>😴 Sin intentos</b>Vuelve mañana o contacta a un Owner para reiniciar.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── DADOS ── -->
+    <div class="casino-game" id="game-dice">
+      <div class="game-wrap">
+        <div class="game-title">DUELO DE DADOS 🎲</div>
+        <div class="game-desc">Lanza 2 dados contra la banca. Suma más alta gana. Empate: relanzas gratis (sin contar intento).</div>
+        <div class="prize-pool">
+          <div class="prize-chip violet">Doble 6 + ganar → 500 Gemas</div>
+          <div class="prize-chip gold">Ganar por 3+ puntos → Mega Gemas</div>
+          <div class="prize-chip gold">Ganar → 200 Oro</div>
+          <div class="prize-chip green">Empate → +1 intento gratis</div>
+          <div class="prize-chip red">Perder → Sin premio</div>
+        </div>
+
+        <div class="dice-totals" id="diceTotals" style="display:none">
+          <div class="dtotal"><span id="playerTotal">-</span><small>Tú</small></div>
+          <div class="dtotal" style="align-self:center"><span style="font-size:14px;color:var(--text-dim)">VS</span></div>
+          <div class="dtotal"><span id="houseTotal">-</span><small>Banca</small></div>
+        </div>
+
+        <div class="dice-area" id="diceArea">
+          <canvas id="die1" width="72" height="72" class="die-canvas"></canvas>
+          <div class="dice-vs">TÚ</div>
+          <canvas id="die2" width="72" height="72" class="die-canvas"></canvas>
+          <div class="dice-vs" style="font-size:16px">VS</div>
+          <canvas id="die3" width="72" height="72" class="die-canvas"></canvas>
+          <div class="dice-vs">BANCA</div>
+          <canvas id="die4" width="72" height="72" class="die-canvas"></canvas>
+        </div>
+
+        <button class="btn-play" id="diceBtn">🎲 LANZAR</button>
+        <div class="result-banner" id="diceResult">
+          <div class="res-title" id="diceResTitle"></div>
+          <div class="res-prize" id="diceResPrize"></div>
+          <div class="res-body" id="diceResBody"></div>
+        </div>
+        <div class="no-attempts-notice" id="diceNoAttempts">
+          <b>😴 Sin intentos</b>Vuelve mañana o contacta a un Owner para reiniciar.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PACHINKO ── -->
+    <div class="casino-game" id="game-pachinko">
+      <div class="game-wrap">
+        <div class="game-title">PACHINKO — PALANCA Y CUBETAS</div>
+        <div class="game-desc">Jala la palanca. La bola rebota entre los clavos y cae en una cubeta. Premio según la cubeta donde aterrice.</div>
+        <div class="prize-pool">
+          <div class="prize-chip gold">🏆 JACKPOT → Mega Gemas</div>
+          <div class="prize-chip violet">💎 GEMAS → 400 Gemas</div>
+          <div class="prize-chip gold">⭐ ORO → 300 Oro</div>
+          <div class="prize-chip green">🍀 BONUS → +2 intentos</div>
+          <div class="prize-chip red">💀 NADA → Sin premio</div>
+        </div>
+
+        <div class="pachinko-wrap">
+          <div class="pachinko-canvas-container">
+            <canvas id="pachinkoCanvas" width="380" height="320"></canvas>
+          </div>
+          <div class="lever-wrap">
+            <button class="lever-btn" id="leverBtn" title="¡Jala la palanca!"></button>
+            <div style="font-family:var(--f-mono);font-size:11px;color:var(--text-dim);text-align:center">JALAR<br>PALANCA</div>
+          </div>
+        </div>
+
+        <div class="result-banner" id="pachinkoResult">
+          <div class="res-title" id="pachinkoResTitle"></div>
+          <div class="res-prize" id="pachinkoResPrize"></div>
+          <div class="res-body" id="pachinkoResBody"></div>
+        </div>
+        <div class="no-attempts-notice" id="pachinkoNoAttempts">
+          <b>😴 Sin intentos</b>Vuelve mañana o contacta a un Owner para reiniciar.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ADIVINA LA CARTA ── -->
+    <div class="casino-game" id="game-cardpick">
+      <div class="game-wrap">
+        <div class="game-title">🂠 ADIVINA LA CARTA ESPECIAL</div>
+        <div class="game-desc">8 cartas boca abajo. Detrás de una hay un premio especial. Las otras 7 tienen premios normales o nada. ¿Puedes encontrarla?</div>
+        <div class="prize-pool">
+          <div class="prize-chip gold">⚡ ESPECIAL (1 carta) → MEGA GEMAS</div>
+          <div class="prize-chip violet">💎 GEMAS (2 cartas) → Gemas aleatorias</div>
+          <div class="prize-chip gold">🥇 ORO (2 cartas) → Oro aleatorio</div>
+          <div class="prize-chip green">🍀 BONUS (1 carta) → +1 intento</div>
+          <div class="prize-chip red">💀 NADA (2 cartas) → Sin premio</div>
+        </div>
+
+        <div class="cp-phase" id="cpPhaseReady">
+          <button class="btn-play" id="cpStartBtn">🂠 REPARTIR CARTAS</button>
+        </div>
+
+        <div class="cp-phase" id="cpPhasePick" style="display:none">
+          <p class="game-desc" style="margin-bottom:16px">Las cartas están mezcladas — elige una:</p>
+          <div class="cp-cards" id="cpCards"></div>
+        </div>
+
+        <div class="result-banner" id="cpResult">
+          <div class="res-title" id="cpResTitle"></div>
+          <div class="res-prize" id="cpResPrize"></div>
+          <div class="res-body" id="cpResBody"></div>
+        </div>
+        <div class="no-attempts-notice" id="cpNoAttempts">
+          <b>😴 Sin intentos</b>Vuelve mañana o contacta a un Owner para reiniciar.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RULETA EUROPEA ── -->
+    <div class="casino-game" id="game-roulette">
+      <div class="game-wrap">
+        <div class="game-title">🎡 RULETA EUROPEA</div>
+        <div class="game-desc">Elige tu apuesta y gira. Acertar el 🟢 0 te da el premio mayor — muy difícil (1 entre 37). Las demás apuestas dan Oro o Gemas.</div>
+        <div class="prize-pool">
+          <div class="prize-chip gold">🟢 Acertar el 0 (1/37) → 1 SEMANA PREMIUM</div>
+          <div class="prize-chip violet">🔴 / ⚫ Color correcto → Gemas</div>
+          <div class="prize-chip green">Par / Impar correcto → Oro</div>
+          <div class="prize-chip red">Fallar → Sin premio</div>
+        </div>
+
+        <div class="roulette-bets" id="rouletteBets">
+          <button class="rb-btn rb-green" data-bet="zero">🟢 EL 0</button>
+          <button class="rb-btn rb-red" data-bet="red">🔴 ROJO</button>
+          <button class="rb-btn rb-black" data-bet="black">⚫ NEGRO</button>
+          <button class="rb-btn" data-bet="even">⚪ PAR</button>
+          <button class="rb-btn" data-bet="odd">⚪ IMPAR</button>
+        </div>
+
+        <div class="roulette-wheel-wrap">
+          <div class="roulette-number" id="rouletteNumber">—</div>
+          <div class="roulette-bet-label" id="rouletteBetLabel">Elige tu apuesta arriba</div>
+        </div>
+
+        <button class="btn-play" id="rouletteBtn" disabled>🎡 GIRAR</button>
+        <div class="result-banner" id="rouletteResult">
+          <div class="res-title" id="rouletteResTitle"></div>
+          <div class="res-prize" id="rouletteResPrize"></div>
+          <div class="res-body" id="rouletteResBody"></div>
+        </div>
+        <div class="no-attempts-notice" id="rouletteNoAttempts">
+          <b>😴 Sin intentos</b>Vuelve mañana o contacta a un Owner para reiniciar.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CARA O CRUZ ── -->
+    <div class="casino-game" id="game-coinflip">
+      <div class="game-wrap">
+        <div class="game-title">🪙 CARA O CRUZ</div>
+        <div class="game-desc">Elige Cara o Cruz. 50/50 de probabilidad. Si aciertas, ganas Oro o Gemas al azar.</div>
+        <div class="prize-pool">
+          <div class="prize-chip gold">Acierto → Oro o Gemas aleatorio</div>
+          <div class="prize-chip red">Fallar → Sin premio</div>
+        </div>
+
+        <div class="coinflip-area">
+          <div class="coin" id="coinEl">🪙</div>
+        </div>
+
+        <div class="coinflip-bets" id="coinflipBets">
+          <button class="rb-btn" data-bet="cara">😀 CARA</button>
+          <button class="rb-btn" data-bet="cruz">🔄 CRUZ</button>
+        </div>
+
+        <button class="btn-play" id="coinflipBtn" disabled>🪙 LANZAR</button>
+        <div class="result-banner" id="coinflipResult">
+          <div class="res-title" id="coinflipResTitle"></div>
+          <div class="res-prize" id="coinflipResPrize"></div>
+          <div class="res-body" id="coinflipResBody"></div>
+        </div>
+        <div class="no-attempts-notice" id="coinflipNoAttempts">
+          <b>😴 Sin intentos</b>Vuelve mañana o contacta a un Owner para reiniciar.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── HIGH & LOW (DADOS) ── -->
+    <div class="casino-game" id="game-hilodice">
+      <div class="game-wrap">
+        <div class="game-title">🎲 HIGH &amp; LOW — DADOS</div>
+        <div class="game-desc">Se lanza un dado base. Adivina si el siguiente dado será MAYOR, MENOR o IGUAL. Igual paga más (es más difícil).</div>
+        <div class="prize-pool">
+          <div class="prize-chip gold">Mayor / Menor acertado → Oro</div>
+          <div class="prize-chip violet">Igual acertado → Gemas (premio mayor)</div>
+          <div class="prize-chip red">Fallar → Sin premio</div>
+        </div>
+
+        <div class="hilo-dice-area">
+          <div class="hilo-die-box">
+            <canvas id="hldBaseDie" width="64" height="64" class="die-canvas"></canvas>
+            <small>BASE</small>
+          </div>
+          <div class="dice-vs">VS</div>
+          <div class="hilo-die-box">
+            <canvas id="hldNextDie" width="64" height="64" class="die-canvas"></canvas>
+            <small>SIGUIENTE</small>
+          </div>
+        </div>
+
+        <div class="hilo-bets" id="hldBets">
+          <button class="rb-btn" data-bet="higher">⬆️ MAYOR</button>
+          <button class="rb-btn" data-bet="equal">🟰 IGUAL</button>
+          <button class="rb-btn" data-bet="lower">⬇️ MENOR</button>
+        </div>
+
+        <button class="btn-play" id="hldBtn" disabled>🎲 LANZAR</button>
+        <div class="result-banner" id="hldResult">
+          <div class="res-title" id="hldResTitle"></div>
+          <div class="res-prize" id="hldResPrize"></div>
+          <div class="res-body" id="hldResBody"></div>
+        </div>
+        <div class="no-attempts-notice" id="hldNoAttempts">
+          <b>😴 Sin intentos</b>Vuelve mañana o contacta a un Owner para reiniciar.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── HI-LO CARTAS ── -->
+    <div class="casino-game" id="game-hilocards">
+      <div class="game-wrap">
+        <div class="game-title">🃏 HI-LO — CARTAS</div>
+        <div class="game-desc">Se muestra una carta. Adivina si la siguiente carta será MÁS ALTA o MÁS BAJA. Empate en valor = pierdes.</div>
+        <div class="prize-pool">
+          <div class="prize-chip gold">Acertar → Oro</div>
+          <div class="prize-chip violet">Acertar con margen extremo (A o K) → Gemas</div>
+          <div class="prize-chip red">Fallar / Empate → Sin premio</div>
+        </div>
+
+        <div class="hl-cards-area">
+          <div class="hl-card-box">
+            <div class="bj-card" id="hlcBaseCard">?</div>
+            <small>ACTUAL</small>
+          </div>
+          <div class="dice-vs">VS</div>
+          <div class="hl-card-box">
+            <div class="bj-card back" id="hlcNextCard"></div>
+            <small>SIGUIENTE</small>
+          </div>
+        </div>
+
+        <div class="hilo-bets" id="hlcBets">
+          <button class="rb-btn" data-bet="high">⬆️ MÁS ALTA</button>
+          <button class="rb-btn" data-bet="low">⬇️ MÁS BAJA</button>
+        </div>
+
+        <button class="btn-play" id="hlcBtn" disabled>🃏 REVELAR</button>
+        <div class="result-banner" id="hlcResult">
+          <div class="res-title" id="hlcResTitle"></div>
+          <div class="res-prize" id="hlcResPrize"></div>
+          <div class="res-body" id="hlcResBody"></div>
+        </div>
+        <div class="no-attempts-notice" id="hlcNoAttempts">
+          <b>😴 Sin intentos</b>Vuelve mañana o contacta a un Owner para reiniciar.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CRASH ── -->
+    <div class="casino-game" id="game-crash">
+      <div class="game-wrap">
+        <div class="game-title">📈 CRASH</div>
+        <div class="game-desc">El multiplicador sube con el tiempo. Retira antes de que explote — mientras más esperes, más ganas, pero más riesgo corres.</div>
+        <div class="prize-pool">
+          <div class="prize-chip gold">Retirar a tiempo → Oro × multiplicador</div>
+          <div class="prize-chip violet">Retirar con multiplicador 5×+ → Gemas extra</div>
+          <div class="prize-chip red">Explota antes de retirar → Sin premio</div>
+        </div>
+
+        <div class="crash-display" id="crashDisplay">
+          <span id="crashMultiplier">1.00×</span>
+        </div>
+        <div class="crash-bar-wrap">
+          <div class="crash-bar" id="crashBar"></div>
+        </div>
+
+        <div class="crash-actions">
+          <button class="btn-play" id="crashStartBtn">📈 INICIAR</button>
+          <button class="bj-btn danger" id="crashCashoutBtn" disabled>💰 RETIRAR</button>
+        </div>
+
+        <div class="result-banner" id="crashResult">
+          <div class="res-title" id="crashResTitle"></div>
+          <div class="res-prize" id="crashResPrize"></div>
+          <div class="res-body" id="crashResBody"></div>
+        </div>
+        <div class="no-attempts-notice" id="crashNoAttempts">
+          <b>😴 Sin intentos</b>Vuelve mañana o contacta a un Owner para reiniciar.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MINES ── -->
+    <div class="casino-game" id="game-mines">
+      <div class="game-wrap">
+        <div class="game-title">💣 MINES</div>
+        <div class="game-desc">25 casillas, 3 minas escondidas. Cada casilla segura aumenta tu premio. Retira cuando quieras — si caes en una mina, pierdes todo.</div>
+        <div class="prize-pool">
+          <div class="prize-chip gold">Casillas seguras → Oro acumulado</div>
+          <div class="prize-chip violet">5+ casillas seguras → Bono en Gemas</div>
+          <div class="prize-chip red">Caer en mina → Pierdes el premio acumulado</div>
+        </div>
+
+        <div class="mines-status">
+          <span>Premio acumulado: <b id="minesPrizeNow">0 Oro</b></span>
+          <span>Seguras: <b id="minesSafeCount">0</b> / 22</span>
+        </div>
+
+        <div class="mines-grid" id="minesGrid"></div>
+
+        <div class="crash-actions">
+          <button class="btn-play" id="minesStartBtn">💣 NUEVA PARTIDA</button>
+          <button class="bj-btn danger" id="minesCashoutBtn" disabled>💰 RETIRAR PREMIO</button>
+        </div>
+
+        <div class="result-banner" id="minesResult">
+          <div class="res-title" id="minesResTitle"></div>
+          <div class="res-prize" id="minesResPrize"></div>
+          <div class="res-body" id="minesResBody"></div>
+        </div>
+        <div class="no-attempts-notice" id="minesNoAttempts">
+          <b>😴 Sin intentos</b>Vuelve mañana o contacta a un Owner para reiniciar.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── BOSS BATTLE ── -->
+    <div class="casino-game" id="game-boss">
+      <div class="game-wrap">
+        <div class="game-title">⚔️ BOSS BATTLE</div>
+        <div class="game-desc">Ataca al Guardian Oscuro con tus intentos diarios. Cada golpe siempre dropea Oro o Gemas. Si el Boss te KO pierdes la sesión pero conservas todo el drop. Su vida persiste entre días — ¡acaba con él entre todos!</div>
+
+        <div class="boss-arena">
+          <div class="boss-side">
+            <div class="fighter-name enemy">☠️ GUARDIAN OSCURO</div>
+            <div class="hp-bar-wrap"><div class="hp-fill enemy-fill" id="bossHpFill"></div></div>
+            <div class="hp-text" id="bossHpText">10,000 / 10,000</div>
+            <div class="fighter-sprite enemy-sprite" id="bossSprite">👾</div>
+          </div>
+          <div class="arena-vs">⚔️</div>
+          <div class="boss-side player-boss-side">
+            <div class="fighter-name player-f">🧙 TÚ</div>
+            <div class="hp-bar-wrap"><div class="hp-fill player-fill" id="playerHpFill"></div></div>
+            <div class="hp-text" id="playerHpText">100 / 100</div>
+            <div class="fighter-sprite player-sprite" id="playerSprite">🧙</div>
+          </div>
+        </div>
+
+        <div class="battle-log" id="bossLog">
+          <div class="blog-entry init">☠️ El Guardian Oscuro aguarda en las sombras...</div>
+        </div>
+
+        <div class="boss-session-rewards">
+          Recompensa de sesión: &nbsp;🥇 Oro: <b id="bossGoldAcc">0</b> &nbsp;&nbsp; 💎 Gemas: <b id="bossGemsAcc">0</b>
+        </div>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">
+          <button class="btn-play" id="bossAttackBtn">⚔️ ATACAR</button>
+        </div>
+
+        <div class="result-banner" id="bossResult">
+          <div class="res-title" id="bossResTitle"></div>
+          <div class="res-prize" id="bossResPrize"></div>
+          <div class="res-body" id="bossResBody"></div>
+        </div>
+        <div class="no-attempts-notice" id="bossNoAttempts">
+          <b>😴 Sin intentos</b>El Guardian Oscuro aguarda. Vuelve mañana — su vida se mantiene.
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         COINS PRAGMATA — Sistema de monedas
+         ══════════════════════════════════════════ -->
+    <div class="coins-section">
+      <div class="coins-header">
+        <div class="coins-title-row">
+          <span class="coins-icon">🪙</span>
+          <div>
+            <div class="coins-title">Coins Pragmata</div>
+            <div class="coins-sub">Gana monedas jugando en el casino y canjéalas por vidas, gemas, oro y premium</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cuenta / Login -->
+      <div class="coins-account-bar" id="coinsAccountBar">
+        <div class="coins-account-info" id="coinsAccountInfo">
+          <span>🔒 No has iniciado sesión</span>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <div class="notif-wrapper" id="notifWrapper" style="display:none;">
+            <span class="notif-bell" id="notifBell" title="Notificaciones">🔔<span class="notif-badge" id="notifBadge" style="display:none;">0</span></span>
+            <div class="notif-panel" id="notifPanel">
+              <div class="notif-section-title">Solicitudes de amistad</div>
+              <div id="friendReqPanel"><div class="notif-empty">Sin solicitudes.</div></div>
+              <div class="notif-section-title">Notificaciones</div>
+              <div id="notifList"><div class="notif-empty">Sin notificaciones nuevas.</div></div>
+            </div>
+          </div>
+          <button class="coins-account-btn" id="coinsEditProfileBtn" style="display:none;">✏️ Perfil</button>
+          <button class="coins-account-btn" id="coinsAccountBtn">👤 Iniciar sesión</button>
+        </div>
+      </div>
+
+      <!-- Cómo ganar Coins -->
+      <div class="coins-earn-row">
+        <div class="coins-earn-label">¿Cómo ganar Coins?</div>
+        <div class="coins-earn-grid">
+          <div class="coins-earn-item">
+            <span class="coins-earn-ico">🎰</span>
+            <div class="coins-earn-name">Tragamonedas</div>
+            <div class="coins-earn-val">+5 🪙 por jugada</div>
+          </div>
+          <div class="coins-earn-item">
+            <span class="coins-earn-ico">🃏</span>
+            <div class="coins-earn-name">Blackjack</div>
+            <div class="coins-earn-val">+5 🪙 por jugada</div>
+          </div>
+          <div class="coins-earn-item">
+            <span class="coins-earn-ico">🎲</span>
+            <div class="coins-earn-name">Dados / High&Low</div>
+            <div class="coins-earn-val">+5 🪙 por jugada</div>
+          </div>
+          <div class="coins-earn-item">
+            <span class="coins-earn-ico">🕹️</span>
+            <div class="coins-earn-name">Pachinko</div>
+            <div class="coins-earn-val">+5 🪙 por jugada</div>
+          </div>
+          <div class="coins-earn-item">
+            <span class="coins-earn-ico">📈</span>
+            <div class="coins-earn-name">Crash</div>
+            <div class="coins-earn-val">+5 🪙 por jugada</div>
+          </div>
+          <div class="coins-earn-item bonus">
+            <span class="coins-earn-ico">🏆</span>
+            <div class="coins-earn-name">Victoria / Premio</div>
+            <div class="coins-earn-val">+10 🪙 extra</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TIENDA DE CANJE ── -->
+      <div class="coins-redeem-label">🛒 Tienda de Canje</div>
+      <div class="coins-shop-tabs">
+        <button class="cshop-tab active" data-cat="lives">❤️ Vidas</button>
+        <button class="cshop-tab" data-cat="gems">💎 Gemas</button>
+        <button class="cshop-tab" data-cat="gold">🥇 Oro</button>
+        <button class="cshop-tab" data-cat="premium">👑 Premium</button>
+      </div>
+
+      <!-- Vidas -->
+      <div class="cshop-grid active" id="cshop-lives">
+        <div class="cshop-card">
+          <div class="cshop-ico">❤️</div>
+          <div class="cshop-name">3 Vidas extra</div>
+          <div class="cshop-desc">+3 intentos en el casino</div>
+          <div class="cshop-price">1,000 🪙</div>
+          <button class="cshop-redeem-btn" data-cat="lives" data-item="3 Vidas extra" data-cost="1000">Canjear</button>
+        </div>
+        <div class="cshop-card">
+          <div class="cshop-ico">❤️❤️</div>
+          <div class="cshop-name">6 Vidas extra</div>
+          <div class="cshop-desc">+6 intentos en el casino</div>
+          <div class="cshop-price">1,800 🪙</div>
+          <button class="cshop-redeem-btn" data-cat="lives" data-item="6 Vidas extra" data-cost="1800">Canjear</button>
+        </div>
+        <div class="cshop-card hot-card">
+          <div class="cshop-hot-badge">🔥 Mejor valor</div>
+          <div class="cshop-ico">♾️</div>
+          <div class="cshop-name">Ilimitado 24h</div>
+          <div class="cshop-desc">Sin límite de intentos por 1 día</div>
+          <div class="cshop-price">3,000 🪙</div>
+          <button class="cshop-redeem-btn" data-cat="lives" data-item="Ilimitado 24h" data-cost="3000">Canjear</button>
+        </div>
+        <div class="cshop-card">
+          <div class="cshop-ico">🌟</div>
+          <div class="cshop-name">Pase Semanal</div>
+          <div class="cshop-desc">Sin límite de intentos por 7 días</div>
+          <div class="cshop-price">7,000 🪙</div>
+          <button class="cshop-redeem-btn" data-cat="lives" data-item="Pase Semanal" data-cost="7000">Canjear</button>
+        </div>
+        <div class="cshop-card">
+          <div class="cshop-ico">×2</div>
+          <div class="cshop-name">Boost x2 Coins</div>
+          <div class="cshop-desc">Doble de Coins por jugada 24h</div>
+          <div class="cshop-price">2,500 🪙</div>
+          <button class="cshop-redeem-btn" data-cat="lives" data-item="Boost x2 Coins" data-cost="2500">Canjear</button>
+        </div>
+      </div>
+
+      <!-- Gemas -->
+      <div class="cshop-grid" id="cshop-gems">
+        <div class="cshop-card">
+          <div class="cshop-ico">💎</div>
+          <div class="cshop-name">50 Gemas</div>
+          <div class="cshop-desc">Lote pequeño de gemas del gacha</div>
+          <div class="cshop-price">500 🪙</div>
+          <button class="cshop-redeem-btn" data-cat="gems" data-item="50 Gemas" data-cost="500">Canjear</button>
+        </div>
+        <div class="cshop-card">
+          <div class="cshop-ico">💎💎</div>
+          <div class="cshop-name">150 Gemas</div>
+          <div class="cshop-desc">Lote mediano de gemas del gacha</div>
+          <div class="cshop-price">1,200 🪙</div>
+          <button class="cshop-redeem-btn" data-cat="gems" data-item="150 Gemas" data-cost="1200">Canjear</button>
+        </div>
+        <div class="cshop-card hot-card">
+          <div class="cshop-hot-badge">⭐ Popular</div>
+          <div class="cshop-ico">💎💎💎</div>
+          <div class="cshop-name">400 Gemas</div>
+          <div class="cshop-desc">Lote grande de gemas del gacha</div>
+          <div class="cshop-price">2,800 🪙</div>
+          <button class="cshop-redeem-btn" data-cat="gems" data-item="400 Gemas" data-cost="2800">Canjear</button>
+        </div>
+        <div class="cshop-card">
+          <div class="cshop-ico">🌌</div>
+          <div class="cshop-name">1,000 Gemas</div>
+          <div class="cshop-desc">Caja épica de gemas del gacha</div>
+          <div class="cshop-price">6,000 🪙</div>
+          <button class="cshop-redeem-btn" data-cat="gems" data-item="1,000 Gemas" data-cost="6000">Canjear</button>
+        </div>
+        <div class="cshop-card">
+          <div class="cshop-ico">✨</div>
+          <div class="cshop-name">2,500 Gemas</div>
+          <div class="cshop-desc">Reserva legendaria de gemas</div>
+          <div class="cshop-price">13,000 🪙</div>
+          <button class="cshop-redeem-btn" data-cat="gems" data-item="2,500 Gemas" data-cost="13000">Canjear</button>
+        </div>
+      </div>
+
+      <!-- Oro -->
+      <div class="cshop-grid" id="cshop-gold">
+        <div class="cshop-card">
+          <div class="cshop-ico">🥇</div>
+          <div class="cshop-name">500 Oro</div>
+          <div class="cshop-desc">Lote pequeño de oro</div>
+          <div class="cshop-price">500 🪙</div>
+          <button class="cshop-redeem-btn" data-cat="gold" data-item="500 Oro" data-cost="500">Canjear</button>
+        </div>
+        <div class="cshop-card">
+          <div class="cshop-ico">🥇🥇</div>
+          <div class="cshop-name">1,500 Oro</div>
+          <div class="cshop-desc">Lote mediano de oro</div>
+          <div class="cshop-price">1,200 🪙</div>
+          <button class="cshop-redeem-btn" data-cat="gold" data-item="1,500 Oro" data-cost="1200">Canjear</button>
+        </div>
+        <div class="cshop-card hot-card">
+          <div class="cshop-hot-badge">⭐ Popular</div>
+          <div class="cshop-ico">💰</div>
+          <div class="cshop-name">4,000 Oro</div>
+          <div class="cshop-desc">Lote grande de oro</div>
+          <div class="cshop-price">2,800 🪙</div>
+          <button class="cshop-redeem-btn" data-cat="gold" data-item="4,000 Oro" data-cost="2800">Canjear</button>
+        </div>
+        <div class="cshop-card">
+          <div class="cshop-ico">🏆</div>
+          <div class="cshop-name">10,000 Oro</div>
+          <div class="cshop-desc">Arcas épicas de oro</div>
+          <div class="cshop-price">6,000 🪙</div>
+          <button class="cshop-redeem-btn" data-cat="gold" data-item="10,000 Oro" data-cost="6000">Canjear</button>
+        </div>
+        <div class="cshop-card">
+          <div class="cshop-ico">👑</div>
+          <div class="cshop-name">50,000 Oro</div>
+          <div class="cshop-desc">Fortuna legendaria — máximo lote</div>
+          <div class="cshop-price">25,000 🪙</div>
+          <button class="cshop-redeem-btn" data-cat="gold" data-item="50,000 Oro" data-cost="25000">Canjear</button>
+        </div>
+      </div>
+
+      <!-- Premium -->
+      <div class="cshop-grid" id="cshop-premium">
+        <div class="cshop-card">
+          <div class="cshop-ico">🥈</div>
+          <div class="cshop-name">Plan Plata — 3 días</div>
+          <div class="cshop-desc">Acceso premium tier Plata</div>
+          <div class="cshop-price">3,500 🪙</div>
+          <button class="cshop-redeem-btn" data-cat="premium" data-item="Plan Plata — 3 días" data-cost="3500">Canjear</button>
+        </div>
+        <div class="cshop-card">
+          <div class="cshop-ico">🥇</div>
+          <div class="cshop-name">Plan Dorado — 3 días</div>
+          <div class="cshop-desc">Acceso premium tier Dorado</div>
+          <div class="cshop-price">7,000 🪙</div>
+          <button class="cshop-redeem-btn" data-cat="premium" data-item="Plan Dorado — 3 días" data-cost="7000">Canjear</button>
+        </div>
+        <div class="cshop-card hot-card">
+          <div class="cshop-hot-badge">🔥 Top</div>
+          <div class="cshop-ico">👑</div>
+          <div class="cshop-name">Plan King — 7 días</div>
+          <div class="cshop-desc">Acceso premium tier King</div>
+          <div class="cshop-price">14,000 🪙</div>
+          <button class="cshop-redeem-btn" data-cat="premium" data-item="Plan King — 7 días" data-cost="14000">Canjear</button>
+        </div>
+        <div class="cshop-card">
+          <div class="cshop-ico">⚡</div>
+          <div class="cshop-name">Plan Dios — 7 días</div>
+          <div class="cshop-desc">Acceso premium tier Dios</div>
+          <div class="cshop-price">26,000 🪙</div>
+          <button class="cshop-redeem-btn" data-cat="premium" data-item="Plan Dios — 7 días" data-cost="26000">Canjear</button>
+        </div>
+        <div class="cshop-card">
+          <div class="cshop-ico">🌟</div>
+          <div class="cshop-name">Plan Creador — 30 días</div>
+          <div class="cshop-desc">Tier máximo — acceso total</div>
+          <div class="cshop-price">85,000 🪙</div>
+          <button class="cshop-redeem-btn" data-cat="premium" data-item="Plan Creador — 30 días" data-cost="85000">Canjear</button>
+        </div>
+      </div>
+
+      <!-- ── LOG DE PREMIOS (público) ── -->
+      <div class="coins-redeem-label">🏆 Log de Premios — En Vivo</div>
+      <p class="section-sub" style="margin-top:-8px;margin-bottom:14px;">Lo que la gente va ganando en el Casino, al instante.</p>
+      <div class="prize-log-feed" id="prizeLogFeed">
+        <div class="prize-log-empty">Cargando premios recientes…</div>
+      </div>
+
+      <!-- Comprar Coins -->
+      <div class="coins-buy-box">
+        <div class="coins-buy-left">
+          <div class="coins-buy-title">💸 Comprar Coins Pragmata</div>
+          <div class="coins-buy-desc">¿Quieres acumular Coins más rápido? Adquiere paquetes directamente y canjéalos en la tienda cuando quieras.</div>
+          <div class="coins-buy-packages">
+            <div class="coins-pkg">
+              <div class="pkg-amount">1,000 🪙</div>
+              <div class="pkg-label">Pack Bronce</div>
+            </div>
+            <div class="coins-pkg featured">
+              <div class="pkg-badge-top">⭐ Popular</div>
+              <div class="pkg-amount">3,000 🪙</div>
+              <div class="pkg-label">Pack Plata</div>
+            </div>
+            <div class="coins-pkg">
+              <div class="pkg-amount">7,000 🪙</div>
+              <div class="pkg-label">Pack Oro</div>
+            </div>
+            <div class="coins-pkg premium-pkg">
+              <div class="pkg-amount">20,000 🪙</div>
+              <div class="pkg-label">Pack Dios</div>
+            </div>
+          </div>
+        </div>
+        <div class="coins-buy-right">
+          <div class="coins-contact-card">
+            <div class="coins-contact-ico">📲</div>
+            <div class="coins-contact-title">Contacto para compras</div>
+            <div class="coins-contact-desc">Escríbenos por WhatsApp para adquirir tu paquete de Coins. Respuesta rápida.</div>
+            <a class="btn btn-gold coins-contact-btn"
+               href="https://wa.me/51999999999?text=Hola%2C%20quiero%20comprar%20Coins%20Pragmata%20%F0%9F%AA%99"
+               target="_blank" rel="noopener">
+              💬 Comprar por WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── MODAL CUENTA (login/registro) ── -->
+<div class="acc-modal-overlay" id="accModalOverlay">
+  <div class="acc-modal">
+    <div class="acc-modal-title">👤 Mi cuenta Coins</div>
+    <div class="acc-modal-sub">Ingresa tu usuario y PIN de 6 dígitos. Si el usuario no existe, se creará automáticamente.</div>
+    <label>Usuario</label>
+    <input type="text" id="accUsername" maxlength="20" autocomplete="off" placeholder="Tu nombre de usuario">
+    <label>PIN (6 dígitos)</label>
+    <input type="password" id="accPin" maxlength="6" inputmode="numeric" autocomplete="off" placeholder="••••••">
+    <label>Identificador (solo si es cuenta nueva)</label>
+    <div class="gender-pick" id="genderPick">
+      <button type="button" class="gender-opt" data-g="">Sin definir</button>
+      <button type="button" class="gender-opt" data-g="F">🎀 Rosa</button>
+      <button type="button" class="gender-opt" data-g="M">🎀 Azul</button>
+    </div>
+    <div class="acc-modal-error" id="accModalError"></div>
+    <div class="acc-modal-btns">
+      <button class="acc-modal-cancel" id="accModalCancel">Cancelar</button>
+      <button class="acc-modal-go" id="accModalGo">Entrar</button>
+    </div>
+    <div class="acc-modal-note">Guarda bien tu usuario y PIN — son la única forma de recuperar tus Coins. No los compartas con nadie.</div>
+  </div>
+</div>
+
+<!-- ── MODAL PERFIL (editar bio / género / colores / estado) ── -->
+<div class="acc-modal-overlay" id="profileEditOverlay">
+  <div class="acc-modal">
+    <div class="acc-modal-title">✏️ Editar perfil</div>
+    <div style="text-align:center; margin-bottom:16px;">
+      <label class="avatar-upload-wrap" id="avatarUploadWrap" title="Cambiar foto de perfil">
+        <div id="avatarPreviewModal" class="avatar lg" style="background:#7c5cff; font-size:22px; width:56px; height:56px; display:inline-flex; align-items:center; justify-content:center; border-radius:50%;">?</div>
+        <div class="avatar-upload-overlay">📷</div>
+        <input type="file" id="avatarFileInput" accept="image/*">
+      </label>
+      <div style="font-family:var(--f-mono); font-size:10px; color:var(--text-dim); margin-top:6px;">Toca para cambiar foto</div>
+    </div>
+    <label>Frase de estado</label>
+    <input type="text" id="profileStatusInput" maxlength="60" class="profile-status-input" placeholder="Ej: Jugando en el casino… 🎰">
+    <label>Bio corta</label>
+    <input type="text" id="profileBioInput" maxlength="80" autocomplete="off" placeholder="Una frase sobre ti…">
+    <label style="margin-top:12px; display:block;">Color del avatar</label>
+    <div class="profile-color-picker" id="avatarColorPicker"></div>
+    <label>Color del perfil (cover)</label>
+    <div class="profile-color-picker" id="coverColorPicker"></div>
+    <label style="margin-top:4px; display:block;">Identificador</label>
+    <div class="gender-pick" id="profileGenderPick">
+      <button type="button" class="gender-opt" data-g="">Sin definir</button>
+      <button type="button" class="gender-opt" data-g="F">🎀 Rosa</button>
+      <button type="button" class="gender-opt" data-g="M">🎀 Azul</button>
+    </div>
+    <div class="acc-modal-btns">
+      <button class="acc-modal-cancel" id="profileEditCancel">Cancelar</button>
+      <button class="acc-modal-go" id="profileEditSave">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL VER PERFIL DE USUARIO ── -->
+<div class="acc-modal-overlay" id="profileViewOverlay">
+  <div class="acc-modal" id="profileViewBody" style="max-width:420px;">
+  </div>
+</div>
+
+
+
+<div id="site-footer"></div>
+
+<script src="assets/include.js"></script>
+<script src="assets/casino.js"></script>
+</body>
+</html>

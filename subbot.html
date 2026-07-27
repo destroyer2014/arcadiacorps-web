@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sub-Bot — ArcadiaCorps</title>
+<meta name="description" content="Pragmata Bot: bot de WhatsApp con casino, gacha, economía y más de 300 comandos. Creado por ArcadiaCorps.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+<meta property="og:title" content="Pragmata Bot — ArcadiaCorps">
+<meta property="og:description" content="Bot de WhatsApp con casino, gacha, economía, muro social y más de 300 comandos.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0d0a12">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<section id="subbot" class="reveal">
+  <div class="wrap">
+    <span class="eyebrow">Tu propio bot</span>
+    <h2 class="section-title">Cómo hacerte Sub-Bot</h2>
+    <p class="section-sub">Conecta tu propio número de WhatsApp como una extensión de Pragmata Bot, con sesión real vía código de vinculación.</p>
+
+    <div class="subbot-grid">
+      <div class="subbot-steps">
+        <div class="subbot-step">
+          <span class="snum">01</span>
+          <div><h4>Verifica tu plan</h4><p>Necesitas Premium activo. El plan determina cuántos sub-bots puedes tener conectados a la vez.</p></div>
+        </div>
+        <div class="subbot-step">
+          <span class="snum">02</span>
+          <div><h4>Ejecuta el comando</h4><p>Escribe <code>!subbot add</code> en tu chat con el bot principal.</p></div>
+        </div>
+        <div class="subbot-step">
+          <span class="snum">03</span>
+          <div><h4>Recibe tu código</h4><p>El bot te enviará un código de vinculación al privado. Ábrelo desde <strong>WhatsApp → Dispositivos vinculados → Vincular con número de teléfono</strong>.</p></div>
+        </div>
+        <div class="subbot-step">
+          <span class="snum">04</span>
+          <div><h4>Tienes 60 segundos</h4><p>Si no lo usas a tiempo, el bot genera un nuevo código automáticamente.</p></div>
+        </div>
+        <div class="subbot-step">
+          <span class="snum">05</span>
+          <div><h4>¡Listo!</h4><p>Tu número queda conectado como sub-bot. Usa <code>!subbot list</code> para ver tus sesiones activas o <code>!subbot remove</code> para desconectar una.</p></div>
+        </div>
+      </div>
+
+      <div>
+        <table class="subbot-table">
+          <thead>
+            <tr><th>Plan</th><th>Sub-bots permitidos</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Sin premium</td><td class="num">0</td></tr>
+            <tr><td>Rage-Semanal / Plata / Dorado</td><td class="num">0</td></tr>
+            <tr><td>👑 King-Rage</td><td class="num">1</td></tr>
+            <tr><td>🔱 Dios-Rage</td><td class="num">3</td></tr>
+            <tr><td>🤖 Rage-Creador</td><td class="num">3+</td></tr>
+          </tbody>
+        </table>
+        <div class="subbot-note-box">
+          <b>Nota:</b> cada sub-bot mantiene su sesión activa incluso después de reiniciar el bot principal. Si pierdes acceso a tu número, usa <code>!subbot remove</code> antes de vincular uno nuevo.
+        </div>
+      </div>
+    </div>
+
+    <div class="subbot-connect">
+      <div class="subbot-connect-form">
+        <div class="sc-badge">🔌</div>
+        <h3>Conecta tu Sub-Bot ahora</h3>
+        <p class="sc-sub">Escribe tu número y te generamos el código de vinculación aquí mismo, en vivo.</p>
+        <form id="subbotConnectForm">
+          <div class="sc-field">
+            <label>Tu número de WhatsApp</label>
+            <input type="tel" id="subbotPhone" placeholder="Ej: 51987654321 (con código de país, sin +)" required />
+          </div>
+          <button type="submit" class="sc-submit" id="subbotSubmitBtn">🔑 OBTENER CÓDIGO</button>
+        </form>
+
+        <div class="sc-result" id="subbotResult" style="display:none;">
+          <div class="sc-result-label">TU CÓDIGO DE VINCULACIÓN</div>
+          <div class="sc-code" id="subbotCode">— — — —</div>
+          <button class="sc-copy" id="subbotCopy">📋 Copiar código</button>
+          <div class="sc-timer" id="subbotTimer"></div>
+          <ol class="sc-steps-mini">
+            <li>Abre <b>WhatsApp</b> en tu teléfono.</li>
+            <li>Ve a <b>Ajustes → Dispositivos vinculados</b>.</li>
+            <li>Toca <b>Vincular un dispositivo → Vincular con número de teléfono</b>.</li>
+            <li>Escribe el código de arriba.</li>
+          </ol>
+        </div>
+
+        <p class="sc-hint" id="subbotHint">El código dura 60 segundos una vez generado. Si expira, pide uno nuevo.</p>
+      </div>
+      <div class="subbot-connect-side">
+        <h4>🤖 ¿Prefieres hacerlo por chat?</h4>
+        <p>Escribe directo <code>!subbot add</code> al bot principal desde tu WhatsApp, sin pasar por este formulario.</p>
+        <a class="sc-chat-link" href="https://wa.me/51917611323?text=!subbot%20add" target="_blank" rel="noopener">💬 Abrir chat con el bot →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<div id="site-footer"></div>
+
+<script src="assets/include.js"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Redes Sociales — ArcadiaCorps</title>
+<meta name="description" content="Pragmata Bot: bot de WhatsApp con casino, gacha, economía y más de 300 comandos. Creado por ArcadiaCorps.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+<meta property="og:title" content="Pragmata Bot — ArcadiaCorps">
+<meta property="og:description" content="Bot de WhatsApp con casino, gacha, economía, muro social y más de 300 comandos.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0d0a12">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<section id="social" class="reveal">
+  <div class="wrap">
+    <span class="eyebrow">Comunidad</span>
+    <h2 class="section-title">Muro Social</h2>
+    <p class="section-sub">Escribe con tu cuenta de Coins. Visible para todos, sin necesidad de WhatsApp.</p>
+
+    <div class="social-composer" id="socialComposer">
+      <textarea id="socialInput" maxlength="280" placeholder="Inicia sesión arriba en Coins Pragmata para poder publicar…" disabled rows="3"></textarea>
+      <div class="social-composer-row">
+        <div style="display:flex; align-items:center; gap:10px; position:relative;">
+          <button type="button" class="composer-tool-btn" id="stickerToggleBtn" disabled title="Insertar sticker">😀</button>
+          <button type="button" class="composer-tool-btn" id="gifAddBtn" disabled title="Agregar GIF">🎬 GIF</button>
+          <label class="composer-tool-btn" id="imgUploadLabel" style="cursor:pointer; display:none;" title="Subir imagen">
+            📷 Foto
+            <input type="file" id="postImageInput" accept="image/*" style="display:none;">
+          </label>
+          <span class="social-char-count" id="socialCharCount">0/280</span>
+          <div class="sticker-picker" id="stickerPicker"></div>
+        </div>
+        <button class="btn btn-gold" id="socialPostBtn" disabled>Publicar</button>
+      </div>
+      <div class="composer-gif-preview" id="composerGifPreview" style="display:none;"></div>
+      <div class="composer-img-preview" id="composerImgPreview" style="display:none;"></div>
+    </div>
+
+    <div class="social-feed" id="socialFeed">
+      <div class="social-feed-empty">Cargando publicaciones…</div>
+    </div>
+  </div>
+</section>
+
+
+<div id="site-footer"></div>
+
+<script src="assets/include.js"></script>
+</body>
+</html>

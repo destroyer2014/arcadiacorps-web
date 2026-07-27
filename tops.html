@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tops — ArcadiaCorps</title>
+<meta name="description" content="Pragmata Bot: bot de WhatsApp con casino, gacha, economía y más de 300 comandos. Creado por ArcadiaCorps.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+<meta property="og:title" content="Pragmata Bot — ArcadiaCorps">
+<meta property="og:description" content="Bot de WhatsApp con casino, gacha, economía, muro social y más de 300 comandos.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0d0a12">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<section id="tops" class="reveal">
+  <div class="wrap">
+    <span class="eyebrow">Hall of Fame</span>
+    <h2 class="section-title">Tops del servidor</h2>
+    <p class="section-sub">Los jugadores más fuertes, ricos y temidos de Pragmata Bot. ¿Tu nombre está aquí?</p>
+
+    <div class="top-tabs" id="topTabs">
+      <button class="top-tab active" data-tab="xp">⭐ Experiencia</button>
+      <button class="top-tab" data-tab="poder">💪 Poder</button>
+      <button class="top-tab" data-tab="arena">🏆 Arena</button>
+      <button class="top-tab" data-tab="coins">💰 Coins</button>
+      <button class="top-tab" data-tab="clanes">🛡️ Clanes</button>
+    </div>
+
+    <!-- TOP XP -->
+    <div class="top-panel active" data-panel="xp">
+      <div class="top-podium">
+        <div class="podium-card gold"><div class="podium-rank">🥇</div><div class="podium-name">ᵒʷⁿᵉʳSMITH</div><div class="podium-meta">XP <b>5,521</b> · LVL 15</div></div>
+        <div class="podium-card silver"><div class="podium-rank">🥈</div><div class="podium-name">~nose XD</div><div class="podium-meta">XP <b>6</b> · LVL 15</div></div>
+        <div class="podium-card bronze"><div class="podium-rank">🥉</div><div class="podium-name">TwofacedAxis427</div><div class="podium-meta">XP <b>1,986</b> · LVL 14</div></div>
+      </div>
+      <div class="top-list">
+        <div class="top-row"><span class="rank">4</span><span class="name">🍃⫷꧁𝕜𝕚𝕨𝕚꧂⫸🍃</span><span class="meta">XP <b>1,696</b> · LVL 14</span></div>
+        <div class="top-row"><span class="rank">5</span><span class="name">⁠ಠLuisಠ</span><span class="meta">XP <b>329</b> · LVL 14</span></div>
+        <div class="top-row"><span class="rank">6</span><span class="name">Miguel🩵🌷</span><span class="meta">XP <b>4,771</b> · LVL 13</span></div>
+        <div class="top-row"><span class="rank">7</span><span class="name">Leo</span><span class="meta">XP <b>1,495</b> · LVL 13</span></div>
+        <div class="top-row"><span class="rank">8</span><span class="name">🩵🌻 100 mil de oro</span><span class="meta">XP <b>438</b> · LVL 13</span></div>
+        <div class="top-row"><span class="rank">9</span><span class="name">Nicolashin</span><span class="meta">XP <b>245</b> · LVL 13</span></div>
+        <div class="top-row"><span class="rank">10</span><span class="name">Jean Franco</span><span class="meta">XP <b>3,411</b> · LVL 12</span></div>
+      </div>
+      <p class="top-note">Página 1 de 306 — <code>!top [n]</code> para ver más</p>
+    </div>
+
+    <!-- TOP COINS -->
+    <div class="top-panel" data-panel="coins">
+      <div class="top-podium" id="coinsTopPodium">
+        <div class="podium-card gold"><div class="podium-rank">🥇</div><div class="podium-name">—</div><div class="podium-meta">Cargando…</div></div>
+        <div class="podium-card silver"><div class="podium-rank">🥈</div><div class="podium-name">—</div><div class="podium-meta">Cargando…</div></div>
+        <div class="podium-card bronze"><div class="podium-rank">🥉</div><div class="podium-name">—</div><div class="podium-meta">Cargando…</div></div>
+      </div>
+      <div class="top-list" id="coinsTopList">
+      </div>
+      <p class="top-note" id="coinsTopNote">Cargando ranking…</p>
+    </div>
+
+    <!-- TOP CLANES -->
+    <div class="top-panel" data-panel="clanes">
+      <div class="top-podium">
+        <div class="podium-card gold"><div class="podium-rank">🥇</div><div class="podium-name">Infamous</div><div class="podium-meta">👥6 · 🏆186 · 🏅570</div></div>
+        <div class="podium-card silver"><div class="podium-rank">🥈</div><div class="podium-name">KorthMarkot</div><div class="podium-meta">👥2 · 🏆43 · 🏅1090</div></div>
+        <div class="podium-card bronze"><div class="podium-rank">🥉</div><div class="podium-name">Los Dioses</div><div class="podium-meta">👥2 · 🏆11 · 🏅0</div></div>
+      </div>
+      <div class="top-list">
+        <div class="top-row"><span class="rank">4</span><span class="name">Los gustambos🐁</span><span class="meta">👥4 · 🏆1 · 🏅230</span></div>
+        <div class="top-row"><span class="rank">5</span><span class="name">Utaud Risueño</span><span class="meta">👥2 · 🏆0 · 🏅2000</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<div id="site-footer"></div>
+
+<script src="assets/include.js"></script>
+</body>
+</html>

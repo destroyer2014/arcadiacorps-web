@@ -1,0 +1,63 @@
+<!-- ── MODAL CUENTA (login/registro) ── -->
+<div class="acc-modal-overlay" id="accModalOverlay">
+  <div class="acc-modal">
+    <div class="acc-modal-title">👤 Mi cuenta Coins</div>
+    <div class="acc-modal-sub">Ingresa tu usuario y PIN de 6 dígitos. Si el usuario no existe, se creará automáticamente.</div>
+    <label>Usuario</label>
+    <input type="text" id="accUsername" maxlength="20" autocomplete="off" placeholder="Tu nombre de usuario">
+    <label>PIN (6 dígitos)</label>
+    <input type="password" id="accPin" maxlength="6" inputmode="numeric" autocomplete="off" placeholder="••••••">
+    <label>Identificador (solo si es cuenta nueva)</label>
+    <div class="gender-pick" id="genderPick">
+      <button type="button" class="gender-opt" data-g="">Sin definir</button>
+      <button type="button" class="gender-opt" data-g="F">🎀 Rosa</button>
+      <button type="button" class="gender-opt" data-g="M">🎀 Azul</button>
+    </div>
+    <div class="acc-modal-error" id="accModalError"></div>
+    <div class="acc-modal-btns">
+      <button class="acc-modal-cancel" id="accModalCancel">Cancelar</button>
+      <button class="acc-modal-go" id="accModalGo">Entrar</button>
+    </div>
+    <div class="acc-modal-note">Guarda bien tu usuario y PIN — son la única forma de recuperar tus Coins. No los compartas con nadie.</div>
+  </div>
+</div>
+
+<!-- ── MODAL PERFIL (editar bio / género / colores / estado) ── -->
+<div class="acc-modal-overlay" id="profileEditOverlay">
+  <div class="acc-modal">
+    <div class="acc-modal-title">✏️ Editar perfil</div>
+    <div style="text-align:center; margin-bottom:16px;">
+      <label class="avatar-upload-wrap" id="avatarUploadWrap" title="Cambiar foto de perfil">
+        <div id="avatarPreviewModal" class="avatar lg" style="background:#7c5cff; font-size:22px; width:56px; height:56px; display:inline-flex; align-items:center; justify-content:center; border-radius:50%;">?</div>
+        <div class="avatar-upload-overlay">📷</div>
+        <input type="file" id="avatarFileInput" accept="image/*">
+      </label>
+      <div style="font-family:var(--f-mono); font-size:10px; color:var(--text-dim); margin-top:6px;">Toca para cambiar foto</div>
+    </div>
+    <label>Frase de estado</label>
+    <input type="text" id="profileStatusInput" maxlength="60" class="profile-status-input" placeholder="Ej: Jugando en el casino… 🎰">
+    <label>Bio corta</label>
+    <input type="text" id="profileBioInput" maxlength="80" autocomplete="off" placeholder="Una frase sobre ti…">
+    <label style="margin-top:12px; display:block;">Color del avatar</label>
+    <div class="profile-color-picker" id="avatarColorPicker"></div>
+    <label>Color del perfil (cover)</label>
+    <div class="profile-color-picker" id="coverColorPicker"></div>
+    <label style="margin-top:4px; display:block;">Identificador</label>
+    <div class="gender-pick" id="profileGenderPick">
+      <button type="button" class="gender-opt" data-g="">Sin definir</button>
+      <button type="button" class="gender-opt" data-g="F">🎀 Rosa</button>
+      <button type="button" class="gender-opt" data-g="M">🎀 Azul</button>
+    </div>
+    <div class="acc-modal-btns">
+      <button class="acc-modal-cancel" id="profileEditCancel">Cancelar</button>
+      <button class="acc-modal-go" id="profileEditSave">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL VER PERFIL DE USUARIO ── -->
+<div class="acc-modal-overlay" id="profileViewOverlay">
+  <div class="acc-modal" id="profileViewBody" style="max-width:420px;">
+  </div>
+</div>
+

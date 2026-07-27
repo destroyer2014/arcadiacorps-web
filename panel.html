@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi Panel — ArcadiaCorps</title>
+<meta name="description" content="Pragmata Bot: bot de WhatsApp con casino, gacha, economía y más de 300 comandos. Creado por ArcadiaCorps.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+<meta name="theme-color" content="#0d0a12">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+<style>
+  #panelWrap{ padding-top:120px; padding-bottom:72px; }
+  .panel-guard{ text-align:center; padding:80px 24px; }
+  .panel-guard .btn{ margin-top:20px; }
+  .panel-grid{ display:grid; grid-template-columns:1fr; gap:24px; }
+  .panel-card{ background:var(--panel); border:1px solid var(--line); padding:24px; }
+  .panel-card h3{ font-family:var(--f-mono); font-size:15px; color:var(--text); margin-bottom:4px; display:flex; align-items:center; gap:8px; }
+  .panel-card .sub{ font-size:12.5px; color:var(--text-dim); margin-bottom:16px; }
+  .empty-state{ font-family:var(--f-mono); font-size:12.5px; color:var(--text-dim); padding:18px 0; text-align:center; border:1px dashed var(--line); }
+  .kv-row{ display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--line); font-size:13.5px; }
+  .kv-row:last-child{ border-bottom:none; }
+  .kv-row .k{ color:var(--text-dim); font-family:var(--f-mono); font-size:12px; }
+  .kv-row .v{ color:var(--text); font-weight:600; }
+  .badge-free{ color:var(--text-dim); font-family:var(--f-mono); font-size:11px; border:1px solid var(--line); padding:3px 10px; }
+  .badge-premium{ color:var(--gold); font-family:var(--f-mono); font-size:11px; border:1px solid var(--gold-dim); padding:3px 10px; background:rgba(255,210,63,0.08); }
+</style>
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<section id="panelWrap">
+  <div class="wrap">
+    <span class="eyebrow">Cuenta</span>
+    <h1 class="section-title">Mi Panel</h1>
+    <p class="section-sub">Resumen de tu cuenta en Pragmata Bot — ArcadiaCorps.</p>
+
+    <div id="panelGuard" class="panel-guard" style="display:none;">
+      <p style="color:var(--text-dim); font-family:var(--f-mono); font-size:13px;">Necesitas iniciar sesión para ver tu panel.</p>
+      <a href="#" id="panelLoginBtn" class="btn btn-primary">$ INICIAR SESIÓN</a>
+    </div>
+
+    <div id="panelContent" class="panel-grid" style="display:none;">
+
+      <div class="panel-card panel-cut">
+        <h3>📊 Resumen de cuenta</h3>
+        <div class="sub" id="panelGreeting">Hola, Usuario</div>
+        <div class="kv-row"><span class="k">Correo</span><span class="v" id="panelEmail">—</span></div>
+        <div class="kv-row"><span class="k">Usuario desde</span><span class="v" id="panelSince">—</span></div>
+        <div class="kv-row"><span class="k">Estado Premium</span><span class="v" id="panelPremiumBadge"><span class="badge-free">Gratuito</span></span></div>
+      </div>
+
+      <div class="panel-card panel-cut">
+        <h3>👤 Perfil</h3>
+        <div class="sub">Nombre, usuario y biografía visibles en el sitio.</div>
+        <div class="profile-field"><label>Nombre visible</label><input type="text" id="pName" maxlength="40" /></div>
+        <div class="profile-field"><label>Username</label><input type="text" id="pUser" maxlength="24" /></div>
+        <div class="profile-field"><label>Bio</label><textarea id="pBio" rows="3" maxlength="240"></textarea></div>
+        <div class="profile-save-row">
+          <button class="profile-btn profile-btn-save" id="pSave">Guardar cambios</button>
+        </div>
+        <div class="profile-status" id="pStatus"></div>
+      </div>
+
+      <div class="panel-card panel-cut">
+        <h3>⭐ Premium</h3>
+        <div class="sub">Estado de tu suscripción Premium.</div>
+        <div class="empty-state" id="premiumEmpty">Aún no tienes un plan Premium activo. <a href="premium.html" style="color:var(--gold);">Ver planes →</a></div>
+      </div>
+
+      <div class="panel-card panel-cut">
+        <h3>🤖 Mis Sub-Bots</h3>
+        <div class="sub">Sub-bots vinculados a tu cuenta.</div>
+        <div class="empty-state">No tienes sub-bots vinculados todavía. <a href="subbot.html" style="color:var(--violet);">Conectar uno →</a></div>
+      </div>
+
+      <div class="panel-card panel-cut">
+        <h3>🎫 Mis tickets</h3>
+        <div class="sub">Historial de soporte.</div>
+        <div class="empty-state">No has abierto tickets de soporte. <a href="contacto.html" style="color:var(--green);">Contactar soporte →</a></div>
+      </div>
+
+      <div class="panel-card panel-cut">
+        <h3>🛒 Historial de compras</h3>
+        <div class="sub">Compras realizadas en Premium o Casino.</div>
+        <div class="empty-state">Sin compras registradas.</div>
+      </div>
+
+      <div class="panel-card panel-cut">
+        <h3>🔔 Notificaciones</h3>
+        <div class="sub">Últimas novedades de ArcadiaCorps.</div>
+        <div class="notif-card notif-update" style="border:none; padding:0 0 14px;">
+          <div class="notif-icon">❤️</div>
+          <div class="notif-body"><b>Nueva actualización</b><p>Se agregó el sistema de Sub-Bot conectable desde la web.</p><span class="notif-date">Hace 2 días</span></div>
+        </div>
+      </div>
+
+      <div class="panel-card panel-cut">
+        <h3>📈 Estadísticas</h3>
+        <div class="sub">Tu actividad en el bot (próximamente conectado a datos en vivo).</div>
+        <div class="empty-state">Estadísticas disponibles próximamente.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div id="site-footer"></div>
+
+<script src="assets/include.js"></script>
+<script>
+document.addEventListener('partialsReady', async () => {
+  const SUPABASE_URL = 'https://dtfecbsokpgzyuiyxyvm.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_SU7zJytoYMgoGtYoobINDQ_qLSO0bw1';
+  const AUTH_API = SUPABASE_URL + '/auth/v1';
+
+  function getSess(){ try{ return JSON.parse(localStorage.getItem('pragmata_session')); }catch(e){ return null; } }
+
+  const sess = getSess();
+  const guard = document.getElementById('panelGuard');
+  const content = document.getElementById('panelContent');
+
+  if(!sess?.access_token){
+    guard.style.display = 'block';
+    document.getElementById('panelLoginBtn').addEventListener('click', (e)=>{
+      e.preventDefault();
+      document.getElementById('authGate')?.classList.remove('hide');
+      document.body.style.overflow = 'hidden';
+    });
+    return;
+  }
+
+  try{
+    const res = await fetch(AUTH_API + '/user', {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + sess.access_token }
+    });
+    if(!res.ok){ guard.style.display = 'block'; return; }
+    const user = await res.json();
+    const meta = user.user_metadata || {};
+
+    content.style.display = 'grid';
+    document.getElementById('panelGreeting').textContent = 'Hola, ' + (meta.full_name || user.email?.split('@')[0] || 'Usuario');
+    document.getElementById('panelEmail').textContent = user.email || '—';
+    document.getElementById('panelSince').textContent = user.created_at ? new Date(user.created_at).toLocaleDateString('es-PE', {year:'numeric', month:'long', day:'numeric'}) : '—';
+    document.getElementById('pName').value = meta.full_name || '';
+    document.getElementById('pUser').value = meta.username || '';
+    document.getElementById('pBio').value = meta.bio || '';
+
+    document.getElementById('pSave').addEventListener('click', async ()=>{
+      const statusEl = document.getElementById('pStatus');
+      statusEl.textContent = '';
+      try{
+        const r = await fetch(AUTH_API + '/user', {
+          method: 'PUT',
+          headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + sess.access_token, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ data: {
+            full_name: document.getElementById('pName').value.trim(),
+            username: document.getElementById('pUser').value.trim(),
+            bio: document.getElementById('pBio').value.trim(),
+          }})
+        });
+        if(r.ok){
+          statusEl.className = 'profile-status ok';
+          statusEl.textContent = '✓ Perfil actualizado';
+        } else {
+          statusEl.className = 'profile-status err';
+          statusEl.textContent = '✗ No se pudo guardar';
+        }
+      }catch(e){
+        statusEl.className = 'profile-status err';
+        statusEl.textContent = '✗ Error de conexión';
+      }
+    });
+  }catch(e){
+    guard.style.display = 'block';
+  }
+});
+</script>
+</body>
+</html>

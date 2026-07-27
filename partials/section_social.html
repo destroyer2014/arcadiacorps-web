@@ -1,0 +1,30 @@
+<section id="social" class="reveal">
+  <div class="wrap">
+    <span class="eyebrow">Comunidad</span>
+    <h2 class="section-title">Muro Social</h2>
+    <p class="section-sub">Escribe con tu cuenta de Coins. Visible para todos, sin necesidad de WhatsApp.</p>
+
+    <div class="social-composer" id="socialComposer">
+      <textarea id="socialInput" maxlength="280" placeholder="Inicia sesión arriba en Coins Pragmata para poder publicar…" disabled rows="3"></textarea>
+      <div class="social-composer-row">
+        <div style="display:flex; align-items:center; gap:10px; position:relative;">
+          <button type="button" class="composer-tool-btn" id="stickerToggleBtn" disabled title="Insertar sticker">😀</button>
+          <button type="button" class="composer-tool-btn" id="gifAddBtn" disabled title="Agregar GIF">🎬 GIF</button>
+          <label class="composer-tool-btn" id="imgUploadLabel" style="cursor:pointer; display:none;" title="Subir imagen">
+            📷 Foto
+            <input type="file" id="postImageInput" accept="image/*" style="display:none;">
+          </label>
+          <span class="social-char-count" id="socialCharCount">0/280</span>
+          <div class="sticker-picker" id="stickerPicker"></div>
+        </div>
+        <button class="btn btn-gold" id="socialPostBtn" disabled>Publicar</button>
+      </div>
+      <div class="composer-gif-preview" id="composerGifPreview" style="display:none;"></div>
+      <div class="composer-img-preview" id="composerImgPreview" style="display:none;"></div>
+    </div>
+
+    <div class="social-feed" id="socialFeed">
+      <div class="social-feed-empty">Cargando publicaciones…</div>
+    </div>
+  </div>
+</section>
