@@ -180,6 +180,7 @@
   const items = document.querySelectorAll('.accordion-item');
   const noResults = document.getElementById('cmdNoResults');
 
+  if(search){
   search.addEventListener('input', ()=>{
     const q = search.value.trim().toLowerCase();
     let anyVisible = false;
@@ -205,6 +206,7 @@
 
     noResults.style.display = anyVisible ? 'none' : 'block';
   });
+  }
 
   // ── Toggle NSFW ──
   const nsfwBtn = document.getElementById('nsfwToggle');
