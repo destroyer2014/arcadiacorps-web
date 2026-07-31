@@ -8,17 +8,17 @@ function includePartial(id, url){
   }).catch(e => console.error('No se pudo cargar', url, e));
 }
 Promise.all([
-  includePartial('site-header','partials/header.html?v=tickets-v1'),
-  includePartial('site-footer','partials/footer.html?v=tickets-v1')
+  includePartial('site-header','partials/header.html?v=home-v2'),
+  includePartial('site-footer','partials/footer.html?v=home-v2')
 ]).then(() => {
   const core = document.createElement('script');
-  core.src = 'assets/core.js?v=tickets-v1';
+  core.src = 'assets/core.js?v=home-v2';
   core.onload = () => {
     const app = document.createElement('script');
-    app.src = 'assets/app.js?v=tickets-v1';
+    app.src = 'assets/app.js?v=home-v2';
     app.onload = () => {
       const support = document.createElement('script');
-      support.src = 'assets/support-system.js?v=tickets-v1';
+      support.src = 'assets/support-system.js?v=home-v2';
       document.body.appendChild(support);
     };
     document.body.appendChild(app);
