@@ -1,0 +1,15 @@
+SISTEMA DE TICKETS — ARCADIACORPS
+
+Archivos principales:
+- soporte.html: área del usuario.
+- staff-tickets.html: bandeja de staff y owner.
+- owner-panel.html: roles y notificaciones.
+- assets/support-system.js: conexión común y notificaciones flotantes.
+- assets/tickets-user.js
+- assets/tickets-staff.js
+- assets/owner-panel.js
+- supabase/tickets_final_patch.sql
+
+Antes de probar el Panel Owner, ejecutar el contenido de:
+supabase/tickets_final_patch.sql
+en Supabase > SQL Editor.

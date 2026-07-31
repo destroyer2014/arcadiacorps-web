@@ -1,75 +1,60 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Soporte — ArcadiaCorps</title>
-<meta name="description" content="Pragmata Bot: bot de WhatsApp con casino, gacha, economía y más de 300 comandos. Creado por ArcadiaCorps.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
-<meta property="og:title" content="Pragmata Bot — ArcadiaCorps">
-<meta property="og:description" content="Bot de WhatsApp con casino, gacha, economía, muro social y más de 300 comandos.">
-<meta property="og:type" content="website">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Centro de soporte — ArcadiaCorps</title>
+<meta name="description" content="Crea y consulta tickets de soporte dentro de ArcadiaCorps.">
 <meta name="theme-color" content="#0d0a12">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/styles.css">
+<link rel="stylesheet" href="assets/styles.css?v=tickets-v1">
 </head>
 <body>
-
 <div id="site-header"></div>
-
-<section id="soporte" class="reveal">
+<main class="ticket-shell">
   <div class="wrap">
-    <span class="eyebrow">Ayuda</span>
-    <h2 class="section-title">Soporte</h2>
-    <p class="section-sub">¿Tienes un problema o una duda? Escríbenos directo y te respondemos lo antes posible.</p>
+    <header class="ticket-page-head">
+      <div><span class="eyebrow">Centro de ayuda</span><h1>Soporte por tickets</h1><p>Crea una solicitud, conversa con el equipo y consulta su estado sin salir de la web.</p></div>
+      <button type="button" class="ticket-primary-btn" id="newTicketBtn">＋ Crear ticket</button>
+    </header>
 
-    <div class="subbot-connect">
-      <div class="subbot-connect-form">
-        <div class="sc-badge">🎫</div>
-        <h3>Abrir un ticket de soporte</h3>
-        <p class="sc-sub">Cuéntanos qué pasó y te llevamos directo a WhatsApp con el mensaje ya armado.</p>
-        <form id="supportForm">
-          <div class="sc-field">
-            <label>Asunto</label>
-            <input type="text" id="supportSubject" placeholder="Ej: No puedo vincular mi sub-bot" required maxlength="80" />
-          </div>
-          <div class="sc-field">
-            <label>Describe tu problema</label>
-            <textarea id="supportMessage" rows="4" placeholder="Cuéntanos con detalle qué está pasando" required maxlength="500" style="width:100%; background:var(--bg-deep); border:1px solid var(--line); border-radius:9px; padding:13px 14px; color:var(--text); font-family:var(--f-mono); font-size:13.5px; resize:vertical;"></textarea>
-          </div>
-          <button type="submit" class="sc-submit">🎫 ABRIR TICKET POR WHATSAPP</button>
-        </form>
-        <p class="sc-hint">Al tocar el botón se abre WhatsApp con tu mensaje ya escrito — solo tienes que enviarlo.</p>
-      </div>
-      <div class="subbot-connect-side">
-        <h4>⚡ Preguntas frecuentes</h4>
-        <p>Antes de escribir, revisa si tu duda ya está resuelta en <a href="comandos.html" style="color:var(--green);">Comandos</a> o en <a href="subbot.html" style="color:var(--green);">Sub-Bot</a>.</p>
-        <a class="sc-chat-link" href="https://wa.me/51917611323?text=Hola%2C%20necesito%20soporte" target="_blank" rel="noopener">💬 Escribir directo →</a>
-      </div>
-    </div>
+    <div class="ticket-auth-note" data-auth-message>Debes iniciar sesión para crear y consultar tickets.</div>
+
+    <section class="ticket-dashboard" id="ticketDashboard" hidden>
+      <aside class="ticket-list-panel">
+        <div class="ticket-panel-head"><div><span>Mis solicitudes</span><strong id="ticketCount">0 tickets</strong></div><button type="button" id="refreshTickets" aria-label="Actualizar">↻</button></div>
+        <div class="ticket-filter-row">
+          <button type="button" class="active" data-user-ticket-filter="all">Todos</button>
+          <button type="button" data-user-ticket-filter="abierto">Abiertos</button>
+          <button type="button" data-user-ticket-filter="resuelto">Resueltos</button>
+        </div>
+        <div id="ticketList" class="ticket-list"><div class="ticket-loading">Cargando tickets...</div></div>
+      </aside>
+
+      <section class="ticket-conversation-panel" id="ticketConversation">
+        <div class="ticket-empty-state"><span>🎫</span><h2>Selecciona un ticket</h2><p>Aquí aparecerá la conversación con el equipo de soporte.</p></div>
+      </section>
+    </section>
   </div>
-</section>
+</main>
 
-<script>
-document.addEventListener('partialsReady', function(){
-  const form = document.getElementById('supportForm');
-  if(!form) return;
-  const BOT_NUMBER = '51917611323';
-  form.addEventListener('submit', (e)=>{
-    e.preventDefault();
-    const subject = document.getElementById('supportSubject').value.trim();
-    const message = document.getElementById('supportMessage').value.trim();
-    if(!subject || !message) return;
-    const text = encodeURIComponent(`🎫 Ticket de soporte\n\nAsunto: ${subject}\n\n${message}`);
-    window.open(`https://wa.me/${BOT_NUMBER}?text=${text}`, '_blank', 'noopener');
-  });
-});
-</script>
-
+<div class="ticket-modal" id="newTicketModal" aria-hidden="true">
+  <div class="ticket-modal-card">
+    <button type="button" class="ticket-modal-close" id="closeTicketModal">×</button>
+    <span class="ticket-modal-kicker">Nueva solicitud</span><h2>Abrir ticket</h2><p>Describe el problema con el mayor detalle posible.</p>
+    <form id="newTicketForm">
+      <label>Asunto<input id="ticketSubject" required minlength="4" maxlength="150" placeholder="Ej: No recibí mi producto"></label>
+      <div class="ticket-form-grid">
+        <label>Categoría<select id="ticketCategory"><option value="soporte">Soporte general</option><option value="streaming">Compra streaming</option><option value="cuenta">Mi cuenta</option><option value="pago">Pagos</option><option value="bot">Pragmata Bot</option></select></label>
+        <label>Prioridad<select id="ticketPriority"><option value="normal">Normal</option><option value="baja">Baja</option><option value="alta">Alta</option><option value="urgente">Urgente</option></select></label>
+      </div>
+      <label>Descripción<textarea id="ticketDescription" required minlength="10" maxlength="5000" rows="7" placeholder="Cuéntanos qué ocurrió, cuándo y qué necesitas resolver."></textarea></label>
+      <div class="ticket-form-status" id="newTicketStatus"></div>
+      <button type="submit" class="ticket-primary-btn">Crear ticket</button>
+    </form>
+  </div>
+</div>
 <div id="site-footer"></div>
-
-<script src="assets/include.js"></script>
-</body>
-</html>
+<script src="assets/include.js?v=tickets-v1"></script>
+<script src="assets/tickets-user.js?v=tickets-v1" defer></script>
+</body></html>
