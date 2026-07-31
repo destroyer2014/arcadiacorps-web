@@ -138,3 +138,89 @@
   update();
   restart();
 })();
+
+/* HOME V6 — cinematic motion, staggered grids, smart nav and parallax */
+(function(){
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const intro = document.getElementById('homeIntro');
+  const body = document.body;
+
+  const finishIntro = () => {
+    intro?.classList.add('is-done');
+    body.classList.add('home-ready');
+  };
+  if(reduce) finishIntro();
+  else window.addEventListener('load', () => setTimeout(finishIntro, 900), {once:true});
+  setTimeout(finishIntro, 2600);
+
+  document.querySelectorAll('.home-stats-grid,.home-feature-grid,.home-showcase-grid,.home-bottom-grid').forEach(el => el.classList.add('home-stagger'));
+  const staggerGroups = document.querySelectorAll('.home-stagger');
+  if(reduce || !('IntersectionObserver' in window)) staggerGroups.forEach(el => el.classList.add('is-visible'));
+  else {
+    const staggerObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if(!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        staggerObserver.unobserve(entry.target);
+      });
+    }, {threshold:.12,rootMargin:'0px 0px -35px'});
+    staggerGroups.forEach(el => staggerObserver.observe(el));
+  }
+
+  const nav = document.getElementById('nav');
+  let lastY = window.scrollY;
+  let ticking = false;
+  function updateNav(){
+    const y = window.scrollY;
+    nav?.classList.toggle('home-nav-scrolled', y > 30);
+    if(nav && y > 170 && y > lastY + 8) nav.classList.add('home-nav-hidden');
+    else if(nav && y < lastY - 5) nav.classList.remove('home-nav-hidden');
+    lastY = y;
+    ticking = false;
+  }
+  window.addEventListener('scroll', () => {
+    if(!ticking){ requestAnimationFrame(updateNav); ticking = true; }
+  }, {passive:true});
+
+  const glow = document.getElementById('homeCursorGlow');
+  if(glow && !reduce && matchMedia('(pointer:fine)').matches){
+    window.addEventListener('pointermove', e => {
+      glow.style.left = e.clientX + 'px';
+      glow.style.top = e.clientY + 'px';
+      glow.classList.add('is-active');
+    }, {passive:true});
+    document.documentElement.addEventListener('mouseleave', () => glow.classList.remove('is-active'));
+  }
+
+  const stage = document.querySelector('.home-robot-stage');
+  const image = document.querySelector('.home-hero-media');
+  if(stage && image && !reduce){
+    stage.addEventListener('pointermove', e => {
+      if(!matchMedia('(pointer:fine)').matches) return;
+      const r = stage.getBoundingClientRect();
+      const x = ((e.clientX-r.left)/r.width-.5)*10;
+      const y = ((e.clientY-r.top)/r.height-.5)*8;
+      image.style.transform = `translate3d(${x}px,${y}px,0) scale(1.025)`;
+    });
+    stage.addEventListener('pointerleave', () => image.style.transform = 'translate3d(0,0,0) scale(1)');
+  }
+
+  const terminal = document.querySelector('.home-terminal');
+  if(terminal){
+    const rows = Array.from(terminal.children);
+    rows.forEach((row,i) => {
+      row.classList.add('typed-row');
+      row.style.animationDelay = `${i * 110}ms`;
+    });
+    if(reduce) terminal.classList.add('is-typing');
+    else {
+      const termObserver = new IntersectionObserver(entries => {
+        if(entries.some(e => e.isIntersecting)){
+          terminal.classList.add('is-typing');
+          termObserver.disconnect();
+        }
+      }, {threshold:.35});
+      termObserver.observe(terminal);
+    }
+  }
+})();
