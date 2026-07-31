@@ -2427,3 +2427,122 @@
     location.reload();
   });
 })();
+
+/* --- bloque --- */
+// ── Tienda streaming: carrusel, filtros, búsqueda y countdown ──
+(function(){
+  const recTrack = document.getElementById('streamRecommendTrack');
+  const recLeft = document.getElementById('streamRecLeft');
+  const recRight = document.getElementById('streamRecRight');
+  if(recTrack && recLeft && recRight){
+    const scrollCards = (dir) => {
+      const card = recTrack.querySelector('.stream-card');
+      const amount = card ? card.offsetWidth + 18 : 280;
+      recTrack.scrollBy({ left: dir * amount, behavior: 'smooth' });
+    };
+    recLeft.addEventListener('click', () => scrollCards(-1));
+    recRight.addEventListener('click', () => scrollCards(1));
+  }
+
+  const grid = document.getElementById('streamProductGrid');
+  if(!grid) return;
+
+  const cards = Array.from(grid.querySelectorAll('.stream-grid-card'));
+  const tabs = Array.from(document.querySelectorAll('.stream-tab'));
+  const chips = Array.from(document.querySelectorAll('.stream-chip'));
+  const search = document.getElementById('streamSearch');
+  const noResults = document.getElementById('streamNoResults');
+  const loadMore = document.getElementById('streamLoadMore');
+
+  let activeTab = 'all';
+  let activeCategory = 'all';
+  let extrasRevealed = false;
+
+  function matchesFilters(card){
+    const category = card.dataset.category || '';
+    const tabData = card.dataset.tab || '';
+    const searchData = (card.dataset.search || '').toLowerCase();
+    const query = (search?.value || '').trim().toLowerCase();
+
+    const matchCategory = activeCategory === 'all' || category === activeCategory;
+    const matchTab = activeTab === 'all' || tabData.includes(activeTab);
+    const matchSearch = !query || searchData.includes(query) || card.textContent.toLowerCase().includes(query);
+
+    return matchCategory && matchTab && matchSearch;
+  }
+
+  function applyFilters(){
+    let visible = 0;
+
+    cards.forEach(card => {
+      const isExtra = card.classList.contains('is-extra');
+      const matches = matchesFilters(card);
+      const canShowExtra = !isExtra || extrasRevealed;
+      const show = matches && canShowExtra;
+      card.classList.toggle('is-filtered-out', !show);
+      if(show) visible++;
+    });
+
+    if(noResults) noResults.style.display = visible ? 'none' : 'block';
+
+    if(loadMore){
+      const hiddenExtras = cards.some(card => card.classList.contains('is-extra') && matchesFilters(card) && !extrasRevealed);
+      loadMore.hidden = !hiddenExtras;
+    }
+  }
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(item => item.classList.remove('active'));
+      tab.classList.add('active');
+      activeTab = tab.dataset.tab || 'all';
+      applyFilters();
+    });
+  });
+
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      chips.forEach(item => item.classList.remove('active'));
+      chip.classList.add('active');
+      activeCategory = chip.dataset.category || 'all';
+      applyFilters();
+    });
+  });
+
+  search?.addEventListener('input', applyFilters);
+
+  loadMore?.addEventListener('click', () => {
+    extrasRevealed = true;
+    cards.filter(card => card.classList.contains('is-extra')).forEach(card => card.classList.add('revealed'));
+    applyFilters();
+  });
+
+  applyFilters();
+})();
+
+/* --- bloque --- */
+// ── Countdown para oferta destacada ──
+(function(){
+  const countdown = document.getElementById('streamCountdown');
+  if(!countdown) return;
+
+  const end = new Date(Date.now() + ((2 * 24 + 5) * 60 + 30) * 60 * 1000);
+
+  function render(){
+    const diff = end.getTime() - Date.now();
+    if(diff <= 0){
+      countdown.textContent = '00 : 00 : 00';
+      return;
+    }
+
+    const totalSeconds = Math.floor(diff / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    const parts = [hours, minutes, seconds].map(v => String(v).padStart(2, '0'));
+    countdown.textContent = parts.join(' : ');
+  }
+
+  render();
+  setInterval(render, 1000);
+})();

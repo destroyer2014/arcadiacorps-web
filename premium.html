@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Premium — ArcadiaCorps</title>
-<meta name="description" content="Pragmata Bot: bot de WhatsApp con casino, gacha, economía y más de 300 comandos. Creado por ArcadiaCorps.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
-<meta property="og:title" content="Pragmata Bot — ArcadiaCorps">
-<meta property="og:description" content="Bot de WhatsApp con casino, gacha, economía, muro social y más de 300 comandos.">
+<title>Tienda Streaming — ArcadiaCorps</title>
+<meta name="description" content="Tienda de cuentas streaming y suscripciones digitales con diseño premium, entrega rápida y soporte personalizado.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👑</text></svg>">
+<meta property="og:title" content="Tienda Streaming — ArcadiaCorps">
+<meta property="og:description" content="Netflix, Prime Video, Disney+, Spotify, Canva Pro y más. Catálogo premium con estilo neón rojo vino, negro y dorado.">
 <meta property="og:type" content="website">
-<meta name="theme-color" content="#0d0a12">
+<meta name="theme-color" content="#110507">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -19,120 +19,331 @@
 
 <div id="site-header"></div>
 
-<section id="premium" class="reveal">
+<section class="stream-store reveal" id="streamingStore">
   <div class="wrap">
-    <span class="eyebrow">Mejora tu experiencia</span>
-    <h2 class="section-title">Planes Premium</h2>
-    <p class="section-sub">Desde acceso básico hasta un bot 100% personalizado. Elige el plan que se ajuste a ti — todos se activan al instante tras el pago.</p>
-
-    <div class="premium-carousel-wrap">
-      <button class="carousel-arrow left" id="planLeft" aria-label="Anterior">‹</button>
-      <button class="carousel-arrow right" id="planRight" aria-label="Siguiente">›</button>
-
-      <div class="premium-grid" id="planCarousel">
-
-        <div class="plan-card" style="--acc:var(--green)">
-          <div class="bar-top"></div>
-          <div class="plan-name">🎟️ RAGE-SEMANAL</div>
-          <div class="plan-duration">Duración: 7 días</div>
-          <div class="plan-price">S/. 1.50</div>
-          <ul class="plan-list">
-            <li>Acceso básico a comandos premium</li>
-            <li>10 usos premium por día</li>
-            <li>Bono leve en Yuka's Coins diarias</li>
-          </ul>
-          <a class="plan-cta" href="https://wa.me/51917611323?text=Hola%2C%20quiero%20el%20plan%20RAGE-SEMANAL" target="_blank" rel="noopener">ADQUIRIR ▸</a>
+    <div class="stream-hero-panel stream-panel-cut">
+      <div class="stream-hero-copy">
+        <span class="stream-hero-tag">CATÁLOGO STREAMING · ENTREGA INMEDIATA · STOCK REAL</span>
+        <h1 class="stream-hero-title">Tienda <span>Streaming</span><br>Premium</h1>
+        <p class="stream-hero-sub">Agrega a tu web una vitrina moderna para vender <strong>Netflix, Disney+, Prime Video, Spotify, HBO Max, Canva Pro</strong> y más. Diseño oscuro, bordes neón, detalles dorados y animaciones suaves para destacar tus productos.</p>
+        <div class="stream-hero-actions">
+          <a href="#streamCatalog" class="btn stream-btn-main">Ver catálogo</a>
+          <a href="https://wa.me/51917611323?text=Hola%2C%20quiero%20comprar%20una%20suscripci%C3%B3n%20streaming" target="_blank" rel="noopener" class="btn stream-btn-alt">Comprar por WhatsApp</a>
         </div>
-
-        <div class="plan-card" style="--acc:var(--violet)">
-          <div class="bar-top"></div>
-          <div class="plan-name">🥈 RAGE-PLATA</div>
-          <div class="plan-duration">Duración: 15 días</div>
-          <div class="plan-price">S/. 3.00</div>
-          <ul class="plan-list">
-            <li>Acceso a comandos premium</li>
-            <li>15 usos premium por día</li>
-            <li>XP bonus en cada comando</li>
-          </ul>
-          <a class="plan-cta" href="https://wa.me/51917611323?text=Hola%2C%20quiero%20el%20plan%20RAGE-PLATA" target="_blank" rel="noopener">ADQUIRIR ▸</a>
+        <div class="stream-status-row">
+          <div class="stream-status-pill"><span class="stream-status-dot"></span>Ventas activas</div>
+          <div class="stream-status-pill">Soporte 24/7</div>
+          <div class="stream-status-pill">Pagos seguros</div>
         </div>
+      </div>
 
-        <div class="plan-card featured" style="--acc:var(--gold)">
-          <div class="bar-top"></div>
-          <div class="plan-name">🥇 RAGE-DORADO</div>
-          <div class="plan-duration">Duración: 1 mes</div>
-          <div class="plan-price">S/. 6.00</div>
-          <ul class="plan-list">
-            <li>Todo el plan Rage-Plata</li>
-            <li>30 usos premium por día</li>
-            <li>+50% Yuka's Coins en trabajos</li>
-            <li>+30% en recompensas del casino</li>
-            <li>Bonus en todos los minijuegos</li>
-          </ul>
-          <a class="plan-cta" href="https://wa.me/51917611323?text=Hola%2C%20quiero%20el%20plan%20RAGE-DORADO" target="_blank" rel="noopener">ADQUIRIR ▸</a>
+      <div class="stream-hero-preview">
+        <div class="stream-mini-card logo-netflix">
+          <span class="stream-mini-top">Top ventas</span>
+          <div class="stream-mini-logo"><span class="logo-symbol">N</span><span class="logo-word">Netflix</span></div>
+          <div class="stream-mini-price">S/ 15.00</div>
         </div>
-
-        <div class="plan-card" style="--acc:var(--gold)">
-          <div class="bar-top"></div>
-          <div class="plan-name">👑 KING-RAGE</div>
-          <div class="plan-duration">Duración: 1 mes</div>
-          <div class="plan-price">S/. 10.00</div>
-          <ul class="plan-list">
-            <li>Todo el plan Rage-Dorado</li>
-            <li>60 usos premium por día</li>
-            <li><code>!subbot</code> — agrega 1 sub-bot</li>
-            <li>Acceso a todos los comandos (menos Owner)</li>
-            <li>Tu nombre y redes en el menú principal</li>
-            <li>Badge exclusivo KING en tu perfil</li>
-          </ul>
-          <a class="plan-cta" href="https://wa.me/51917611323?text=Hola%2C%20quiero%20el%20plan%20KING-RAGE" target="_blank" rel="noopener">ADQUIRIR ▸</a>
+        <div class="stream-mini-card logo-prime">
+          <span class="stream-mini-top">Oferta flash</span>
+          <div class="stream-mini-logo"><span class="logo-word">Prime Video</span></div>
+          <div class="stream-mini-price">S/ 12.00</div>
         </div>
-
-        <div class="plan-card featured" style="--acc:var(--violet)">
-          <div class="bar-top"></div>
-          <div class="plan-name">🔱 DIOS-RAGE</div>
-          <div class="plan-duration">Duración: 1 mes</div>
-          <div class="plan-price">S/. 15.00</div>
-          <ul class="plan-list">
-            <li>Todo el plan King-Rage</li>
-            <li>Usos ilimitados</li>
-            <li><code>!subbot</code> — hasta 3 sub-bots</li>
-            <li>Acceso a TODOS los comandos (incluye Owner)</li>
-            <li>Elige el comando que quieras</li>
-            <li>Tus créditos en ese comando</li>
-            <li>Diseño personalizado en tu perfil</li>
-          </ul>
-          <a class="plan-cta" href="https://wa.me/51917611323?text=Hola%2C%20quiero%20el%20plan%20DIOS-RAGE" target="_blank" rel="noopener">ADQUIRIR ▸</a>
-        </div>
-
-        <div class="plan-card" style="--acc:var(--red)">
-          <div class="bar-top"></div>
-          <div class="plan-name">🤖 RAGE-CREADOR</div>
-          <div class="plan-duration">Duración: 1 mes</div>
-          <div class="plan-price">S/. 25.00</div>
-          <ul class="plan-list">
-            <li>Todo el plan Dios-Rage</li>
-            <li>Bot personalizado a tu gusto</li>
-            <li>Nombre, prefijo y apariencia única</li>
-            <li>Comandos configurados según tus gustos</li>
-            <li>Soporte directo del creador</li>
-            <li>Usos ilimitados en todo</li>
-          </ul>
-          <a class="plan-cta" href="https://wa.me/51917611323?text=Hola%2C%20quiero%20el%20plan%20RAGE-CREADOR" target="_blank" rel="noopener">ADQUIRIR ▸</a>
-        </div>
-
+        <div class="stream-floating-orb orb-one"></div>
+        <div class="stream-floating-orb orb-two"></div>
       </div>
     </div>
 
-    <div class="premium-howto">
-      <div class="howto-step"><span class="num">01</span><p>Escríbenos al contacto de compra (botón "Adquirir" o sección de contacto).</p></div>
-      <div class="howto-step"><span class="num">02</span><p>Indica tu número de WhatsApp y el plan que elegiste.</p></div>
-      <div class="howto-step"><span class="num">03</span><p>Realiza el pago y envía la captura de comprobante.</p></div>
-      <div class="howto-step"><span class="num">04</span><p>¡Tu premium se activa al instante! ✅</p></div>
+    <div class="stream-feature-grid">
+      <article class="stream-feature-card">
+        <div class="stream-feature-icon">⚡</div>
+        <div>
+          <h3>Entrega inmediata</h3>
+          <p>Activación rápida apenas se confirma el pedido.</p>
+        </div>
+      </article>
+      <article class="stream-feature-card">
+        <div class="stream-feature-icon">🛡️</div>
+        <div>
+          <h3>Seguridad avanzada</h3>
+          <p>Información protegida y soporte postventa.</p>
+        </div>
+      </article>
+      <article class="stream-feature-card">
+        <div class="stream-feature-icon">📦</div>
+        <div>
+          <h3>Control de stock</h3>
+          <p>Disponibilidad real para cada producto publicado.</p>
+        </div>
+      </article>
+      <article class="stream-feature-card">
+        <div class="stream-feature-icon">💬</div>
+        <div>
+          <h3>Soporte por chat</h3>
+          <p>Atención por WhatsApp con comprobantes e imágenes.</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="stream-showcase stream-panel-cut reveal">
+      <div class="stream-section-head">
+        <div>
+          <span class="stream-section-kicker">Recomendados para ti</span>
+          <h2>Servicios más buscados</h2>
+          <p>Selección premium basada en lo más popular ahora.</p>
+        </div>
+        <div class="stream-carousel-actions">
+          <button class="stream-arrow" id="streamRecLeft" aria-label="Desplazar a la izquierda">‹</button>
+          <button class="stream-arrow" id="streamRecRight" aria-label="Desplazar a la derecha">›</button>
+        </div>
+      </div>
+
+      <div class="stream-recommend-track" id="streamRecommendTrack">
+        <article class="stream-card featured-card" data-category="streaming" data-tab="tendencias" data-search="netflix premium pantalla streaming">
+          <span class="stream-card-badge">-25%</span>
+          <button class="stream-card-fav" aria-label="Favorito">♡</button>
+          <div class="stream-card-glow"></div>
+          <div class="stream-card-logo logo-netflix"><span class="logo-symbol">N</span><span class="logo-word">Netflix</span></div>
+          <span class="stream-card-category">Streaming</span>
+          <h3>Netflix Premium 1 Pantalla</h3>
+          <div class="stream-card-rating">★ 4.9 <span>+120 ventas</span></div>
+          <div class="stream-card-price-row"><strong>S/ 15.00</strong><span>S/ 20.00</span></div>
+          <div class="stream-card-footer"><span>⚡ Entrega inmediata</span><a href="https://wa.me/51917611323?text=Quiero%20comprar%20Netflix%20Premium%201%20Pantalla" target="_blank" rel="noopener">Comprar</a></div>
+        </article>
+
+        <article class="stream-card soldout-card" data-category="streaming" data-tab="vendidos" data-search="hbo max premium streaming">
+          <span class="stream-card-badge neutral">Agotado</span>
+          <button class="stream-card-fav" aria-label="Favorito">♡</button>
+          <div class="stream-card-glow"></div>
+          <div class="stream-card-logo logo-hbo"><span class="logo-word">HBO Max</span></div>
+          <span class="stream-card-category">Streaming</span>
+          <h3>HBO Max Premium</h3>
+          <div class="stream-card-rating">★ 4.8 <span>+70 ventas</span></div>
+          <div class="stream-card-price-row"><strong>S/ 14.00</strong><span>S/ 18.00</span></div>
+          <div class="stream-card-footer"><span>Stock no disponible</span><a href="https://wa.me/51917611323?text=Quiero%20consultar%20sobre%20HBO%20Max%20Premium" target="_blank" rel="noopener">Consultar</a></div>
+        </article>
+
+        <article class="stream-card" data-category="software" data-tab="tendencias" data-search="canva pro software premium diseño">
+          <span class="stream-card-badge green">-28%</span>
+          <button class="stream-card-fav" aria-label="Favorito">♡</button>
+          <div class="stream-card-glow"></div>
+          <div class="stream-card-logo logo-canva"><span class="logo-word">Canva Pro</span></div>
+          <span class="stream-card-category">Software</span>
+          <h3>Canva Pro</h3>
+          <div class="stream-card-rating">★ 4.9 <span>+100 ventas</span></div>
+          <div class="stream-card-price-row"><strong>S/ 18.00</strong><span>S/ 25.00</span></div>
+          <div class="stream-card-footer"><span>⚡ Entrega inmediata</span><a href="https://wa.me/51917611323?text=Quiero%20comprar%20Canva%20Pro" target="_blank" rel="noopener">Comprar</a></div>
+        </article>
+
+        <article class="stream-card" data-category="streaming" data-tab="ofertas" data-search="prime video streaming premium amazon">
+          <span class="stream-card-badge">-25%</span>
+          <button class="stream-card-fav" aria-label="Favorito">♡</button>
+          <div class="stream-card-glow"></div>
+          <div class="stream-card-logo logo-prime"><span class="logo-word">Prime Video</span></div>
+          <span class="stream-card-category">Streaming</span>
+          <h3>Prime Video</h3>
+          <div class="stream-card-rating">★ 4.9 <span>+120 ventas</span></div>
+          <div class="stream-card-price-row"><strong>S/ 12.00</strong><span>S/ 14.00</span></div>
+          <div class="stream-card-footer"><span>⚡ Entrega inmediata</span><a href="https://wa.me/51917611323?text=Quiero%20comprar%20Prime%20Video" target="_blank" rel="noopener">Comprar</a></div>
+        </article>
+      </div>
+    </div>
+
+    <div class="stream-catalog stream-panel-cut reveal" id="streamCatalog">
+      <div class="stream-tab-bar" id="streamTabBar">
+        <button class="stream-tab active" data-tab="all">Tendencias</button>
+        <button class="stream-tab" data-tab="vendidos">Más vendidos</button>
+        <button class="stream-tab" data-tab="nuevos">Nuevos</button>
+        <button class="stream-tab" data-tab="ofertas">Ofertas</button>
+      </div>
+
+      <div class="stream-catalog-head">
+        <div>
+          <span class="stream-section-kicker">Catálogo oficial</span>
+          <h2>Todos los productos</h2>
+          <p>Explora el catálogo digital y encuentra tu plan ideal.</p>
+        </div>
+        <label class="stream-search-box">
+          <span>⌕</span>
+          <input type="search" id="streamSearch" placeholder="Buscar producto...">
+        </label>
+      </div>
+
+      <div class="stream-chip-row" id="streamCategoryFilters">
+        <button class="stream-chip active" data-category="all">Todos</button>
+        <button class="stream-chip" data-category="streaming">Streaming</button>
+        <button class="stream-chip" data-category="musica">Música</button>
+        <button class="stream-chip" data-category="software">Software</button>
+        <button class="stream-chip" data-category="educacion">Educación</button>
+        <button class="stream-chip" data-category="servicios">Servicios</button>
+      </div>
+
+      <div class="stream-product-grid" id="streamProductGrid">
+        <article class="stream-card stream-grid-card" data-category="streaming" data-tab="tendencias vendidos" data-search="netflix premium 1 pantalla streaming">
+          <span class="stream-card-badge green">-25%</span>
+          <button class="stream-card-fav" aria-label="Favorito">♡</button>
+          <div class="stream-card-glow"></div>
+          <div class="stream-card-logo logo-netflix"><span class="logo-symbol">N</span><span class="logo-word">Netflix</span></div>
+          <span class="stream-card-category">Streaming</span>
+          <h3>Netflix Premium 1 Pantalla</h3>
+          <div class="stream-card-rating">★ 4.9 <span>+120 ventas</span></div>
+          <div class="stream-card-price-row"><strong>S/ 15.00</strong><span>S/ 20.00</span></div>
+          <div class="stream-card-footer"><span>⚡ Entrega inmediata</span><a href="https://wa.me/51917611323?text=Quiero%20comprar%20Netflix%20Premium%201%20Pantalla" target="_blank" rel="noopener">Comprar</a></div>
+        </article>
+
+        <article class="stream-card stream-grid-card soldout-card" data-category="streaming" data-tab="vendidos" data-search="hbo max premium streaming">
+          <span class="stream-card-badge neutral">Agotado</span>
+          <button class="stream-card-fav" aria-label="Favorito">♡</button>
+          <div class="stream-card-glow"></div>
+          <div class="stream-card-logo logo-hbo"><span class="logo-word">HBO Max</span></div>
+          <span class="stream-card-category">Streaming</span>
+          <h3>HBO Max Premium</h3>
+          <div class="stream-card-rating">★ 4.8 <span>+70 ventas</span></div>
+          <div class="stream-card-price-row"><strong>S/ 14.00</strong><span>S/ 18.00</span></div>
+          <div class="stream-card-footer"><span>Stock no disponible</span><a href="https://wa.me/51917611323?text=Quiero%20consultar%20sobre%20HBO%20Max%20Premium" target="_blank" rel="noopener">Consultar</a></div>
+        </article>
+
+        <article class="stream-card stream-grid-card" data-category="software" data-tab="tendencias nuevos" data-search="canva pro software diseño premium">
+          <span class="stream-card-badge">-28%</span>
+          <button class="stream-card-fav" aria-label="Favorito">♡</button>
+          <div class="stream-card-glow"></div>
+          <div class="stream-card-logo logo-canva"><span class="logo-word">Canva Pro</span></div>
+          <span class="stream-card-category">Software</span>
+          <h3>Canva Pro</h3>
+          <div class="stream-card-rating">★ 4.9 <span>+100 ventas</span></div>
+          <div class="stream-card-price-row"><strong>S/ 18.00</strong><span>S/ 25.00</span></div>
+          <div class="stream-card-footer"><span>⚡ Entrega inmediata</span><a href="https://wa.me/51917611323?text=Quiero%20comprar%20Canva%20Pro" target="_blank" rel="noopener">Comprar</a></div>
+        </article>
+
+        <article class="stream-card stream-grid-card" data-category="streaming" data-tab="tendencias ofertas" data-search="prime video streaming amazon">
+          <span class="stream-card-badge">-25%</span>
+          <button class="stream-card-fav" aria-label="Favorito">♡</button>
+          <div class="stream-card-glow"></div>
+          <div class="stream-card-logo logo-prime"><span class="logo-word">Prime Video</span></div>
+          <span class="stream-card-category">Streaming</span>
+          <h3>Prime Video</h3>
+          <div class="stream-card-rating">★ 4.9 <span>+120 ventas</span></div>
+          <div class="stream-card-price-row"><strong>S/ 12.00</strong><span>S/ 14.00</span></div>
+          <div class="stream-card-footer"><span>⚡ Entrega inmediata</span><a href="https://wa.me/51917611323?text=Quiero%20comprar%20Prime%20Video" target="_blank" rel="noopener">Comprar</a></div>
+        </article>
+
+        <article class="stream-card stream-grid-card" data-category="streaming" data-tab="vendidos ofertas" data-search="disney premium streaming disney plus">
+          <span class="stream-card-badge">-27%</span>
+          <button class="stream-card-fav" aria-label="Favorito">♡</button>
+          <div class="stream-card-glow"></div>
+          <div class="stream-card-logo logo-disney"><span class="logo-word">Disney+</span></div>
+          <span class="stream-card-category">Streaming</span>
+          <h3>Disney+ Premium</h3>
+          <div class="stream-card-rating">★ 4.9 <span>+120 ventas</span></div>
+          <div class="stream-card-price-row"><strong>S/ 16.00</strong><span>S/ 22.00</span></div>
+          <div class="stream-card-footer"><span>⚡ Entrega inmediata</span><a href="https://wa.me/51917611323?text=Quiero%20comprar%20Disney%2B%20Premium" target="_blank" rel="noopener">Comprar</a></div>
+        </article>
+
+        <article class="stream-card stream-grid-card" data-category="musica" data-tab="vendidos" data-search="spotify premium individual musica">
+          <span class="stream-card-badge">-29%</span>
+          <button class="stream-card-fav" aria-label="Favorito">♡</button>
+          <div class="stream-card-glow"></div>
+          <div class="stream-card-logo logo-spotify"><span class="logo-word">Spotify</span></div>
+          <span class="stream-card-category">Música</span>
+          <h3>Spotify Premium Individual</h3>
+          <div class="stream-card-rating">★ 4.9 <span>+120 ventas</span></div>
+          <div class="stream-card-price-row"><strong>S/ 10.00</strong><span>S/ 14.00</span></div>
+          <div class="stream-card-footer"><span>⚡ Entrega inmediata</span><a href="https://wa.me/51917611323?text=Quiero%20comprar%20Spotify%20Premium%20Individual" target="_blank" rel="noopener">Comprar</a></div>
+        </article>
+
+        <article class="stream-card stream-grid-card" data-category="streaming" data-tab="tendencias vendidos" data-search="netflix 1 pantalla top streaming">
+          <span class="stream-card-badge top">TOP</span>
+          <button class="stream-card-fav" aria-label="Favorito">♡</button>
+          <div class="stream-card-glow"></div>
+          <div class="stream-card-logo logo-netflix"><span class="logo-symbol">N</span><span class="logo-word">Netflix</span></div>
+          <span class="stream-card-category">Streaming</span>
+          <h3>Netflix Premium 1 Pantalla</h3>
+          <div class="stream-card-rating">★ 4.9 <span>+120 ventas</span></div>
+          <div class="stream-card-price-row"><strong>S/ 15.00</strong><span>S/ 20.00</span></div>
+          <div class="stream-card-footer"><span>⚡ Entrega inmediata</span><a href="https://wa.me/51917611323?text=Quiero%20comprar%20Netflix%20Premium%201%20Pantalla" target="_blank" rel="noopener">Comprar</a></div>
+        </article>
+
+        <article class="stream-card stream-grid-card" data-category="servicios" data-tab="nuevos" data-search="dyver servicio digital cuenta web">
+          <span class="stream-card-badge violet">Digital</span>
+          <button class="stream-card-fav" aria-label="Favorito">♡</button>
+          <div class="stream-card-glow"></div>
+          <div class="stream-card-logo logo-dyver"><span class="logo-symbol">d</span><span class="logo-word">dyver</span></div>
+          <span class="stream-card-category">Servicios</span>
+          <h3>Cuenta Dyver</h3>
+          <div class="stream-card-rating">★ 4.9 <span>+120 ventas</span></div>
+          <div class="stream-card-price-row"><strong>S/ 20.00</strong><span>S/ 30.00</span></div>
+          <div class="stream-card-footer"><span>⚡ Entrega inmediata</span><a href="https://wa.me/51917611323?text=Quiero%20comprar%20una%20Cuenta%20Dyver" target="_blank" rel="noopener">Comprar</a></div>
+        </article>
+
+        <article class="stream-card stream-grid-card stream-card-extra is-extra" data-category="educacion" data-tab="nuevos ofertas" data-search="duolingo super educacion idiomas">
+          <span class="stream-card-badge">-20%</span>
+          <button class="stream-card-fav" aria-label="Favorito">♡</button>
+          <div class="stream-card-glow"></div>
+          <div class="stream-card-logo logo-duolingo"><span class="logo-word">Duolingo Super</span></div>
+          <span class="stream-card-category">Educación</span>
+          <h3>Duolingo Super</h3>
+          <div class="stream-card-rating">★ 4.8 <span>+54 ventas</span></div>
+          <div class="stream-card-price-row"><strong>S/ 18.00</strong><span>S/ 22.00</span></div>
+          <div class="stream-card-footer"><span>⚡ Entrega inmediata</span><a href="https://wa.me/51917611323?text=Quiero%20comprar%20Duolingo%20Super" target="_blank" rel="noopener">Comprar</a></div>
+        </article>
+
+        <article class="stream-card stream-grid-card stream-card-extra is-extra" data-category="streaming" data-tab="nuevos" data-search="crunchyroll mega fan anime streaming">
+          <span class="stream-card-badge green">Nuevo</span>
+          <button class="stream-card-fav" aria-label="Favorito">♡</button>
+          <div class="stream-card-glow"></div>
+          <div class="stream-card-logo logo-crunchy"><span class="logo-word">Crunchyroll</span></div>
+          <span class="stream-card-category">Streaming</span>
+          <h3>Crunchyroll Mega Fan</h3>
+          <div class="stream-card-rating">★ 4.8 <span>+40 ventas</span></div>
+          <div class="stream-card-price-row"><strong>S/ 11.00</strong><span>S/ 15.00</span></div>
+          <div class="stream-card-footer"><span>⚡ Entrega inmediata</span><a href="https://wa.me/51917611323?text=Quiero%20comprar%20Crunchyroll%20Mega%20Fan" target="_blank" rel="noopener">Comprar</a></div>
+        </article>
+      </div>
+
+      <p class="stream-no-results" id="streamNoResults">No se encontraron productos con ese filtro. Prueba otra búsqueda o categoría.</p>
+
+      <div class="stream-more-wrap">
+        <button class="btn stream-btn-main stream-load-more" id="streamLoadMore">Ver más productos</button>
+      </div>
+    </div>
+
+    <div class="stream-spotlight reveal">
+      <div class="stream-spotlight-card stream-panel-cut">
+        <div class="stream-spotlight-copy">
+          <span class="stream-section-kicker">Compra destacada</span>
+          <h2>Oferta especial de la semana</h2>
+          <p>Impulsa tus ventas con una tarjeta promocional destacada para campañas flash, bundles o combos streaming.</p>
+          <div class="stream-countdown" id="streamCountdown">02 : 45 : 30</div>
+          <div class="stream-spotlight-actions">
+            <a href="https://wa.me/51917611323?text=Quiero%20aprovechar%20la%20oferta%20de%20la%20semana" target="_blank" rel="noopener" class="btn stream-btn-main">Aprovechar oferta</a>
+            <a href="#streamCatalog" class="btn stream-btn-alt">Ver catálogo completo</a>
+          </div>
+        </div>
+
+        <div class="stream-spotlight-product">
+          <div class="stream-spotlight-badge">TOP VENTAS</div>
+          <div class="stream-card-logo logo-canva large"><span class="logo-word">Canva Pro</span></div>
+          <div class="stream-spotlight-price"><strong>S/ 18.00</strong><span>-28%</span></div>
+          <ul>
+            <li>Acceso rápido</li>
+            <li>Stock disponible</li>
+            <li>Asistencia por chat</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="stream-final-cta reveal">
+      <div class="stream-final-panel stream-panel-cut">
+        <div>
+          <span class="stream-section-kicker">Tu tienda lista para vender</span>
+          <h2>Diseño elegante, oscuro y con identidad premium</h2>
+          <p>Esta sección ya queda preparada con estética <strong>rojo vino, negro y dorado</strong>, bordes neón, tarjetas animadas y botones de compra directos para WhatsApp.</p>
+        </div>
+        <a href="https://wa.me/51917611323?text=Hola%2C%20quiero%20personalizar%20mi%20tienda%20streaming" target="_blank" rel="noopener" class="btn stream-btn-main">Personalizar tienda</a>
+      </div>
     </div>
   </div>
 </section>
-
 
 <div id="site-footer"></div>
 
