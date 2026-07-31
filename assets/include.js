@@ -8,17 +8,22 @@ function includePartial(id, url){
   }).catch(e => console.error('No se pudo cargar', url, e));
 }
 Promise.all([
-  includePartial('site-header','partials/header.html?v=ui-v7'),
-  includePartial('site-footer','partials/footer.html?v=ui-v7')
+  includePartial('site-header','partials/header.html?v=global-v10'),
+  includePartial('site-footer','partials/footer.html?v=global-v10')
 ]).then(() => {
   const core = document.createElement('script');
-  core.src = 'assets/core.js?v=ui-v7';
+  core.src = 'assets/core.js?v=global-v10';
   core.onload = () => {
     const app = document.createElement('script');
-    app.src = 'assets/app.js?v=ui-v7';
+    app.src = 'assets/app.js?v=global-v10';
     app.onload = () => {
       const support = document.createElement('script');
-      support.src = 'assets/support-system.js?v=ui-v7';
+      support.src = 'assets/support-system.js?v=global-v10';
+      support.onload = () => {
+        const theme = document.createElement('script');
+        theme.src = 'assets/global-theme.js?v=global-v10';
+        document.body.appendChild(theme);
+      };
       document.body.appendChild(support);
     };
     document.body.appendChild(app);

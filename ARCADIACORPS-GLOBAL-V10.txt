@@ -1,0 +1,17 @@
+ARCADIACORPS GLOBAL V10
+
+Incluye:
+- Tema negro, rojo vino y dorado en todas las páginas.
+- Menú lateral y navegación activa con color visible.
+- Animaciones globales progresivas y optimizadas.
+- Header inteligente al hacer scroll.
+- Formularios, tablas, tickets, panel owner/staff y notificaciones con tema unificado.
+- Versión de caché unificada global-v10.
+- Respeta prefers-reduced-motion.
+
+Archivos principales añadidos/modificados:
+- assets/styles.css
+- assets/global-theme.js
+- assets/include.js
+- partials/header.html
+- todos los HTML (versión de caché)
