@@ -1,0 +1,9 @@
+ARCADIACORPS WINE V11
+
+- Reemplazo directo de la paleta violeta/verde por negro, rojo vino y dorado.
+- Tema aplicado al CSS original, no como un script externo.
+- Cobertura de Inicio, tienda, páginas informativas, panel, Owner, Staff, soporte y tickets.
+- Navegación activa vino/dorado.
+- Formularios, tarjetas, modales, tablas y botones unificados.
+- Verde conservado únicamente para estados operativos/en línea.
+- Caché CSS unificada con ?v=wine-v11.
