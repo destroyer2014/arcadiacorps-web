@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/styles.css?v=home-v2">
+<link rel="stylesheet" href="assets/styles.css?v=home-v3">
 </head>
 <body class="home-redesign">
 <div id="site-header"></div>
@@ -19,7 +19,7 @@
   <section class="home-hero">
     <div class="home-embers" aria-hidden="true"></div>
     <div class="wrap home-hero-grid">
-      <div class="home-hero-copy">
+      <div class="home-hero-copy home-reveal home-reveal-left">
         <div class="home-eyebrow"><span></span> El bot todo en uno para WhatsApp <span></span></div>
         <h1>PRAGMATA<br><strong>BOT</strong></h1>
         <div class="home-capabilities">ECONOMÍA <i>◆</i> CASINO <i>◆</i> DESCARGAS <i>◆</i> IA <i>◆</i> ADMINISTRACIÓN</div>
@@ -30,7 +30,9 @@
         </div>
       </div>
 
-      <div class="home-robot-stage" aria-label="Mascota robótica de Pragmata Bot">
+      <div class="home-robot-stage home-reveal home-reveal-right" aria-label="Mascota o imagen principal de Pragmata Bot">
+        <img class="home-hero-media" src="assets/hero-character.gif" alt="Mascota de Pragmata Bot" hidden>
+        <div class="home-robot-fallback">
         <div class="home-orbit orbit-a"></div>
         <div class="home-orbit orbit-b"></div>
         <div class="home-float-icon icon-coin">$</div>
@@ -51,11 +53,12 @@
           <div class="robot-cape"></div>
         </div>
         <div class="home-platform"><i></i><b></b></div>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="home-stats-section">
+  <section class="home-stats-section home-reveal">
     <div class="wrap home-stats-grid">
       <article><span>♚</span><strong data-home-counter="12583">0</strong><small>Usuarios</small></article>
       <article><span>▣</span><strong data-home-counter="1820">0</strong><small>Grupos</small></article>
@@ -65,7 +68,7 @@
     </div>
   </section>
 
-  <section class="home-features-section">
+  <section class="home-features-section home-reveal">
     <div class="wrap">
       <div class="home-section-divider"><span></span><b>Todo lo que tu grupo necesita</b><span></span></div>
       <div class="home-feature-grid">
@@ -79,7 +82,7 @@
     </div>
   </section>
 
-  <section class="home-showcase-section">
+  <section class="home-showcase-section home-reveal">
     <div class="wrap home-showcase-grid">
       <article class="home-showcase-card terminal-card">
         <h3>Vista previa de comandos</h3>
@@ -115,18 +118,27 @@
     </div>
   </section>
 
-  <section class="home-testimonials-section">
+  <section class="home-testimonials-section home-reveal">
     <div class="wrap">
       <div class="home-section-divider"><span></span><b>Lo que dicen nuestros usuarios</b><span></span></div>
-      <div class="home-testimonial-grid">
-        <article><div class="avatar">A</div><div><h4>Alexis <span>★★★★★</span></h4><p>Pragmata Bot es muy completo y su economía funciona excelente.</p></div></article>
-        <article><div class="avatar">L</div><div><h4>Luanna <span>★★★★★</span></h4><p>El bot perfecto para mi grupo; mis amigos están encantados.</p></div></article>
-        <article><div class="avatar">S</div><div><h4>Shadow <span>★★★★★</span></h4><p>Soporte rápido, muchas funciones y actualizaciones constantes.</p></div></article>
+      <div class="home-testimonial-carousel" id="homeTestimonialCarousel">
+        <button type="button" class="home-testimonial-arrow prev" aria-label="Testimonio anterior">‹</button>
+        <div class="home-testimonial-viewport">
+          <div class="home-testimonial-track">
+            <article class="home-testimonial-card"><div class="avatar">A</div><div><h4>Alexis <span>★★★★★</span></h4><p>Pragmata Bot es muy completo y su economía funciona excelente.</p></div></article>
+            <article class="home-testimonial-card"><div class="avatar">L</div><div><h4>Luanna <span>★★★★★</span></h4><p>El bot perfecto para mi grupo; mis amigos están encantados.</p></div></article>
+            <article class="home-testimonial-card"><div class="avatar">S</div><div><h4>Shadow <span>★★★★★</span></h4><p>Soporte rápido, muchas funciones y actualizaciones constantes.</p></div></article>
+            <article class="home-testimonial-card"><div class="avatar">D</div><div><h4>Dante <span>★★★★★</span></h4><p>El casino y la administración hicieron que mi comunidad creciera muchísimo.</p></div></article>
+            <article class="home-testimonial-card"><div class="avatar">M</div><div><h4>Mireya <span>★★★★★</span></h4><p>Fácil de usar, visualmente increíble y con respuestas muy rápidas.</p></div></article>
+          </div>
+        </div>
+        <button type="button" class="home-testimonial-arrow next" aria-label="Siguiente testimonio">›</button>
+        <div class="home-testimonial-dots" aria-label="Navegación de testimonios"></div>
       </div>
     </div>
   </section>
 
-  <section class="home-bottom-section">
+  <section class="home-bottom-section home-reveal">
     <div class="wrap home-bottom-grid">
       <article class="home-server-card"><h3>Estado del servidor <span>●</span></h3><b>● En línea</b><div><span>Ping<strong>18 ms</strong></span><span>Uptime<strong>99.9%</strong></span><span>Usuarios<strong>328</strong></span></div><i></i></article>
       <article class="home-social-card"><h3>Síguenos</h3><div><a href="social.html">◉</a><a href="social.html">◈</a><a href="social.html">▶</a><a href="social.html">♪</a></div></article>
@@ -136,7 +148,7 @@
 </main>
 
 <div id="site-footer"></div>
-<script src="assets/include.js?v=home-v2"></script>
-<script src="assets/home.js?v=home-v2"></script>
+<script src="assets/include.js?v=home-v3"></script>
+<script src="assets/home.js?v=home-v3"></script>
 </body>
 </html>

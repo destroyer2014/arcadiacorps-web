@@ -1,0 +1,17 @@
+IMAGEN O GIF DEL HERO
+
+La página busca automáticamente este archivo:
+
+assets/hero-character.gif
+
+Puedes reemplazarlo por tu GIF final conservando ese nombre.
+Si prefieres PNG, WEBP o JPG, cambia en index.html:
+
+src="assets/hero-character.gif"
+
+por el nombre de tu archivo, por ejemplo:
+
+src="assets/hero-character.webp"
+
+Si el archivo no existe o no carga, la web muestra automáticamente el robot creado con CSS.
+Recomendación: imagen con fondo transparente, formato WEBP o GIF optimizado, alrededor de 700 x 800 px y menos de 2 MB.
