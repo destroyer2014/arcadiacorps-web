@@ -2437,7 +2437,7 @@
   if(recTrack && recLeft && recRight){
     const scrollCards = (dir) => {
       const card = recTrack.querySelector('.stream-card');
-      const amount = card ? card.offsetWidth + 18 : 280;
+      const amount = card ? card.getBoundingClientRect().width + 18 : 280;
       recTrack.scrollBy({ left: dir * amount, behavior: 'smooth' });
     };
     recLeft.addEventListener('click', () => scrollCards(-1));
@@ -2454,13 +2454,17 @@
   const noResults = document.getElementById('streamNoResults');
   const loadMore = document.getElementById('streamLoadMore');
 
-  let activeTab = 'all';
-  let activeCategory = 'all';
+  let activeTab = document.querySelector('.stream-tab.active')?.dataset.tab || 'tendencias';
+  let activeCategory = document.querySelector('.stream-chip.active')?.dataset.category || 'all';
   let extrasRevealed = false;
 
+  function tokens(value){
+    return String(value || '').toLowerCase().split(/\s+/).filter(Boolean);
+  }
+
   function matchesFilters(card){
-    const category = card.dataset.category || '';
-    const tabData = card.dataset.tab || '';
+    const category = String(card.dataset.category || '').toLowerCase();
+    const tabData = tokens(card.dataset.tab);
     const searchData = (card.dataset.search || '').toLowerCase();
     const query = (search?.value || '').trim().toLowerCase();
 
@@ -2480,6 +2484,7 @@
       const canShowExtra = !isExtra || extrasRevealed;
       const show = matches && canShowExtra;
       card.classList.toggle('is-filtered-out', !show);
+      card.setAttribute('aria-hidden', show ? 'false' : 'true');
       if(show) visible++;
     });
 
@@ -2493,9 +2498,13 @@
 
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
-      tabs.forEach(item => item.classList.remove('active'));
+      tabs.forEach(item => {
+        item.classList.remove('active');
+        item.setAttribute('aria-selected', 'false');
+      });
       tab.classList.add('active');
-      activeTab = tab.dataset.tab || 'all';
+      tab.setAttribute('aria-selected', 'true');
+      activeTab = String(tab.dataset.tab || 'all').toLowerCase();
       applyFilters();
     });
   });
@@ -2504,7 +2513,7 @@
     chip.addEventListener('click', () => {
       chips.forEach(item => item.classList.remove('active'));
       chip.classList.add('active');
-      activeCategory = chip.dataset.category || 'all';
+      activeCategory = String(chip.dataset.category || 'all').toLowerCase();
       applyFilters();
     });
   });
@@ -2521,21 +2530,28 @@
 })();
 
 /* --- bloque --- */
-// ── Countdown para oferta destacada ──
+// ── Countdown persistente para oferta destacada ──
 (function(){
   const countdown = document.getElementById('streamCountdown');
   if(!countdown) return;
 
-  const end = new Date(Date.now() + ((2 * 24 + 5) * 60 + 30) * 60 * 1000);
+  const KEY = 'arcadia_stream_sale_deadline';
+  const DURATION_MS = ((2 * 60 + 45) * 60 + 30) * 1000; // 02:45:30
+
+  let end = parseInt(localStorage.getItem(KEY) || '0', 10);
+  if(!end || Number.isNaN(end) || end <= Date.now()){
+    end = Date.now() + DURATION_MS;
+    localStorage.setItem(KEY, String(end));
+  }
 
   function render(){
-    const diff = end.getTime() - Date.now();
+    const diff = end - Date.now();
     if(diff <= 0){
-      countdown.textContent = '00 : 00 : 00';
-      return;
+      end = Date.now() + DURATION_MS;
+      localStorage.setItem(KEY, String(end));
     }
 
-    const totalSeconds = Math.floor(diff / 1000);
+    const totalSeconds = Math.max(0, Math.floor((end - Date.now()) / 1000));
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
