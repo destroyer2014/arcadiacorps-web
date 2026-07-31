@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Restablecer contraseña — Pragmata Bot</title>
+<meta name="theme-color" content="#090307">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css?v=ui-v7">
+<style>
+.reset-page{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 20% 10%,rgba(132,17,42,.18),transparent 35%),linear-gradient(180deg,#080204,#030102)}
+.reset-card{width:min(100%,520px);padding:30px;border:1px solid rgba(212,175,55,.28);border-radius:24px;background:rgba(18,5,9,.94);box-shadow:0 24px 70px rgba(0,0,0,.55),0 0 32px rgba(144,20,48,.12)}
+.reset-brand{display:flex;align-items:center;gap:12px;color:#f2d37d;font-family:'JetBrains Mono',monospace}.reset-brand span{width:44px;height:52px;display:grid;place-items:center;border:1px solid rgba(212,175,55,.35);clip-path:polygon(50% 0,92% 15%,84% 78%,50% 100%,16% 78%,8% 15%);background:linear-gradient(145deg,#8b1531,#3f0716);font-size:23px;font-weight:700}.reset-card h1{margin:24px 0 8px;color:#fff5e7;font:700 32px/1.05 'Space Grotesk',sans-serif}.reset-card p{color:#bba89d}.reset-field{display:grid;gap:8px;margin-top:22px}.reset-field label{color:#dfc889;font-family:'JetBrains Mono',monospace;font-size:12px;text-transform:uppercase;letter-spacing:.1em}.reset-field input{width:100%;padding:15px 16px;border-radius:14px;border:1px solid rgba(212,175,55,.22);background:#0b0306;color:#fff;outline:none}.reset-field input:focus{border-color:#d4af37;box-shadow:0 0 0 3px rgba(212,175,55,.08)}.reset-submit{width:100%;margin-top:22px;padding:15px;border-radius:14px;background:linear-gradient(135deg,#9d1737,#5a0a20);border:1px solid rgba(229,190,76,.38);color:#fff5d0;font-weight:700;font-family:'JetBrains Mono',monospace}.reset-status{min-height:24px;margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:13px}.reset-status.ok{color:#70f3b0}.reset-status.err{color:#ff7086}.reset-back{display:block;text-align:center;margin-top:18px;color:#d9b95a}
+</style>
+</head>
+<body>
+<main class="reset-page">
+  <section class="reset-card">
+    <div class="reset-brand"><span>P</span><strong>PRAGMATA BOT</strong></div>
+    <h1>Crea una nueva contraseña</h1>
+    <p>El enlace de recuperación valida tu sesión temporalmente. Escribe una clave nueva para terminar.</p>
+    <form id="resetForm">
+      <div class="reset-field"><label for="newPassword">Nueva contraseña</label><input id="newPassword" type="password" minlength="6" required autocomplete="new-password" placeholder="Mínimo 6 caracteres"></div>
+      <div class="reset-field"><label for="confirmPassword">Confirmar contraseña</label><input id="confirmPassword" type="password" minlength="6" required autocomplete="new-password" placeholder="Repite la contraseña"></div>
+      <button class="reset-submit" id="resetSubmit" type="submit">ACTUALIZAR CONTRASEÑA</button>
+      <div class="reset-status" id="resetStatus" aria-live="polite"></div>
+    </form>
+    <a class="reset-back" href="index.html">← Volver al inicio</a>
+  </section>
+</main>
+<script>
+(function(){
+  const URL='https://dtfecbsokpgzyuiyxyvm.supabase.co';
+  const KEY='sb_publishable_SU7zJytoYMgoGtYoobINDQ_qLSO0bw1';
+  const form=document.getElementById('resetForm'),status=document.getElementById('resetStatus'),button=document.getElementById('resetSubmit');
+  const params=new URLSearchParams(location.hash.replace(/^#/,''));
+  const accessToken=params.get('access_token');
+  const refreshToken=params.get('refresh_token');
+  function show(msg,ok){status.textContent=msg;status.className='reset-status '+(ok?'ok':'err');}
+  if(!accessToken){show('El enlace no es válido o ya venció. Solicita uno nuevo desde el inicio de sesión.',false);button.disabled=true;}
+  form.addEventListener('submit',async e=>{
+    e.preventDefault();const pass=document.getElementById('newPassword').value,confirm=document.getElementById('confirmPassword').value;
+    if(pass.length<6){show('La contraseña debe tener al menos 6 caracteres.',false);return;}
+    if(pass!==confirm){show('Las contraseñas no coinciden.',false);return;}
+    button.disabled=true;button.textContent='ACTUALIZANDO...';
+    try{
+      const res=await fetch(URL+'/auth/v1/user',{method:'PUT',headers:{apikey:KEY,Authorization:'Bearer '+accessToken,'Content-Type':'application/json'},body:JSON.stringify({password:pass})});
+      const data=await res.json().catch(()=>({}));if(!res.ok)throw new Error(data.msg||data.error_description||data.error||'No se pudo actualizar');
+      if(refreshToken)localStorage.setItem('pragmata_session',JSON.stringify({access_token:accessToken,refresh_token:refreshToken,user:data,expires_at:Math.floor(Date.now()/1000)+3600}));
+      show('Contraseña actualizada correctamente. Ya puedes iniciar sesión.',true);setTimeout(()=>location.href='index.html',1800);
+    }catch(err){show(err.message||'No se pudo actualizar la contraseña.',false);button.disabled=false;button.textContent='ACTUALIZAR CONTRASEÑA';}
+  });
+})();
+</script>
+</body>
+</html>

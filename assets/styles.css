@@ -3911,3 +3911,18 @@ body.home-ready .home-robot-stage::after{animation:imageSweep 5.5s 1.4s ease-in-
 
 @media(max-width:800px){.home-cursor-glow{display:none}.home-intro-crest{width:68px;height:80px;font-size:34px}.home-hero-media.is-ready{animation-duration:12s}.home-redesign #nav.home-nav-hidden{transform:none}}
 @media(prefers-reduced-motion:reduce){.home-intro{display:none}.home-hero-copy>*{opacity:1;transform:none}.home-hero h1::after{width:min(360px,85%)}.home-stagger>*{opacity:1;transform:none}.home-hero-media.is-ready,.home-robot-stage::after,.phone-user,.phone-bot,.home-server-card>b::before,.home-server-card i{animation:none!important}}
+
+
+/* UI global vino/dorado + sección activa + animaciones */
+.app-sidebar{background:linear-gradient(180deg,#13070b 0%,#090307 100%)!important;border-right:1px solid rgba(212,175,55,.26)!important;box-shadow:18px 0 48px rgba(0,0,0,.55),4px 0 28px rgba(126,17,40,.14)!important}
+.sidebar-brand{color:#f4df9c!important;border-bottom:1px solid rgba(212,175,55,.16)}
+.sidebar-label{color:#9d7d68!important}
+.sidebar-link{color:#c8b5aa!important;border:1px solid transparent!important;background:transparent!important;transition:transform .2s ease,border-color .2s ease,background .2s ease,color .2s ease!important}
+.sidebar-link:hover{color:#fff0c2!important;background:rgba(126,17,40,.18)!important;border-color:rgba(212,175,55,.14)!important;transform:translateX(4px)}
+.sidebar-link.active{color:#fff5d5!important;background:linear-gradient(135deg,rgba(139,20,47,.92),rgba(83,9,27,.92))!important;border-color:rgba(229,190,76,.48)!important;box-shadow:inset 3px 0 #e7bd49,0 0 22px rgba(145,20,48,.28)!important;font-weight:700}
+.nav-links a.active{color:#f2c85a!important;text-shadow:0 0 14px rgba(242,200,90,.34)}
+.auth-forgot.disabled{pointer-events:none;opacity:.55}
+.global-reveal{opacity:0;transform:translateY(24px) scale(.985);filter:blur(3px);transition:opacity .7s ease var(--reveal-delay,0ms),transform .7s cubic-bezier(.22,1,.36,1) var(--reveal-delay,0ms),filter .7s ease var(--reveal-delay,0ms)}
+.global-reveal.is-visible{opacity:1;transform:none;filter:none}
+button,.btn,.sidebar-link,.nav-links a{will-change:transform}
+@media (prefers-reduced-motion:reduce){.global-reveal{opacity:1!important;transform:none!important;filter:none!important;transition:none!important}}

@@ -7,7 +7,7 @@
   const AUTH = URL + '/auth/v1';
 
   function getSession(){
-    try { return JSON.parse(localStorage.getItem('pragmata_session') || 'null'); }
+    try { return JSON.parse(localStorage.getItem('pragmata_session') || sessionStorage.getItem('pragmata_session') || sessionStorage.getItem('pragmata_session') || 'null'); }
     catch (_) { return null; }
   }
 

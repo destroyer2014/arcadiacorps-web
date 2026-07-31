@@ -203,159 +203,82 @@
 
 /* --- bloque --- */
 (function(){
-  // ── Auth Gate: login/registro real contra Supabase Auth ──
-  // Reutiliza el mismo proyecto Supabase que ya usa el resto del sitio
-  // (casino_attempts, visits) para no duplicar infraestructura.
-  const SUPABASE_URL = 'https://dtfecbsokpgzyuiyxyvm.supabase.co';
-  const SUPABASE_KEY = 'sb_publishable_SU7zJytoYMgoGtYoobINDQ_qLSO0bw1';
-  const AUTH_API = SUPABASE_URL + '/auth/v1';
+  // Auth Supabase: sesión persistente/opcional, recuperación y mensajes claros.
+  const SUPABASE_URL='https://dtfecbsokpgzyuiyxyvm.supabase.co';
+  const SUPABASE_KEY='sb_publishable_SU7zJytoYMgoGtYoobINDQ_qLSO0bw1';
+  const AUTH_API=SUPABASE_URL+'/auth/v1';
+  const gate=document.getElementById('authGate');
+  if(!gate) return;
+  const form=document.getElementById('authForm');
+  const emailEl=document.getElementById('authEmail');
+  const passEl=document.getElementById('authPass');
+  const rememberEl=document.getElementById('authRemember');
+  const passHint=document.getElementById('passHint');
+  const submitBtn=document.getElementById('authSubmit');
+  const statusEl=document.getElementById('authStatus');
+  const guestLink=document.getElementById('authGuest');
+  const forgotLink=document.getElementById('authForgot');
+  const tabLogin=document.getElementById('tabLogin');
+  const tabRegister=document.getElementById('tabRegister');
+  let mode='login', recoverCooldown=0, cooldownTimer=null;
 
-  const gate = document.getElementById('authGate');
-  document.body.style.overflow = 'hidden';
-  const form = document.getElementById('authForm');
-  const emailEl = document.getElementById('authEmail');
-  const passEl = document.getElementById('authPass');
-  const passHint = document.getElementById('passHint');
-  const submitBtn = document.getElementById('authSubmit');
-  const statusEl = document.getElementById('authStatus');
-  const guestLink = document.getElementById('authGuest');
-  const forgotLink = document.getElementById('authForgot');
-  const tabLogin = document.getElementById('tabLogin');
-  const tabRegister = document.getElementById('tabRegister');
-
-  let mode = 'login'; // 'login' | 'register'
-
-  function setMode(next){
-    mode = next;
-    tabLogin.classList.toggle('active', mode === 'login');
-    tabRegister.classList.toggle('active', mode === 'register');
-    submitBtn.textContent = mode === 'login' ? '$ INICIAR SESIÓN' : '$ CREAR CUENTA';
-    passHint.style.display = mode === 'register' ? 'block' : 'none';
-    passEl.setAttribute('autocomplete', mode === 'login' ? 'current-password' : 'new-password');
-    statusEl.textContent = '';
-    statusEl.className = 'auth-status';
+  function getSession(){
+    try{return JSON.parse(localStorage.getItem('pragmata_session')||sessionStorage.getItem('pragmata_session')||'null');}catch(_){return null;}
   }
-  tabLogin.addEventListener('click', ()=>setMode('login'));
-  tabRegister.addEventListener('click', ()=>setMode('register'));
-
-  function showStatus(msg, ok){
-    statusEl.textContent = msg;
-    statusEl.className = 'auth-status ' + (ok ? 'ok' : 'err');
+  function saveSession(data,remember){
+    localStorage.removeItem('pragmata_session'); sessionStorage.removeItem('pragmata_session');
+    (remember?localStorage:sessionStorage).setItem('pragmata_session',JSON.stringify(data));
+    if(remember){ localStorage.setItem('pragmata_remember_email',emailEl.value.trim()); }
+    else localStorage.removeItem('pragmata_remember_email');
   }
-
-  function enterSite(){
-    gate.classList.add('hide');
-    document.body.style.overflow = '';
+  function friendlyError(msg=''){
+    if(/rate limit|too many requests|email rate/i.test(msg)) return 'Se alcanzó temporalmente el límite de correos. Espera unos minutos antes de intentarlo de nuevo.';
+    if(/already registered|already exists/i.test(msg)) return 'Ese correo ya está registrado. Usa Iniciar sesión.';
+    if(/invalid login credentials/i.test(msg)) return 'Correo o contraseña incorrectos.';
+    if(/password.*short|weak password/i.test(msg)) return 'La contraseña debe tener al menos 6 caracteres.';
+    if(/email.*invalid/i.test(msg)) return 'Escribe un correo electrónico válido.';
+    return msg || 'No se pudo completar la operación.';
   }
+  function showStatus(msg,ok){statusEl.textContent=msg;statusEl.className='auth-status '+(ok?'ok':'err');}
+  function enterSite(){gate.classList.add('hide');document.body.style.overflow='';}
+  function setMode(next){mode=next;tabLogin.classList.toggle('active',mode==='login');tabRegister.classList.toggle('active',mode==='register');submitBtn.textContent=mode==='login'?'$ INICIAR SESIÓN':'$ CREAR CUENTA';passHint.style.display=mode==='register'?'block':'none';passEl.autocomplete=mode==='login'?'current-password':'new-password';showStatus('',true);}
+  tabLogin.addEventListener('click',()=>setMode('login')); tabRegister.addEventListener('click',()=>setMode('register'));
 
-  // Si ya hay una sesión guardada y válida, entra directo sin pedir login
-  const savedSession = localStorage.getItem('pragmata_session');
-  if(savedSession){
+  const remembered=localStorage.getItem('pragmata_remember_email');
+  if(remembered){emailEl.value=remembered;rememberEl.checked=true;}
+  const saved=getSession(); if(saved?.expires_at&&saved.expires_at*1000>Date.now()) enterSite(); else document.body.style.overflow='hidden';
+
+  form.addEventListener('submit',async e=>{
+    e.preventDefault(); const email=emailEl.value.trim(),password=passEl.value;
+    if(!email||!password){showStatus('Completa todos los campos.',false);return;}
+    submitBtn.disabled=true; submitBtn.textContent=mode==='login'?'$ VERIFICANDO...':'$ CREANDO CUENTA...';
     try{
-      const sess = JSON.parse(savedSession);
-      if(sess.expires_at && sess.expires_at * 1000 > Date.now()){
-        enterSite();
-      }
-    }catch(e){}
-  }
-
-  form.addEventListener('submit', async (e)=>{
-    e.preventDefault();
-    const email = emailEl.value.trim();
-    const password = passEl.value;
-    if(!email || !password){ showStatus('✗ Completa todos los campos', false); return; }
-
-    submitBtn.disabled = true;
-    submitBtn.textContent = mode === 'login' ? '$ VERIFICANDO...' : '$ CREANDO CUENTA...';
-    showStatus('', true);
-
-    try{
-      const endpoint = mode === 'login'
-        ? AUTH_API + '/token?grant_type=password'
-        : AUTH_API + '/signup';
-
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': 'Bearer ' + SUPABASE_KEY,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await res.json();
-
-      if(!res.ok){
-        const msg = data?.error_description || data?.msg || data?.error || 'Error desconocido';
-        if(/already registered|already exists/i.test(msg)){
-          showStatus('✗ Ese correo ya está registrado. Inicia sesión.', false);
-        } else if(/invalid login credentials/i.test(msg)){
-          showStatus('✗ Correo o contraseña incorrectos.', false);
-        } else {
-          showStatus('✗ ' + msg, false);
-        }
-        return;
-      }
-
-      if(mode === 'register'){
-        if(data.access_token){
-          localStorage.setItem('pragmata_session', JSON.stringify(data));
-          showStatus('✓ Cuenta creada. ¡Bienvenido!', true);
-          setTimeout(enterSite, 700);
-        } else {
-          showStatus('✓ Cuenta creada. Revisa tu correo para confirmar, luego inicia sesión.', true);
-          setTimeout(()=>setMode('login'), 1600);
-        }
-      } else {
-        localStorage.setItem('pragmata_session', JSON.stringify(data));
-        showStatus('✓ Acceso concedido', true);
-        setTimeout(enterSite, 500);
-      }
-    }catch(err){
-      showStatus('✗ No se pudo conectar. Intenta de nuevo.', false);
-    }finally{
-      submitBtn.disabled = false;
-      submitBtn.textContent = mode === 'login' ? '$ INICIAR SESIÓN' : '$ CREAR CUENTA';
-    }
+      const endpoint=mode==='login'?AUTH_API+'/token?grant_type=password':AUTH_API+'/signup';
+      const res=await fetch(endpoint,{method:'POST',headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY,'Content-Type':'application/json'},body:JSON.stringify({email,password})});
+      const data=await res.json().catch(()=>({}));
+      if(!res.ok) throw new Error(data.error_description||data.msg||data.error||'Error');
+      if(mode==='register'&&!data.access_token){showStatus('Cuenta creada. Revisa tu correo para confirmarla.',true);setTimeout(()=>setMode('login'),1600);return;}
+      saveSession(data,rememberEl.checked); showStatus(mode==='register'?'Cuenta creada. ¡Bienvenido!':'Acceso concedido.',true); setTimeout(enterSite,500);
+    }catch(err){showStatus(friendlyError(err.message),false);}
+    finally{submitBtn.disabled=false;submitBtn.textContent=mode==='login'?'$ INICIAR SESIÓN':'$ CREAR CUENTA';}
   });
 
-  forgotLink.addEventListener('click', async (e)=>{
-    e.preventDefault();
-    const email = emailEl.value.trim();
-    if(!email){
-      showStatus('✗ Escribe tu correo arriba primero', false);
-      emailEl.focus();
-      return;
-    }
-    forgotLink.textContent = 'Enviando...';
+  function startCooldown(seconds=60){
+    recoverCooldown=seconds; clearInterval(cooldownTimer);
+    cooldownTimer=setInterval(()=>{recoverCooldown--;forgotLink.textContent=recoverCooldown>0?`Reenviar en ${recoverCooldown}s`:'¿Olvidaste la clave?';forgotLink.classList.toggle('disabled',recoverCooldown>0);if(recoverCooldown<=0)clearInterval(cooldownTimer);},1000);
+  }
+  forgotLink.addEventListener('click',async e=>{
+    e.preventDefault(); if(recoverCooldown>0)return;
+    const email=emailEl.value.trim(); if(!email){showStatus('Escribe tu correo arriba primero.',false);emailEl.focus();return;}
+    forgotLink.textContent='Enviando...';forgotLink.classList.add('disabled');
     try{
-      const res = await fetch(AUTH_API + '/recover', {
-        method: 'POST',
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': 'Bearer ' + SUPABASE_KEY,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
-      if(res.ok){
-        showStatus('✓ Revisa tu correo para restablecer la contraseña', true);
-      } else {
-        showStatus('✗ No se pudo enviar el correo de recuperación', false);
-      }
-    }catch(err){
-      showStatus('✗ Error de conexión, intenta de nuevo', false);
-    }finally{
-      forgotLink.textContent = '¿Olvidaste la clave?';
-    }
+      const redirectTo=location.origin+'/restablecer-clave.html';
+      const res=await fetch(AUTH_API+'/recover?redirect_to='+encodeURIComponent(redirectTo),{method:'POST',headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY,'Content-Type':'application/json'},body:JSON.stringify({email})});
+      const data=await res.json().catch(()=>({})); if(!res.ok)throw new Error(data.error_description||data.msg||data.error||'Error');
+      showStatus('Si el correo está registrado, recibirás un enlace para crear una nueva contraseña.',true);startCooldown(60);
+    }catch(err){showStatus(friendlyError(err.message),false);startCooldown(60);}
   });
-
-  guestLink.addEventListener('click', (e)=>{
-    e.preventDefault();
-    enterSite();
-  });
-
-  setMode('login');
+  guestLink.addEventListener('click',e=>{e.preventDefault();enterSite();}); setMode('login');
 })();
 
 /* --- bloque --- */

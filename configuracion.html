@@ -128,7 +128,7 @@ document.addEventListener('partialsReady', async () => {
   const SUPABASE_KEY = 'sb_publishable_SU7zJytoYMgoGtYoobINDQ_qLSO0bw1';
   const AUTH_API = SUPABASE_URL + '/auth/v1';
 
-  function getSess(){ try{ return JSON.parse(localStorage.getItem('pragmata_session')); }catch(e){ return null; } }
+  function getSess(){ try{ return JSON.parse(localStorage.getItem('pragmata_session') || sessionStorage.getItem('pragmata_session')); }catch(e){ return null; } }
   const sess = getSess();
   const guard = document.getElementById('cfgGuard');
   const content = document.getElementById('cfgContent');
