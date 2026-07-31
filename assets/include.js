@@ -13,10 +13,10 @@ Promise.all([
   includePartial('site-footer','partials/footer.html')
 ]).then(() => {
   const core = document.createElement('script');
-  core.src = 'assets/core.js';
+  core.src = 'assets/core.js?v=store-v3';
   core.onload = () => {
     const s = document.createElement('script');
-    s.src = 'assets/app.js';
+    s.src = 'assets/app.js?v=store-v3';
     document.body.appendChild(s);
   };
   document.body.appendChild(core);
