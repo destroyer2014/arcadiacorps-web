@@ -12,8 +12,13 @@ Promise.all([
   includePartial('site-header','partials/header.html'),
   includePartial('site-footer','partials/footer.html')
 ]).then(() => {
-  const s = document.createElement('script');
-  s.src = 'assets/app.js';
-  document.body.appendChild(s);
+  const core = document.createElement('script');
+  core.src = 'assets/core.js';
+  core.onload = () => {
+    const s = document.createElement('script');
+    s.src = 'assets/app.js';
+    document.body.appendChild(s);
+  };
+  document.body.appendChild(core);
   document.dispatchEvent(new Event('partialsReady'));
 });

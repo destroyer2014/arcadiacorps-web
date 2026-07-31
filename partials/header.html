@@ -10,7 +10,6 @@
 <div id="authGate">
   <div class="auth-card">
     <div class="auth-banner">
-      <div class="auth-logo">👑</div>
       <h2>PRAGMATA BOT</h2>
       <p>Inicia sesión para entrar al sitio</p>
     </div>
@@ -68,31 +67,31 @@
       <a href="soporte.html">🎫 Soporte</a>
     </div>
     <div class="nav-actions">
-      <button class="nav-icon-btn" id="notifBtn" aria-label="Notificaciones">
-        🔔<span class="notif-badge" id="notifBadge">2</span>
-      </button>
+      <div class="notif-wrapper" style="position:relative;">
+        <button class="nav-icon-btn" id="notifBtn" aria-label="Notificaciones">
+          🔔<span class="notif-badge" id="notifBadge">2</span>
+        </button>
+        <div class="notif-panel" id="notifPanel">
+          <div class="notif-head">Notificaciones</div>
+          <div class="notif-card notif-update">
+            <div class="notif-icon">❤️</div>
+            <div class="notif-body">
+              <b>Nueva actualización</b>
+              <p>Se agregó el sistema de Sub-Bot conectable desde la web. ¡Pruébalo ya!</p>
+              <span class="notif-date">Hace 2 días</span>
+            </div>
+          </div>
+          <div class="notif-card notif-support">
+            <div class="notif-icon">🎧</div>
+            <div class="notif-body">
+              <b>Soporte</b>
+              <p>¿Tienes dudas? Escríbenos directo y te ayudamos en minutos.</p>
+              <span class="notif-date">Siempre disponible</span>
+            </div>
+          </div>
+        </div>
+      </div>
       <a href="premium.html" class="btn btn-primary nav-cta">PREMIUM</a>
-      <button class="nav-toggle" id="navToggle" aria-label="Abrir menú">☰</button>
-    </div>
-  </div>
-
-  <div class="notif-panel" id="notifPanel">
-    <div class="notif-head">Notificaciones</div>
-    <div class="notif-card notif-update">
-      <div class="notif-icon">❤️</div>
-      <div class="notif-body">
-        <b>Nueva actualización</b>
-        <p>Se agregó el sistema de Sub-Bot conectable desde la web. ¡Pruébalo ya!</p>
-        <span class="notif-date">Hace 2 días</span>
-      </div>
-    </div>
-    <div class="notif-card notif-support">
-      <div class="notif-icon">🎧</div>
-      <div class="notif-body">
-        <b>Soporte</b>
-        <p>¿Tienes dudas? Escríbenos directo y te ayudamos en minutos.</p>
-        <span class="notif-date">Siempre disponible</span>
-      </div>
     </div>
   </div>
 </nav>

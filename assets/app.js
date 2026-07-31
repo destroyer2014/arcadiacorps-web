@@ -144,24 +144,6 @@
 })();
 
 /* --- bloque --- */
-// ── Menú móvil ──
-(function(){
-  const toggle = document.getElementById('navToggle');
-  const menu = document.getElementById('mobileMenu');
-  if(!toggle || !menu) return;
-  toggle.addEventListener('click', ()=>{
-    const isOpen = menu.classList.toggle('open');
-    toggle.textContent = isOpen ? '✕' : '☰';
-  });
-  menu.querySelectorAll('a').forEach(link=>{
-    link.addEventListener('click', ()=>{
-      menu.classList.remove('open');
-      toggle.textContent = '☰';
-    });
-  });
-})();
-
-/* --- bloque --- */
 // ── Acordeón de comandos ──
 (function(){
   const heads = document.querySelectorAll('.accordion-head');
@@ -2288,36 +2270,6 @@
 })();
 
 /* --- bloque --- */
-(function(){
-  // ── Sidebar lateral ──
-  const sidebar = document.getElementById('appSidebar');
-  const overlay = document.getElementById('sidebarOverlay');
-  const toggleBtn = document.getElementById('sidebarToggle');
-
-  function openSidebar(){ sidebar.classList.add('open'); overlay.classList.add('open'); }
-  function closeSidebar(){ sidebar.classList.remove('open'); overlay.classList.remove('open'); }
-
-  toggleBtn?.addEventListener('click', openSidebar);
-  overlay?.addEventListener('click', closeSidebar);
-  sidebar?.querySelectorAll('.sidebar-link').forEach(a => a.addEventListener('click', closeSidebar));
-
-  // ── Panel de notificaciones ──
-  const notifBtn = document.getElementById('notifBtn');
-  const notifPanel = document.getElementById('notifPanel');
-  const notifBadge = document.getElementById('notifBadge');
-
-  notifBtn?.addEventListener('click', (e)=>{
-    e.stopPropagation();
-    notifPanel.classList.toggle('open');
-    if(notifPanel.classList.contains('open')) notifBadge.classList.add('hide');
-  });
-  document.addEventListener('click', (e)=>{
-    if(notifPanel && !notifPanel.contains(e.target) && e.target !== notifBtn){
-      notifPanel.classList.remove('open');
-    }
-  });
-})();
-
 (function(){
   // ── Modal de Perfil, conectado a Supabase Auth real ──
   const SUPABASE_URL = 'https://dtfecbsokpgzyuiyxyvm.supabase.co';
