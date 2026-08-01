@@ -1,13 +1,12 @@
 name: Compilar APK Astharot
 
 on:
-  workflow_dispatch:
   push:
-    branches:
-      - main
+    branches: [main]
     paths:
       - "astharot-mobile/**"
       - ".github/workflows/build-apk.yml"
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -15,9 +14,11 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     defaults:
       run:
         working-directory: astharot-mobile
+
     steps:
       - name: Descargar repositorio
         uses: actions/checkout@v4
@@ -45,105 +46,139 @@ jobs:
         run: python -m pip install pillow
 
       - name: Crear proyecto Android
-        run: npx cap add android
+        run: |
+          rm -rf android
+          npx cap add android
+          npx cap sync android
 
-      - name: Aplicar icono y modo inmersivo
-        shell: bash
+      - name: Aplicar icono
         run: |
           python - <<'PY'
           from pathlib import Path
           from PIL import Image
 
-          src = Path('resources/icon-1024.png')
-          img = Image.open(src).convert('RGBA')
-          res = Path('android/app/src/main/res')
-          for folder, size in {
-              'mipmap-mdpi':48,
-              'mipmap-hdpi':72,
-              'mipmap-xhdpi':96,
-              'mipmap-xxhdpi':144,
-              'mipmap-xxxhdpi':192,
-          }.items():
-              dest=res/folder
-              dest.mkdir(parents=True,exist_ok=True)
-              out=img.resize((size,size),Image.LANCZOS)
-              out.save(dest/'ic_launcher.png')
-              out.save(dest/'ic_launcher_round.png')
+          src = Path("resources/icon-1024.png")
+          if not src.exists():
+              raise SystemExit("No existe resources/icon-1024.png")
 
-          manifest=Path('android/app/src/main/AndroidManifest.xml')
-          text=manifest.read_text()
-          marker='android:theme="@style/AppTheme.NoActionBarLaunch"'
-          replacement=(marker+'\n            android:screenOrientation="landscape"'
-          if 'android:screenOrientation=' not in text:
-              text=text.replace(marker,replacement)
-          manifest.write_text(text)
+          image = Image.open(src).convert("RGBA")
+          res = Path("android/app/src/main/res")
 
-          main=Path('android/app/src/main/java/com/arcadiacorps/astharotrpg/MainActivity.java')
-          main.parent.mkdir(parents=True,exist_ok=True)
-          main.write_text(r'''package com.arcadiacorps.astharotrpg;
-
-          import android.os.Bundle;
-          import android.os.Handler;
-          import android.os.Looper;
-          import androidx.core.view.WindowCompat;
-          import androidx.core.view.WindowInsetsCompat;
-          import androidx.core.view.WindowInsetsControllerCompat;
-          import com.getcapacitor.BridgeActivity;
-
-          public class MainActivity extends BridgeActivity {
-              private void enterImmersiveMode() {
-                  WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-                  WindowInsetsControllerCompat controller =
-                      WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
-                  controller.hide(WindowInsetsCompat.Type.systemBars());
-                  controller.setSystemBarsBehavior(
-                      WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                  );
-              }
-
-              @Override
-              public void onCreate(Bundle savedInstanceState) {
-                  super.onCreate(savedInstanceState);
-                  enterImmersiveMode();
-                  new Handler(Looper.getMainLooper()).postDelayed(this::enterImmersiveMode, 400);
-              }
-
-              @Override
-              protected void onResume() {
-                  super.onResume();
-                  enterImmersiveMode();
-              }
-
-              @Override
-              public void onWindowFocusChanged(boolean hasFocus) {
-                  super.onWindowFocusChanged(hasFocus);
-                  if (hasFocus) enterImmersiveMode();
-              }
+          sizes = {
+              "mipmap-mdpi": 48,
+              "mipmap-hdpi": 72,
+              "mipmap-xhdpi": 96,
+              "mipmap-xxhdpi": 144,
+              "mipmap-xxxhdpi": 192,
           }
-          ''')
 
-          for style_file in [res/'values/styles.xml', res/'values-v35/styles.xml']:
-              if style_file.exists():
-                  st=style_file.read_text()
-                  needle='<item name="android:windowFullscreen">true</item>'
-                  if needle not in st:
-                      st=st.replace('</style>',
-                          '    <item name="android:windowFullscreen">true</item>\n'
-                          '    <item name="android:windowActionModeOverlay">true</item>\n'
-                          '    <item name="android:navigationBarColor">@android:color/transparent</item>\n'
-                          '    <item name="android:statusBarColor">@android:color/transparent</item>\n'
-                          '    <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>\n'
-                          '</style>')
-                      style_file.write_text(st)
+          for folder, size in sizes.items():
+              destination = res / folder
+              destination.mkdir(parents=True, exist_ok=True)
+              resized = image.resize((size, size), Image.Resampling.LANCZOS)
+              resized.save(destination / "ic_launcher.png")
+              resized.save(destination / "ic_launcher_round.png")
+
+          adaptive = res / "mipmap-anydpi-v26"
+          if adaptive.exists():
+              for file in adaptive.iterdir():
+                  if file.is_file():
+                      file.unlink()
+
+          print("Iconos Android generados.")
           PY
 
-      - name: Sincronizar recursos
-        run: npx cap sync android
-
-      - name: Reaplicar modo inmersivo después de sync
+      - name: Configurar orientación horizontal
         run: |
-          test -f android/app/src/main/java/com/arcadiacorps/astharotrpg/MainActivity.java
-          grep -q "enterImmersiveMode" android/app/src/main/java/com/arcadiacorps/astharotrpg/MainActivity.java
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          manifest = Path("android/app/src/main/AndroidManifest.xml")
+          text = manifest.read_text(encoding="utf-8")
+
+          activity_pattern = r'(<activity\b[^>]*android:name="\.MainActivity"[^>]*)(>)'
+          match = re.search(activity_pattern, text, re.DOTALL)
+
+          if not match:
+              raise SystemExit("No se encontró MainActivity en AndroidManifest.xml")
+
+          activity = match.group(1)
+
+          if "android:screenOrientation=" not in activity:
+              activity += '\n            android:screenOrientation="landscape"'
+
+          text = text[:match.start()] + activity + match.group(2) + text[match.end():]
+          manifest.write_text(text, encoding="utf-8")
+
+          print("Orientación horizontal configurada.")
+          PY
+
+      - name: Aplicar pantalla completa inmersiva
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          candidates = list(Path("android/app/src/main/java").rglob("MainActivity.java"))
+
+          if not candidates:
+              raise SystemExit("No se encontró MainActivity.java")
+
+          path = candidates[0]
+          original = path.read_text(encoding="utf-8")
+
+          package_match = re.search(r"package\s+([\w.]+);", original)
+          if not package_match:
+              raise SystemExit("No se encontró el package de MainActivity")
+
+          package_name = package_match.group(1)
+
+          code = f'''package {package_name};
+
+          import android.os.Bundle;
+          import android.view.View;
+          import com.getcapacitor.BridgeActivity;
+
+          public class MainActivity extends BridgeActivity {{
+
+              @Override
+              public void onCreate(Bundle savedInstanceState) {{
+                  super.onCreate(savedInstanceState);
+                  activarModoInmersivo();
+              }}
+
+              @Override
+              public void onWindowFocusChanged(boolean hasFocus) {{
+                  super.onWindowFocusChanged(hasFocus);
+
+                  if (hasFocus) {{
+                      activarModoInmersivo();
+                  }}
+              }}
+
+              @Override
+              protected void onResume() {{
+                  super.onResume();
+                  activarModoInmersivo();
+              }}
+
+              private void activarModoInmersivo() {{
+                  getWindow().getDecorView().setSystemUiVisibility(
+                      View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                      | View.SYSTEM_UI_FLAG_FULLSCREEN
+                      | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                      | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                      | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                      | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                  );
+              }}
+          }}
+          '''
+
+          path.write_text(code, encoding="utf-8")
+          print(f"Modo inmersivo aplicado en: {path}")
+          PY
 
       - name: Compilar APK debug
         run: |
