@@ -1,5 +1,16 @@
-# Astharot RPG Android v3
+# Astharot RPG Android v4
 
-Incluye nuevo icono, login rediseñado, selección visual de clases, HUD renovado y animaciones base de Guerrero, Mago y Asesino.
+Incluye:
+- Login visual renovado con imagen de Astharot
+- Pantalla de carga ilustrada
+- Mapa inicial: Aldea de Astharot
+- Portal funcional al Bosque Sombrío
+- Segundo mapa con monstruos
+- Inventario visual
+- Correo y noticias
+- Diario de misiones
+- Ajustes
+- Selección de Guerrero, Mago y Asesina
+- Inicio con Supabase y modo invitado
 
-Sube `astharot-mobile/` y `.github/workflows/build-apk.yml`, haz commit y push, y descarga el APK desde GitHub Actions.
+Compila desde GitHub Actions con el flujo `Compilar APK Astharot`.
