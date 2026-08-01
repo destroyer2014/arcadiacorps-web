@@ -1,0 +1,6 @@
+ASTHAROT RPG V1
+1) Subir el ZIP al repositorio.
+2) Ejecutar supabase/astharot_rpg_v1.sql en Supabase SQL Editor.
+3) Actualizar el VPS con git pull y recargar Nginx.
+4) Abrir /astharot-rpg.html.
+Incluye creación de personaje, Guerrero/Mago/Asesino, exploración, combate seguro, experiencia, niveles, oro, energía, pociones e inventario inicial.
