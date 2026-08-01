@@ -1,18 +1,38 @@
 <!DOCTYPE html><html lang="es"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Panel Owner — ArcadiaCorps</title><meta name="theme-color" content="#080405">
+<title>Panel Owner — ArcadiaCorps</title><meta name="theme-color" content="#0d0a12">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/styles.css?v=wine-v11"></head><body>
+<link rel="stylesheet" href="assets/styles.css?v=wine-v11"><link rel="stylesheet" href="assets/account-staff-v12.css?v=account-staff-v12"></head><body>
 <div id="site-header"></div>
 <main class="ticket-shell owner-shell"><div class="wrap">
-<header class="ticket-page-head"><div><span class="eyebrow">Control total</span><h1>Panel Owner</h1><p>Administra el equipo, publica notificaciones y supervisa el soporte.</p></div><a href="staff-tickets.html" class="ticket-secondary-btn">Abrir soporte</a></header>
+<header class="ticket-page-head"><div><span class="eyebrow">Control total</span><h1>Panel Owner</h1><p>Administra cuentas, roles, avisos y soporte con auditoría.</p></div><a href="staff-tickets.html" class="ticket-secondary-btn">Abrir soporte</a></header>
 <div class="ticket-auth-note" id="ownerAccessMessage">Comprobando permisos...</div>
 <section id="ownerDashboard" hidden>
   <div class="owner-summary-grid" id="ownerSummary"></div>
-  <div class="owner-grid">
-    <section class="owner-card"><div class="owner-card-head"><div><span>Usuarios y roles</span><h2>Equipo</h2></div><button type="button" id="ownerRefreshUsers">↻</button></div><label class="staff-search">⌕ <input type="search" id="ownerUserSearch" placeholder="Buscar correo o usuario"></label><div class="owner-user-list" id="ownerUserList"></div></section>
-    <section class="owner-card"><div class="owner-card-head"><div><span>Centro de avisos</span><h2>Nueva notificación</h2></div></div>
+  <nav class="owner-tabs" aria-label="Módulos Owner">
+    <button type="button" class="active" data-owner-tab="accounts">Cuentas</button>
+    <button type="button" data-owner-tab="roles">Roles</button>
+    <button type="button" data-owner-tab="notifications">Notificaciones</button>
+    <button type="button" data-owner-tab="audit">Auditoría</button>
+  </nav>
+
+  <section class="owner-module active" data-owner-panel="accounts">
+    <article class="owner-card owner-account-card">
+      <div class="owner-card-head"><div><span>Recuperación segura</span><h2>Centro de cuentas</h2></div><button type="button" id="ownerRefreshAccounts">↻</button></div>
+      <p class="owner-help">Las contraseñas actuales nunca son visibles. Puedes enviar recuperación, confirmar correo, corregir email, asignar una clave temporal o suspender la cuenta.</p>
+      <label class="staff-search">⌕ <input type="search" id="ownerAccountSearch" placeholder="Buscar correo, nombre o ID"></label>
+      <div id="ownerAccountStatus" class="ticket-form-status" role="status"></div>
+      <div class="owner-account-list" id="ownerAccountList"><div class="ticket-loading">Cargando cuentas...</div></div>
+    </article>
+  </section>
+
+  <section class="owner-module" data-owner-panel="roles" hidden>
+    <article class="owner-card"><div class="owner-card-head"><div><span>Usuarios y permisos</span><h2>Equipo</h2></div><button type="button" id="ownerRefreshUsers">↻</button></div><label class="staff-search">⌕ <input type="search" id="ownerUserSearch" placeholder="Buscar correo o usuario"></label><div class="owner-user-list" id="ownerUserList"></div></article>
+  </section>
+
+  <section class="owner-module" data-owner-panel="notifications" hidden>
+    <article class="owner-card"><div class="owner-card-head"><div><span>Centro de avisos</span><h2>Nueva notificación</h2></div></div>
       <form id="ownerNotificationForm" class="owner-notification-form">
         <label>Título<input id="ownerNotifTitle" required maxlength="120" placeholder="Ej: Mantenimiento programado"></label>
         <label>Mensaje<textarea id="ownerNotifMessage" required maxlength="2000" rows="5" placeholder="Escribe el aviso..."></textarea></label>
@@ -21,8 +41,23 @@
         <div class="ticket-form-grid"><label>Texto del botón<input id="ownerNotifActionLabel" maxlength="40" placeholder="Ver más"></label><label>Enlace<input id="ownerNotifActionUrl" maxlength="300" placeholder="soporte.html"></label></div>
         <div class="ticket-form-status" id="ownerNotifStatus"></div><button type="submit" class="ticket-primary-btn">Publicar notificación</button>
       </form>
-    </section>
-  </div>
+    </article>
+  </section>
+
+  <section class="owner-module" data-owner-panel="audit" hidden>
+    <article class="owner-card"><div class="owner-card-head"><div><span>Seguridad</span><h2>Registro administrativo</h2></div><button type="button" id="ownerRefreshAudit">↻</button></div><div class="owner-audit-list" id="ownerAuditList"><div class="ticket-loading">Cargando actividad...</div></div></article>
+  </section>
 </section></div></main>
-<div id="site-footer"></div><script src="assets/include.js?v=tickets-v1"></script><script src="assets/owner-panel.js?v=tickets-v1" defer></script>
+
+<dialog class="owner-action-dialog" id="ownerActionDialog">
+  <form method="dialog" id="ownerActionForm">
+    <button class="dialog-close" value="cancel" aria-label="Cerrar">×</button>
+    <span class="eyebrow" id="ownerActionKicker">Acción administrativa</span><h2 id="ownerActionTitle">Confirmar acción</h2>
+    <p id="ownerActionDescription"></p><div id="ownerActionFields"></div>
+    <label>Motivo obligatorio<textarea id="ownerActionReason" required minlength="5" maxlength="500" rows="3" placeholder="Explica por qué realizas esta acción"></textarea></label>
+    <div class="dialog-actions"><button value="cancel" class="ticket-secondary-btn">Cancelar</button><button type="submit" value="default" class="ticket-primary-btn" id="ownerActionConfirm">Confirmar</button></div>
+    <div class="ticket-form-status" id="ownerActionStatus"></div>
+  </form>
+</dialog>
+<div id="site-footer"></div><script src="assets/include.js?v=ui-v8"></script><script src="assets/owner-panel-v12.js?v=account-staff-v12" defer></script>
 </body></html>

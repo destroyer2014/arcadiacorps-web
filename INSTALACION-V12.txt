@@ -1,0 +1,52 @@
+ARCADIACORPS — OWNER ACCOUNTS + STAFF V12
+
+CONTENIDO
+- Centro Owner para recuperación, confirmación/cambio de email, clave temporal y suspensión.
+- La contraseña existente nunca se muestra.
+- Auditoría de todas las acciones administrativas.
+- Staff con “Mis tickets”, responsable visible, historial, confirmaciones y actualización cada 15 s.
+- Notificación automática al usuario cuando Staff responde.
+
+1) COPIAR EL PARCHE AL REPOSITORIO
+Descomprime el ZIP y copia su contenido sobre tu repositorio. No reemplaza assets/styles.css.
+
+2) SUPABASE SQL
+Abre Supabase > SQL Editor y ejecuta:
+  supabase/account_staff_v12.sql
+
+3) CREAR LA EDGE FUNCTION
+Opción Dashboard:
+- Supabase > Edge Functions > Deploy a new function.
+- Nombre: owner-account-admin
+- Copia el contenido de supabase/functions/owner-account-admin/index.ts
+- Configura PASSWORD_RESET_REDIRECT=https://arcadiacorps.online/restablecer-clave.html
+
+Opción CLI:
+  supabase functions deploy owner-account-admin --no-verify-jwt
+  supabase secrets set PASSWORD_RESET_REDIRECT=https://arcadiacorps.online/restablecer-clave.html
+
+IMPORTANTE
+La función valida manualmente el JWT del usuario y comprueba role=owner + is_active=true.
+SUPABASE_SERVICE_ROLE_KEY se obtiene automáticamente en Edge Functions. Nunca la pongas en archivos públicos.
+
+4) AUTH URL CONFIGURATION
+En Supabase > Authentication > URL Configuration agrega a Redirect URLs:
+  https://arcadiacorps.online/restablecer-clave.html
+
+5) SUBIR A GITHUB Y VPS
+Desde Termux:
+  git add .
+  git commit -m "Añadir centro de cuentas Owner y completar Staff v12"
+  git push origin main
+
+En VPS:
+  cd /var/www/arcadiacorps
+  git pull --ff-only origin main
+  nginx -t && systemctl reload nginx
+
+6) PRUEBAS
+- Owner: abrir owner-panel.html, pestaña Cuentas, cargar usuarios.
+- Enviar recuperación a una cuenta de prueba.
+- Confirmar que admin_audit_logs recibe una fila.
+- Staff: activar “Solo asignados a mí”, asignarse un ticket y responder.
+- Confirmar que el usuario recibe notificación y ticket_audit_logs registra cambios.
