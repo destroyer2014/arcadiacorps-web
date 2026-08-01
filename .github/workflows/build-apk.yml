@@ -3,10 +3,11 @@ name: Compilar APK Astharot
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches:
+      - main
     paths:
-      - 'astharot-mobile/**'
-      - '.github/workflows/build-apk.yml'
+      - "astharot-mobile/**"
+      - ".github/workflows/build-apk.yml"
 
 permissions:
   contents: read
@@ -19,23 +20,23 @@ jobs:
         working-directory: astharot-mobile
     steps:
       - name: Descargar repositorio
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Configurar Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '21'
+          java-version: "21"
 
       - name: Configurar Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
       - name: Instalar dependencias
         run: npm install
@@ -46,53 +47,104 @@ jobs:
       - name: Crear proyecto Android
         run: npx cap add android
 
-      - name: Aplicar icono personalizado
+      - name: Aplicar icono y modo inmersivo
+        shell: bash
         run: |
           python - <<'PY'
           from pathlib import Path
           from PIL import Image
-          base = Path('.')
-          src = base / 'resources' / 'icon-1024.png'
-          if not src.exists():
-              raise SystemExit('No existe resources/icon-1024.png')
-          img = Image.open(src).convert('RGBA')
-          android_res = base / 'android' / 'app' / 'src' / 'main' / 'res'
-          # Eliminar adaptive icons XML para forzar el uso del PNG clásico
-          anydpi = android_res / 'mipmap-anydpi-v26'
-          if anydpi.exists():
-              for child in anydpi.iterdir():
-                  child.unlink()
-          sizes = {
-              'mipmap-mdpi': 48,
-              'mipmap-hdpi': 72,
-              'mipmap-xhdpi': 96,
-              'mipmap-xxhdpi': 144,
-              'mipmap-xxxhdpi': 192,
-          }
-          for folder, size in sizes.items():
-              dest = android_res / folder
-              dest.mkdir(parents=True, exist_ok=True)
-              resized = img.resize((size, size), Image.LANCZOS)
-              resized.save(dest / 'ic_launcher.png')
-              resized.save(dest / 'ic_launcher_round.png')
-          print('Iconos Android generados correctamente.')
-          PY
 
-      - name: Configurar orientación horizontal
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          p=Path('android/app/src/main/AndroidManifest.xml')
-          s=p.read_text(encoding='utf-8')
+          src = Path('resources/icon-1024.png')
+          img = Image.open(src).convert('RGBA')
+          res = Path('android/app/src/main/res')
+          for folder, size in {
+              'mipmap-mdpi':48,
+              'mipmap-hdpi':72,
+              'mipmap-xhdpi':96,
+              'mipmap-xxhdpi':144,
+              'mipmap-xxxhdpi':192,
+          }.items():
+              dest=res/folder
+              dest.mkdir(parents=True,exist_ok=True)
+              out=img.resize((size,size),Image.LANCZOS)
+              out.save(dest/'ic_launcher.png')
+              out.save(dest/'ic_launcher_round.png')
+
+          manifest=Path('android/app/src/main/AndroidManifest.xml')
+          text=manifest.read_text()
           marker='android:theme="@style/AppTheme.NoActionBarLaunch"'
-          replacement=marker+'\n            android:screenOrientation="landscape"'
-          if 'android:screenOrientation=' not in s:
-              s=s.replace(marker,replacement)
-          p.write_text(s, encoding='utf-8')
+          replacement=(marker+'\n            android:screenOrientation="landscape"'
+                       +'\n            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode"')
+          if 'android:screenOrientation=' not in text:
+              text=text.replace(marker,replacement)
+          manifest.write_text(text)
+
+          main=Path('android/app/src/main/java/com/arcadiacorps/astharotrpg/MainActivity.java')
+          main.parent.mkdir(parents=True,exist_ok=True)
+          main.write_text(r'''package com.arcadiacorps.astharotrpg;
+
+          import android.os.Bundle;
+          import android.os.Handler;
+          import android.os.Looper;
+          import androidx.core.view.WindowCompat;
+          import androidx.core.view.WindowInsetsCompat;
+          import androidx.core.view.WindowInsetsControllerCompat;
+          import com.getcapacitor.BridgeActivity;
+
+          public class MainActivity extends BridgeActivity {
+              private void enterImmersiveMode() {
+                  WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+                  WindowInsetsControllerCompat controller =
+                      WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
+                  controller.hide(WindowInsetsCompat.Type.systemBars());
+                  controller.setSystemBarsBehavior(
+                      WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                  );
+              }
+
+              @Override
+              public void onCreate(Bundle savedInstanceState) {
+                  super.onCreate(savedInstanceState);
+                  enterImmersiveMode();
+                  new Handler(Looper.getMainLooper()).postDelayed(this::enterImmersiveMode, 400);
+              }
+
+              @Override
+              protected void onResume() {
+                  super.onResume();
+                  enterImmersiveMode();
+              }
+
+              @Override
+              public void onWindowFocusChanged(boolean hasFocus) {
+                  super.onWindowFocusChanged(hasFocus);
+                  if (hasFocus) enterImmersiveMode();
+              }
+          }
+          ''')
+
+          for style_file in [res/'values/styles.xml', res/'values-v35/styles.xml']:
+              if style_file.exists():
+                  st=style_file.read_text()
+                  needle='<item name="android:windowFullscreen">true</item>'
+                  if needle not in st:
+                      st=st.replace('</style>',
+                          '    <item name="android:windowFullscreen">true</item>\n'
+                          '    <item name="android:windowActionModeOverlay">true</item>\n'
+                          '    <item name="android:navigationBarColor">@android:color/transparent</item>\n'
+                          '    <item name="android:statusBarColor">@android:color/transparent</item>\n'
+                          '    <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>\n'
+                          '</style>')
+                      style_file.write_text(st)
           PY
 
       - name: Sincronizar recursos
         run: npx cap sync android
+
+      - name: Reaplicar modo inmersivo después de sync
+        run: |
+          test -f android/app/src/main/java/com/arcadiacorps/astharotrpg/MainActivity.java
+          grep -q "enterImmersiveMode" android/app/src/main/java/com/arcadiacorps/astharotrpg/MainActivity.java
 
       - name: Compilar APK debug
         run: |
@@ -103,6 +155,6 @@ jobs:
       - name: Guardar APK
         uses: actions/upload-artifact@v4
         with:
-          name: Astharot-RPG-debug
+          name: Astharot-RPG-debug-v6
           path: astharot-mobile/android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error

@@ -28,3 +28,25 @@ body{position:fixed;inset:0;padding:0!important}
 .hero{width:54px;height:78px}.hero-sprite{transform:scale(.78);transform-origin:center bottom}.hero span{font-size:11px}
 dialog{width:min(1080px,96vw);height:min(610px,92dvh)}.x{width:38px;height:38px;font-size:23px}.character-panel{padding:32px;gap:18px}
 @media(max-height:500px){.creator-panel{height:94dvh}.class-grid{height:54dvh}.login-box{top:34%;gap:5px}.login-box input,.gold-btn,.dark-btn{padding:7px;font-size:12px}.quest{top:62px}.profile #portrait{width:38px;height:38px}.joystick{width:90px;height:90px}.joystick i{left:23px;top:23px;width:42px;height:42px}.skills{transform:scale(.9);transform-origin:bottom right}}
+
+
+/* v6: interfaz compacta para teléfonos horizontales */
+.creator{padding:4px!important;align-items:center}
+.creator-panel{width:min(880px,94vw)!important;height:auto!important;max-height:88dvh!important;padding:8px 12px!important;overflow:auto!important}
+.creator-panel h2{font-size:18px!important;margin:0 0 4px!important}
+.creator-panel>input{height:34px!important;max-width:360px!important;padding:6px 10px!important;font-size:12px!important}
+.class-grid{height:clamp(108px,34dvh,165px)!important;margin:6px 0!important;gap:6px!important}
+.class-grid button{height:100%!important;min-height:0!important;border-width:1px!important}
+.class-grid img{object-position:20% 18%!important}
+.class-grid b{padding:4px!important;font-size:12px!important}
+.creator-panel .gold-btn{max-width:220px!important;padding:7px!important;font-size:12px!important}
+.creator-panel p{margin:5px 0 0!important;min-height:14px!important;font-size:11px!important}
+.login-box{top:37%!important;width:min(430px,48vw)!important;gap:5px!important;padding:6px!important}
+.login-box input,.login-box .gold-btn,.login-box .dark-btn{height:34px!important;padding:6px 10px!important;font-size:12px!important}
+@media(max-height:430px){
+ .creator-panel{max-height:92dvh!important}
+ .class-grid{height:120px!important}
+ .creator-panel h2{display:none}
+ .creator-panel>input{height:30px!important}
+ .login-box{top:31%!important;width:46vw!important}
+}
