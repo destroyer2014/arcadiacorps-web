@@ -1,104 +1,73 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Astharot RPG — ArcadiaCorps</title>
-<meta name="description" content="Astharot RPG, aventura medieval pixel art dentro de ArcadiaCorps.">
-<meta name="theme-color" content="#16070a">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/styles.css?v=wine-v11">
-<link rel="stylesheet" href="assets/astharot-rpg.css?v=astharot-v1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#090406">
+<title>Astharot RPG Mobile</title>
+<meta name="description" content="Astharot RPG, aventura medieval 2D para móvil.">
+<link rel="stylesheet" href="assets/astharot-mobile.css?v=mobile-v1">
 </head>
-<body class="astharot-page">
-<div id="site-header"></div>
+<body>
+<div id="app" class="game-app">
+  <canvas id="gameCanvas" aria-label="Mapa de Astharot RPG"></canvas>
 
-<main class="astharot-shell">
-  <section class="astharot-hero pixel-frame reveal">
-    <div>
-      <span class="pixel-kicker">ARCADIACORPS PRESENTA</span>
-      <h1>ASTHAROT <em>RPG</em></h1>
-      <p>Forja tu leyenda en un reino medieval de magia, acero y sombras.</p>
-    </div>
-    <div class="hero-cast" aria-hidden="true">
-      <span>🛡️</span><span>🧙</span><span>🗡️</span>
+  <section id="bootScreen" class="screen-panel boot-screen">
+    <div class="game-logo"><small>ARCADIACORPS PRESENTA</small><strong>ASTHAROT</strong><em>RPG MOBILE</em></div>
+    <div class="pixel-loader"><i></i><i></i><i></i></div>
+    <p id="bootText">Conectando con tu aventura...</p>
+  </section>
+
+  <section id="loginScreen" class="screen-panel" hidden>
+    <div class="modal-card">
+      <h1>INICIA SESIÓN</h1>
+      <p>Astharot usa la misma cuenta de ArcadiaCorps.</p>
+      <a class="main-btn" href="index.html?return=astharot-rpg.html">IR AL LOGIN</a>
     </div>
   </section>
 
-  <section id="rpgLoading" class="pixel-frame rpg-message">Cargando tu aventura...</section>
-
-  <section id="rpgLoginRequired" class="pixel-frame rpg-message" hidden>
-    <h2>INICIA SESIÓN</h2>
-    <p>Astharot RPG utiliza la misma cuenta de ArcadiaCorps.</p>
-    <a href="index.html?return=astharot-rpg.html" class="pixel-btn primary">Ir al inicio de sesión</a>
-  </section>
-
-  <section id="characterCreator" class="pixel-frame creator" hidden>
-    <div class="section-title"><span>01</span><div><small>NUEVA PARTIDA</small><h2>CREA TU HÉROE</h2></div></div>
-    <label class="pixel-field">Nombre del personaje
-      <input id="characterName" maxlength="18" placeholder="Ej. Kael" autocomplete="off">
-    </label>
-    <div class="class-grid" id="classGrid">
-      <button class="class-card" data-class="warrior" type="button">
-        <span class="class-sprite">🛡️</span><strong>GUERRERO</strong><small>Resistencia y fuerza</small>
-        <div>❤️ 130 · ⚔️ 18 · 🛡️ 14</div>
-      </button>
-      <button class="class-card" data-class="mage" type="button">
-        <span class="class-sprite">🧙</span><strong>MAGO</strong><small>Poder arcano</small>
-        <div>❤️ 90 · ✨ 25 · 🛡️ 7</div>
-      </button>
-      <button class="class-card" data-class="assassin" type="button">
-        <span class="class-sprite">🗡️</span><strong>ASESINO</strong><small>Velocidad y crítico</small>
-        <div>❤️ 105 · ⚔️ 22 · 💨 18</div>
-      </button>
-    </div>
-    <button id="createCharacterBtn" class="pixel-btn primary" type="button" disabled>COMENZAR AVENTURA</button>
-    <p id="creatorStatus" class="rpg-status"></p>
-  </section>
-
-  <section id="gameDashboard" hidden>
-    <div class="dashboard-grid">
-      <article class="pixel-frame character-panel">
-        <div class="character-top">
-          <div id="characterSprite" class="character-sprite">🛡️</div>
-          <div><span id="characterClass" class="pixel-kicker">GUERRERO</span><h2 id="characterDisplayName">HÉROE</h2><p>Nivel <b id="characterLevel">1</b></p></div>
-        </div>
-        <div class="bar-row"><span>VIDA</span><div class="pixel-bar"><i id="hpBar"></i></div><b id="hpText">0/0</b></div>
-        <div class="bar-row"><span>EXP</span><div class="pixel-bar exp"><i id="xpBar"></i></div><b id="xpText">0/100</b></div>
-        <div class="resource-row"><span>🪙 <b id="goldText">0</b></span><span>⚡ <b id="energyText">0</b>/10</span></div>
-        <div class="stat-grid"><div>⚔️ Ataque <b id="attackText">0</b></div><div>🛡️ Defensa <b id="defenseText">0</b></div><div>💨 Velocidad <b id="speedText">0</b></div><div>🎯 Crítico <b id="critText">0</b>%</div></div>
-      </article>
-
-      <article class="pixel-frame adventure-panel">
-        <div class="section-title"><span>02</span><div><small>ZONA INICIAL</small><h2>BOSQUE DE LAS CENIZAS</h2></div></div>
-        <div id="enemyStage" class="enemy-stage">
-          <div id="enemySprite" class="enemy-sprite">🌲</div>
-          <div><h3 id="enemyName">El sendero aguarda</h3><p id="enemyDescription">Explora para encontrar un enemigo.</p></div>
-        </div>
-        <div class="battle-bars" id="battleBars" hidden>
-          <div class="bar-row"><span>ENEMIGO</span><div class="pixel-bar enemy"><i id="enemyHpBar"></i></div><b id="enemyHpText"></b></div>
-        </div>
-        <div class="battle-actions">
-          <button id="exploreBtn" class="pixel-btn primary" type="button">EXPLORAR (-1 ⚡)</button>
-          <button id="attackBtn" class="pixel-btn danger" type="button" hidden>ATACAR</button>
-          <button id="potionBtn" class="pixel-btn" type="button" hidden>POCIÓN (<span id="potionCount">0</span>)</button>
-        </div>
-        <div id="battleLog" class="battle-log"><p>Bienvenido a Astharot. Tu primera aventura está por comenzar.</p></div>
-        <p id="gameStatus" class="rpg-status"></p>
-      </article>
-    </div>
-
-    <div class="lower-grid">
-      <article class="pixel-frame"><h3>INVENTARIO INICIAL</h3><div id="inventoryList" class="inventory-list"><span class="empty-slot">Vacío</span></div></article>
-      <article class="pixel-frame"><h3>PRÓXIMAMENTE</h3><div class="coming-grid"><span>🗺️ Mapas</span><span>📜 Misiones</span><span>🏪 Tienda</span><span>🏆 Ranking</span></div></article>
+  <section id="creatorScreen" class="screen-panel" hidden>
+    <div class="modal-card creator-card">
+      <small>NUEVA AVENTURA</small><h1>CREA TU HÉROE</h1>
+      <input id="heroName" maxlength="18" placeholder="Nombre del héroe" autocomplete="off">
+      <div class="class-picks">
+        <button data-class="warrior"><span>⚔️</span><b>GUERRERO</b><small>Fuerte y resistente</small></button>
+        <button data-class="mage"><span>✨</span><b>MAGO</b><small>Daño arcano</small></button>
+        <button data-class="assassin"><span>🗡️</span><b>ASESINO</b><small>Rápido y crítico</small></button>
+      </div>
+      <button id="createHero" class="main-btn" disabled>ENTRAR A ASTHAROT</button>
+      <p id="creatorStatus" class="status"></p>
     </div>
   </section>
-</main>
 
-<div id="site-footer"></div>
-<script src="assets/include.js?v=ui-v8"></script>
-<script src="assets/astharot-rpg.js?v=astharot-v1-fix1"></script>
+  <header id="hud" class="hud" hidden>
+    <div class="hero-mini"><div id="heroPortrait" class="portrait">⚔️</div><div><b id="heroLabel">Héroe</b><small>Nv. <span id="levelValue">1</span></small></div></div>
+    <div class="bars"><div class="bar hp"><i id="hpFill"></i><span id="hpValue">100/100</span></div><div class="bar mp"><i id="mpFill"></i><span id="mpValue">50/50</span></div></div>
+    <div class="currency">🪙 <b id="goldValue">0</b></div>
+  </header>
+
+  <div id="questBox" class="quest-box" hidden><small>MISIÓN</small><b>Habla con Eldric</b><span>Acércate al sabio de la aldea.</span></div>
+  <div id="toast" class="toast" hidden></div>
+  <div id="targetCard" class="target-card" hidden><span id="targetIcon">🐺</span><div><b id="targetName">Lobo</b><div class="target-hp"><i id="targetHp"></i></div></div></div>
+
+  <div id="joystick" class="joystick" hidden><div id="stick" class="stick"></div></div>
+  <nav id="actions" class="actions" hidden>
+    <button id="attackAction" class="action attack"><span>⚔️</span><small>ATACAR</small></button>
+    <button id="skillOne" class="action"><span id="skillOneIcon">🔥</span><small id="skillOneName">SKILL 1</small><i class="cooldown"></i></button>
+    <button id="skillTwo" class="action"><span id="skillTwoIcon">🛡️</span><small id="skillTwoName">SKILL 2</small><i class="cooldown"></i></button>
+    <button id="potionAction" class="action potion"><span>🧪</span><small id="potionValue">2</small></button>
+  </nav>
+
+  <nav id="bottomNav" class="bottom-nav" hidden>
+    <button data-panel="character">👤<small>HÉROE</small></button>
+    <button data-panel="inventory">🎒<small>MOCHILA</small></button>
+    <button class="active">🗺️<small>MAPA</small></button>
+    <button data-panel="quests">📜<small>MISIONES</small></button>
+    <button data-panel="settings">⚙️<small>MENÚ</small></button>
+  </nav>
+
+  <dialog id="infoDialog" class="game-dialog"><button id="closeDialog" class="close">×</button><div id="dialogContent"></div></dialog>
+</div>
+<script src="assets/astharot-mobile.js?v=mobile-v1"></script>
 </body>
 </html>
