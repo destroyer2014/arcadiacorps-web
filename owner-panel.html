@@ -15,6 +15,7 @@
     <button type="button" data-owner-tab="roles">Roles</button>
     <button type="button" data-owner-tab="notifications">Notificaciones</button>
     <button type="button" data-owner-tab="store">Tienda</button>
+    <button type="button" data-owner-tab="content">Contenido</button>
     <button type="button" data-owner-tab="audit">Auditoría</button>
   </nav>
 
@@ -54,6 +55,31 @@
     </article>
   </section>
 
+
+  <section class="owner-module" data-owner-panel="content" hidden>
+    <div class="owner-content-grid">
+      <article class="owner-card">
+        <div class="owner-card-head"><div><span>Inicio dinámico</span><h2>Novedades</h2></div><button type="button" id="ownerRefreshContent">↻</button></div>
+        <div class="owner-store-toolbar"><label class="staff-search">⌕ <input type="search" id="ownerNewsSearch" placeholder="Buscar novedades"></label><button type="button" class="ticket-primary-btn" id="ownerNewNews">+ Nueva novedad</button></div>
+        <div id="ownerContentStatus" class="ticket-form-status" role="status"></div><div id="ownerNewsList" class="owner-news-list"><div class="ticket-loading">Cargando novedades…</div></div>
+      </article>
+      <article class="owner-card">
+        <div class="owner-card-head"><div><span>Datos globales</span><h2>Configuración del sitio</h2></div></div>
+        <form id="ownerSettingsForm" class="owner-settings-form">
+          <div class="ticket-form-grid"><label>Número de WhatsApp<input id="setting_whatsapp_number" inputmode="numeric" placeholder="51917611323"></label><label>Estado<select id="setting_service_status"><option value="online">En línea</option><option value="maintenance">Mantenimiento</option><option value="offline">Fuera de línea</option></select></label></div>
+          <div class="ticket-form-grid"><label>Texto del estado<input id="setting_service_status_label"></label><label>Detalle del estado<input id="setting_service_status_message"></label></div>
+          <label>Etiqueta del Inicio<input id="setting_hero_eyebrow"></label><div class="ticket-form-grid"><label>Título<input id="setting_hero_title"></label><label>Texto destacado<input id="setting_hero_accent"></label></div>
+          <label>Descripción principal<textarea id="setting_hero_description" rows="3"></textarea></label>
+          <div class="ticket-form-grid"><label>Botón principal<input id="setting_primary_button_text"></label><label>Enlace<input id="setting_primary_button_url"></label></div>
+          <div class="ticket-form-grid"><label>Botón secundario<input id="setting_secondary_button_text"></label><label>Enlace<input id="setting_secondary_button_url"></label></div>
+          <label>Canal de WhatsApp<input id="setting_whatsapp_channel_url"></label><label>Grupo de WhatsApp<input id="setting_whatsapp_group_url"></label>
+          <label class="owner-setting-check"><input type="checkbox" id="setting_maintenance_enabled"> Mostrar aviso de mantenimiento</label><label>Mensaje de mantenimiento<textarea id="setting_maintenance_message" rows="2"></textarea></label>
+          <div id="ownerSettingsStatus" class="ticket-form-status"></div><button type="submit" id="ownerSettingsSave" class="ticket-primary-btn">Guardar configuración</button>
+        </form>
+      </article>
+    </div>
+  </section>
+
   <section class="owner-module" data-owner-panel="audit" hidden>
     <article class="owner-card"><div class="owner-card-head"><div><span>Seguridad</span><h2>Registro administrativo</h2></div><button type="button" id="ownerRefreshAudit">↻</button></div>
       <div class="owner-audit-filters"><label>Buscar<input type="search" id="ownerAuditSearch" placeholder="Acción, motivo o cuenta"></label><label>Acción<select id="ownerAuditAction"><option value="all">Todas</option></select></label></div>
@@ -85,5 +111,17 @@
 <label>Orden<input id="ownerProductOrder" type="number" step="1"></label><div class="owner-product-checks"><label><input id="ownerProductFeatured" type="checkbox"> Destacado</label><label><input id="ownerProductActive" type="checkbox" checked> Visible</label></div>
 <div class="ticket-form-status" id="ownerProductFormStatus"></div><div class="dialog-actions"><button type="button" id="ownerProductCancel" class="ticket-secondary-btn">Cancelar</button><button type="submit" id="ownerProductSave" class="ticket-primary-btn">Guardar producto</button></div>
 </form></dialog>
-<div id="site-footer"></div><script src="assets/include.js?v=ui-v8"></script><script src="assets/owner-panel-v12.js?v=owner-staff-v13" defer></script><script src="assets/owner-store-v14.js?v=store-v14" defer></script>
+
+<dialog class="owner-action-dialog owner-news-dialog" id="ownerNewsDialog"><form id="ownerNewsForm">
+<button type="button" class="dialog-close" id="ownerNewsClose" aria-label="Cerrar">×</button><span class="eyebrow">Contenido del Inicio</span><h2 id="ownerNewsDialogTitle">Nueva novedad</h2>
+<label>Título<input id="ownerNewsTitle" required maxlength="140"></label><label>Resumen<textarea id="ownerNewsSummary" required maxlength="600" rows="3"></textarea></label>
+<div class="ticket-form-grid"><label>Etiqueta<input id="ownerNewsBadge" maxlength="30" placeholder="Nuevo"></label><label>Orden<input id="ownerNewsOrder" type="number" value="100"></label></div>
+<div class="ticket-form-grid"><label>Texto del botón<input id="ownerNewsActionLabel" maxlength="40"></label><label>Enlace<input id="ownerNewsActionUrl" maxlength="400" placeholder="proyecto.html"></label></div>
+<div class="ticket-form-grid"><label>Publicar desde<input id="ownerNewsStarts" type="datetime-local"></label><label>Expira<input id="ownerNewsExpires" type="datetime-local"></label></div>
+<label class="owner-setting-check"><input type="checkbox" id="ownerNewsActive" checked> Publicada</label><div id="ownerNewsFormStatus" class="ticket-form-status"></div>
+<div class="dialog-actions"><button type="button" id="ownerNewsCancel" class="ticket-secondary-btn">Cancelar</button><button type="submit" id="ownerNewsSave" class="ticket-primary-btn">Guardar novedad</button></div>
+</form></dialog>
+
+<div id="site-footer"></div><script src="assets/include.js?v=ui-v8"></script><script src="assets/owner-panel-v12.js?v=owner-staff-v13" defer></script><script src="assets/owner-store-v14.js?v=store-v14" defer></script><script src="assets/owner-content-v15.js?v=content-v15" defer></script>
+<script src="assets/site-content-v15.js?v=content-v15" defer></script>
 </body></html>

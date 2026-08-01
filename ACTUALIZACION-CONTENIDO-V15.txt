@@ -1,0 +1,8 @@
+ARCADIACORPS — CONTENIDO DINÁMICO V15
+
+1. Subir los archivos a GitHub y actualizar el VPS.
+2. Ejecutar supabase/site_content_v15.sql en Supabase SQL Editor.
+3. Abrir owner-panel.html y usar la pestaña Contenido.
+4. Probar index.html y recargar para ver novedades/configuración.
+
+No requiere Edge Function nueva.

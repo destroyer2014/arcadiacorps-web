@@ -6,7 +6,7 @@ const REST=URL+'/rest/v1/store_products';
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let products=[],tab='tendencias',category='all',query='',expanded=false;
 const money=n=>'S/ '+Number(n||0).toFixed(2);
-function wa(p){const msg=p.whatsapp_message||('Hola, quiero comprar '+p.name);return 'https://wa.me/51917611323?text='+encodeURIComponent(msg);}
+function wa(p){const msg=p.whatsapp_message||('Hola, quiero comprar '+p.name);const phone=(window.ArcadiaSiteSettings?.whatsapp_number||'51917611323').replace(/\D/g,'');return 'https://wa.me/'+phone+'?text='+encodeURIComponent(msg);}
 function card(p,grid=true){
  const sold=Number(p.stock)<=0, tabs=(p.tabs||[]).join(' '), badge=sold?'Agotado':(p.badge||'Disponible');
  return `<article class="stream-card ${grid?'stream-grid-card':''} ${sold?'soldout-card':''}" data-product-id="${p.id}" data-category="${esc(p.category)}" data-tab="${esc(tabs)}" data-search="${esc((p.name+' '+p.category+' '+(p.description||'')).toLowerCase())}">
