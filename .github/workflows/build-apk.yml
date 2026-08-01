@@ -1,194 +1,107 @@
 name: Compilar APK Astharot
-
 on:
+  workflow_dispatch:
   push:
     branches: [main]
     paths:
       - "astharot-mobile/**"
       - ".github/workflows/build-apk.yml"
-  workflow_dispatch:
-
 permissions:
   contents: read
-
 jobs:
   build:
     runs-on: ubuntu-latest
-
     defaults:
       run:
         working-directory: astharot-mobile
-
     steps:
       - name: Descargar repositorio
         uses: actions/checkout@v4
-
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-
       - name: Configurar Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "21"
-
       - name: Configurar Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-
       - name: Instalar dependencias
         run: npm install
-
       - name: Instalar Pillow
         run: python -m pip install pillow
-
       - name: Crear proyecto Android
         run: |
           rm -rf android
           npx cap add android
           npx cap sync android
-
       - name: Aplicar icono
         run: |
           python - <<'PY'
           from pathlib import Path
           from PIL import Image
-
-          src = Path("resources/icon-1024.png")
-          if not src.exists():
-              raise SystemExit("No existe resources/icon-1024.png")
-
-          image = Image.open(src).convert("RGBA")
-          res = Path("android/app/src/main/res")
-
-          sizes = {
-              "mipmap-mdpi": 48,
-              "mipmap-hdpi": 72,
-              "mipmap-xhdpi": 96,
-              "mipmap-xxhdpi": 144,
-              "mipmap-xxxhdpi": 192,
-          }
-
-          for folder, size in sizes.items():
-              destination = res / folder
-              destination.mkdir(parents=True, exist_ok=True)
-              resized = image.resize((size, size), Image.Resampling.LANCZOS)
-              resized.save(destination / "ic_launcher.png")
-              resized.save(destination / "ic_launcher_round.png")
-
-          adaptive = res / "mipmap-anydpi-v26"
+          src=Path('resources/icon-1024.png')
+          img=Image.open(src).convert('RGBA')
+          res=Path('android/app/src/main/res')
+          for folder,size in {'mipmap-mdpi':48,'mipmap-hdpi':72,'mipmap-xhdpi':96,'mipmap-xxhdpi':144,'mipmap-xxxhdpi':192}.items():
+              dest=res/folder; dest.mkdir(parents=True,exist_ok=True)
+              out=img.resize((size,size),Image.Resampling.LANCZOS)
+              out.save(dest/'ic_launcher.png'); out.save(dest/'ic_launcher_round.png')
+          adaptive=res/'mipmap-anydpi-v26'
           if adaptive.exists():
-              for file in adaptive.iterdir():
-                  if file.is_file():
-                      file.unlink()
-
-          print("Iconos Android generados.")
+              for f in adaptive.iterdir():
+                  if f.is_file(): f.unlink()
           PY
-
-      - name: Configurar orientación horizontal
+      - name: Configurar Android inmersivo
         run: |
           python - <<'PY'
           from pathlib import Path
           import re
-
-          manifest = Path("android/app/src/main/AndroidManifest.xml")
-          text = manifest.read_text(encoding="utf-8")
-
-          activity_pattern = r'(<activity\b[^>]*android:name="\.MainActivity"[^>]*)(>)'
-          match = re.search(activity_pattern, text, re.DOTALL)
-
-          if not match:
-              raise SystemExit("No se encontró MainActivity en AndroidManifest.xml")
-
-          activity = match.group(1)
-
-          if "android:screenOrientation=" not in activity:
-              activity += '\n            android:screenOrientation="landscape"'
-
-          text = text[:match.start()] + activity + match.group(2) + text[match.end():]
-          manifest.write_text(text, encoding="utf-8")
-
-          print("Orientación horizontal configurada.")
-          PY
-
-      - name: Aplicar pantalla completa inmersiva
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          import re
-
-          candidates = list(Path("android/app/src/main/java").rglob("MainActivity.java"))
-
-          if not candidates:
-              raise SystemExit("No se encontró MainActivity.java")
-
-          path = candidates[0]
-          original = path.read_text(encoding="utf-8")
-
-          package_match = re.search(r"package\s+([\w.]+);", original)
-          if not package_match:
-              raise SystemExit("No se encontró el package de MainActivity")
-
-          package_name = package_match.group(1)
-
-          code = f'''package {package_name};
-
+          manifest=Path('android/app/src/main/AndroidManifest.xml')
+          text=manifest.read_text(encoding='utf-8')
+          text=text.replace('android:allowBackup="true"','android:allowBackup="false"')
+          m=re.search(r'(<activity\b[^>]*android:name="\.MainActivity"[^>]*)(>)',text,re.S)
+          if not m: raise SystemExit('No se encontró MainActivity')
+          activity=m.group(1)
+          if 'android:screenOrientation=' not in activity:
+              activity+='\n            android:screenOrientation="landscape"'
+          text=text[:m.start()]+activity+m.group(2)+text[m.end():]
+          manifest.write_text(text,encoding='utf-8')
+          main=list(Path('android/app/src/main/java').rglob('MainActivity.java'))[0]
+          package=re.search(r'package\s+([\w.]+);',main.read_text()).group(1)
+          main.write_text(f'''package {package};
+          import android.os.Build;
           import android.os.Bundle;
           import android.view.View;
+          import android.view.WindowInsets;
+          import android.view.WindowInsetsController;
           import com.getcapacitor.BridgeActivity;
-
           public class MainActivity extends BridgeActivity {{
-
-              @Override
-              public void onCreate(Bundle savedInstanceState) {{
-                  super.onCreate(savedInstanceState);
-                  activarModoInmersivo();
+            @Override public void onCreate(Bundle savedInstanceState) {{ super.onCreate(savedInstanceState); immersive(); }}
+            @Override public void onResume() {{ super.onResume(); immersive(); }}
+            @Override public void onWindowFocusChanged(boolean hasFocus) {{ super.onWindowFocusChanged(hasFocus); if(hasFocus) immersive(); }}
+            private void immersive() {{
+              if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {{
+                WindowInsetsController c=getWindow().getInsetsController();
+                if(c!=null) {{ c.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars()); c.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE); }}
+              }} else {{
+                getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY|View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_HIDE_NAVIGATION|View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION|View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
               }}
-
-              @Override
-              public void onWindowFocusChanged(boolean hasFocus) {{
-                  super.onWindowFocusChanged(hasFocus);
-
-                  if (hasFocus) {{
-                      activarModoInmersivo();
-                  }}
-              }}
-
-              @Override
-              public void onResume() {{
-                  super.onResume();
-                  activarModoInmersivo();
-              }}
-
-              private void activarModoInmersivo() {{
-                  getWindow().getDecorView().setSystemUiVisibility(
-                      View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                      | View.SYSTEM_UI_FLAG_FULLSCREEN
-                      | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                      | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                      | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                      | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                  );
-              }}
-          }}
-          '''
-
-          path.write_text(code, encoding="utf-8")
-          print(f"Modo inmersivo aplicado en: {path}")
+            }}
+          }}''',encoding='utf-8')
           PY
-
       - name: Compilar APK debug
         run: |
           chmod +x android/gradlew
           cd android
           ./gradlew assembleDebug
-
       - name: Guardar APK
         uses: actions/upload-artifact@v4
         with:
-          name: Astharot-RPG-debug-v6
+          name: Astharot-RPG-debug-v7
           path: astharot-mobile/android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
