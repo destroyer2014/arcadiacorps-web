@@ -1,0 +1,14 @@
+ARCADIACORPS — OWNER + STAFF v13
+
+Incluye:
+- Errores administrativos en español.
+- Bloqueo de botones durante operaciones.
+- Cierre seguro y automático de modales.
+- Espera visual de 60 segundos tras enviar recuperación.
+- Auditoría con búsqueda y filtro por acción.
+- Staff con actualización al volver a la pestaña.
+- Respuestas Staff protegidas contra doble envío.
+- Al responder un ticket nuevo pasa a En proceso y se asigna al agente cuando no tenía responsable.
+- Mejoras móviles y estados visuales.
+
+No requiere SQL nuevo ni cambios adicionales en la Edge Function.
