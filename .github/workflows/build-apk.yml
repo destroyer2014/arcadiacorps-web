@@ -32,23 +32,63 @@ jobs:
           distribution: temurin
           java-version: '21'
 
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
       - name: Instalar dependencias
         run: npm install
+
+      - name: Instalar Pillow
+        run: python -m pip install pillow
 
       - name: Crear proyecto Android
         run: npx cap add android
 
+      - name: Aplicar icono personalizado
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          base = Path('.')
+          src = base / 'resources' / 'icon-1024.png'
+          if not src.exists():
+              raise SystemExit('No existe resources/icon-1024.png')
+          img = Image.open(src).convert('RGBA')
+          android_res = base / 'android' / 'app' / 'src' / 'main' / 'res'
+          # Eliminar adaptive icons XML para forzar el uso del PNG clásico
+          anydpi = android_res / 'mipmap-anydpi-v26'
+          if anydpi.exists():
+              for child in anydpi.iterdir():
+                  child.unlink()
+          sizes = {
+              'mipmap-mdpi': 48,
+              'mipmap-hdpi': 72,
+              'mipmap-xhdpi': 96,
+              'mipmap-xxhdpi': 144,
+              'mipmap-xxxhdpi': 192,
+          }
+          for folder, size in sizes.items():
+              dest = android_res / folder
+              dest.mkdir(parents=True, exist_ok=True)
+              resized = img.resize((size, size), Image.LANCZOS)
+              resized.save(dest / 'ic_launcher.png')
+              resized.save(dest / 'ic_launcher_round.png')
+          print('Iconos Android generados correctamente.')
+          PY
+
       - name: Configurar orientación horizontal
         run: |
-          python3 - <<'PY'
+          python - <<'PY'
           from pathlib import Path
           p=Path('android/app/src/main/AndroidManifest.xml')
-          s=p.read_text()
+          s=p.read_text(encoding='utf-8')
           marker='android:theme="@style/AppTheme.NoActionBarLaunch"'
           replacement=marker+'\n            android:screenOrientation="landscape"'
           if 'android:screenOrientation=' not in s:
               s=s.replace(marker,replacement)
-          p.write_text(s)
+          p.write_text(s, encoding='utf-8')
           PY
 
       - name: Sincronizar recursos

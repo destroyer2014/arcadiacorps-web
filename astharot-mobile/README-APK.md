@@ -1,14 +1,5 @@
-# Astharot RPG Android v1
+# Astharot RPG Android v3
 
-Proyecto Capacitor independiente para Android.
+Incluye nuevo icono, login rediseñado, selección visual de clases, HUD renovado y animaciones base de Guerrero, Mago y Asesino.
 
-## Compilar con GitHub Actions
-
-1. Copia la carpeta `astharot-mobile` a la raíz del repositorio ArcadiaCorps.
-2. Copia `.github/workflows/build-apk.yml` a la misma ruta del repositorio.
-3. Haz commit y push.
-4. Abre GitHub → Actions → Compilar APK Astharot.
-5. Ejecuta `Run workflow` o espera la compilación automática.
-6. Descarga el artefacto `Astharot-RPG-debug`.
-
-El APK debug sirve para pruebas y no está firmado para Google Play.
+Sube `astharot-mobile/` y `.github/workflows/build-apk.yml`, haz commit y push, y descarga el APK desde GitHub Actions.
