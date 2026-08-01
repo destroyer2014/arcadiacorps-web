@@ -1,0 +1,9 @@
+ARCADIACORPS TIENDA DINÁMICA V14
+
+1. Subir el contenido del ZIP a GitHub.
+2. Actualizar el VPS con git pull --ff-only origin main.
+3. En Supabase SQL Editor ejecutar supabase/store_products_v14.sql.
+4. Abrir owner-panel.html?v=store-v14 y administrar desde la pestaña Tienda.
+5. Abrir premium.html?v=store-v14 para verificar el catálogo público.
+
+No requiere Edge Function nueva. Las políticas RLS permiten lectura pública de productos visibles y escritura solo al Owner autenticado.

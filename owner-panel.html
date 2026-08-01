@@ -14,6 +14,7 @@
     <button type="button" class="active" data-owner-tab="accounts">Cuentas</button>
     <button type="button" data-owner-tab="roles">Roles</button>
     <button type="button" data-owner-tab="notifications">Notificaciones</button>
+    <button type="button" data-owner-tab="store">Tienda</button>
     <button type="button" data-owner-tab="audit">Auditoría</button>
   </nav>
 
@@ -44,6 +45,15 @@
     </article>
   </section>
 
+
+  <section class="owner-module" data-owner-panel="store" hidden>
+    <article class="owner-card">
+      <div class="owner-card-head"><div><span>Catálogo dinámico</span><h2>Productos de la tienda</h2></div><button type="button" id="ownerRefreshProducts">↻</button></div>
+      <div class="owner-store-toolbar"><label class="staff-search">⌕ <input type="search" id="ownerProductSearch" placeholder="Buscar nombre, categoría o slug"></label><button type="button" class="ticket-primary-btn" id="ownerNewProduct">+ Nuevo producto</button></div>
+      <div id="ownerStoreStatus" class="ticket-form-status" role="status"></div><div class="owner-product-list" id="ownerProductList"><div class="ticket-loading">Cargando productos...</div></div>
+    </article>
+  </section>
+
   <section class="owner-module" data-owner-panel="audit" hidden>
     <article class="owner-card"><div class="owner-card-head"><div><span>Seguridad</span><h2>Registro administrativo</h2></div><button type="button" id="ownerRefreshAudit">↻</button></div>
       <div class="owner-audit-filters"><label>Buscar<input type="search" id="ownerAuditSearch" placeholder="Acción, motivo o cuenta"></label><label>Acción<select id="ownerAuditAction"><option value="all">Todas</option></select></label></div>
@@ -61,5 +71,19 @@
     <div class="ticket-form-status" id="ownerActionStatus"></div>
   </form>
 </dialog>
-<div id="site-footer"></div><script src="assets/include.js?v=ui-v8"></script><script src="assets/owner-panel-v12.js?v=owner-staff-v13" defer></script>
+
+<dialog class="owner-action-dialog owner-product-dialog" id="ownerProductDialog">
+<form class="owner-product-form" id="ownerProductForm">
+<button type="button" class="dialog-close" id="ownerProductClose" aria-label="Cerrar">×</button><span class="eyebrow">Administración de tienda</span><h2 id="ownerProductDialogTitle">Nuevo producto</h2>
+<div class="ticket-form-grid"><label>Nombre<input id="ownerProductName" required maxlength="120"></label><label>Slug<input id="ownerProductSlug" required maxlength="140"></label></div>
+<div class="ticket-form-grid"><label>Categoría<select id="ownerProductCategory"><option value="streaming">Streaming</option><option value="musica">Música</option><option value="software">Software</option><option value="educacion">Educación</option><option value="servicios">Servicios</option></select></label><label>Tabs (separadas por coma)<input id="ownerProductTabs" placeholder="tendencias,ofertas"></label></div>
+<label>Descripción<textarea id="ownerProductDescription" rows="3" maxlength="500"></textarea></label>
+<div class="ticket-form-grid"><label>Precio<input id="ownerProductPrice" type="number" min="0" step="0.01" required></label><label>Precio anterior<input id="ownerProductOldPrice" type="number" min="0" step="0.01"></label></div>
+<div class="ticket-form-grid"><label>Stock<input id="ownerProductStock" type="number" min="0" step="1"></label><label>Etiqueta<input id="ownerProductBadge" placeholder="-25%, Nuevo, TOP"></label></div>
+<label>URL del logo<input id="ownerProductLogo" placeholder="assets/logos/netflix.svg"></label><label>Mensaje de WhatsApp<input id="ownerProductWhatsapp" maxlength="400"></label>
+<div class="ticket-form-grid"><label>Rating<input id="ownerProductRating" type="number" min="0" max="5" step="0.1"></label><label>Ventas<input id="ownerProductSales" type="number" min="0" step="1"></label></div>
+<label>Orden<input id="ownerProductOrder" type="number" step="1"></label><div class="owner-product-checks"><label><input id="ownerProductFeatured" type="checkbox"> Destacado</label><label><input id="ownerProductActive" type="checkbox" checked> Visible</label></div>
+<div class="ticket-form-status" id="ownerProductFormStatus"></div><div class="dialog-actions"><button type="button" id="ownerProductCancel" class="ticket-secondary-btn">Cancelar</button><button type="submit" id="ownerProductSave" class="ticket-primary-btn">Guardar producto</button></div>
+</form></dialog>
+<div id="site-footer"></div><script src="assets/include.js?v=ui-v8"></script><script src="assets/owner-panel-v12.js?v=owner-staff-v13" defer></script><script src="assets/owner-store-v14.js?v=store-v14" defer></script>
 </body></html>
