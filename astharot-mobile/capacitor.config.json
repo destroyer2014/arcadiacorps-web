@@ -1,0 +1,11 @@
+{
+  "appId": "com.arcadiacorps.astharotrpg",
+  "appName": "Astharot RPG",
+  "webDir": "www",
+  "backgroundColor": "#090406",
+  "android": {
+    "allowMixedContent": false,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": true
+  }
+}

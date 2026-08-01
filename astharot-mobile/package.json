@@ -1,0 +1,18 @@
+{
+  "name": "astharot-rpg-mobile",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Astharot RPG para Android",
+  "scripts": {
+    "android:add": "npx cap add android",
+    "sync": "npx cap sync android",
+    "build:apk": "cd android && ./gradlew assembleDebug"
+  },
+  "dependencies": {
+    "@capacitor/android": "latest",
+    "@capacitor/core": "latest"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "latest"
+  }
+}

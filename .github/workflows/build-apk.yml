@@ -1,0 +1,68 @@
+name: Compilar APK Astharot
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - 'astharot-mobile/**'
+      - '.github/workflows/build-apk.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: astharot-mobile
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v5
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Instalar dependencias
+        run: npm install
+
+      - name: Crear proyecto Android
+        run: npx cap add android
+
+      - name: Configurar orientación horizontal
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('android/app/src/main/AndroidManifest.xml')
+          s=p.read_text()
+          marker='android:theme="@style/AppTheme.NoActionBarLaunch"'
+          replacement=marker+'\n            android:screenOrientation="landscape"'
+          if 'android:screenOrientation=' not in s:
+              s=s.replace(marker,replacement)
+          p.write_text(s)
+          PY
+
+      - name: Sincronizar recursos
+        run: npx cap sync android
+
+      - name: Compilar APK debug
+        run: |
+          chmod +x android/gradlew
+          cd android
+          ./gradlew assembleDebug
+
+      - name: Guardar APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Astharot-RPG-debug
+          path: astharot-mobile/android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
