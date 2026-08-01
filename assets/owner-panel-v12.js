@@ -30,6 +30,8 @@
     $('ownerUserSearch').oninput=renderUsers; $('ownerAccountSearch').oninput=renderAccounts;
     $('ownerNotifScope').onchange=toggleTargets; $('ownerNotificationForm').onsubmit=publish;
     $('ownerActionForm').addEventListener('submit',submitAction);
+    $('ownerActionClose').onclick=closeAction;
+    $('ownerActionCancel').onclick=closeAction;
   }
 
   function switchTab(name){
@@ -68,6 +70,12 @@
     ban:{title:'Suspender cuenta',description:u=>`La cuenta ${u.email} no podrá iniciar sesión hasta ser reactivada.`,fields:()=>''},
     unban:{title:'Reactivar cuenta',description:u=>`La cuenta ${u.email} recuperará el acceso.`,fields:()=>''}
   };
+  function closeAction(){
+    pendingAction=null;
+    $('ownerActionStatus').textContent='';
+    $('ownerActionDialog').close();
+  }
+
   function openAction(action,user){
     const def=actionDefs[action]; if(!def||!user)return; pendingAction={action,user};
     $('ownerActionTitle').textContent=def.title; $('ownerActionDescription').textContent=def.description(user); $('ownerActionFields').innerHTML=def.fields(user); $('ownerActionReason').value=''; $('ownerActionStatus').textContent=''; $('ownerActionDialog').showModal();

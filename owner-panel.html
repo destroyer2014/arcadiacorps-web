@@ -51,11 +51,11 @@
 
 <dialog class="owner-action-dialog" id="ownerActionDialog">
   <form method="dialog" id="ownerActionForm">
-    <button class="dialog-close" value="cancel" aria-label="Cerrar">×</button>
+    <button type="button" class="dialog-close" id="ownerActionClose" aria-label="Cerrar">×</button>
     <span class="eyebrow" id="ownerActionKicker">Acción administrativa</span><h2 id="ownerActionTitle">Confirmar acción</h2>
     <p id="ownerActionDescription"></p><div id="ownerActionFields"></div>
     <label>Motivo obligatorio<textarea id="ownerActionReason" required minlength="5" maxlength="500" rows="3" placeholder="Explica por qué realizas esta acción"></textarea></label>
-    <div class="dialog-actions"><button value="cancel" class="ticket-secondary-btn">Cancelar</button><button type="submit" value="default" class="ticket-primary-btn" id="ownerActionConfirm">Confirmar</button></div>
+    <div class="dialog-actions"><button type="button" id="ownerActionCancel" class="ticket-secondary-btn">Cancelar</button><button type="submit" value="default" class="ticket-primary-btn" id="ownerActionConfirm">Confirmar</button></div>
     <div class="ticket-form-status" id="ownerActionStatus"></div>
   </form>
 </dialog>
