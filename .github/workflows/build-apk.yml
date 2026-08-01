@@ -74,7 +74,6 @@ jobs:
           text=manifest.read_text()
           marker='android:theme="@style/AppTheme.NoActionBarLaunch"'
           replacement=(marker+'\n            android:screenOrientation="landscape"'
-                       +'\n            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode"')
           if 'android:screenOrientation=' not in text:
               text=text.replace(marker,replacement)
           manifest.write_text(text)
