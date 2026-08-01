@@ -1,16 +1,13 @@
-# Astharot RPG Android v4
+# Astharot RPG Android v5
 
-Incluye:
-- Login visual renovado con imagen de Astharot
-- Pantalla de carga ilustrada
-- Mapa inicial: Aldea de Astharot
-- Portal funcional al Bosque Sombrío
-- Segundo mapa con monstruos
-- Inventario visual
-- Correo y noticias
-- Diario de misiones
-- Ajustes
-- Selección de Guerrero, Mago y Asesina
-- Inicio con Supabase y modo invitado
+Correcciones para teléfonos Android:
 
-Compila desde GitHub Actions con el flujo `Compilar APK Astharot`.
+- Pantalla completa inmersiva: oculta barra de estado y navegación.
+- Pantalla de carga visible desde el primer momento.
+- Selección de clase adaptada a pantallas horizontales pequeñas.
+- HUD, joystick, habilidades y menús reducidos y optimizados.
+- Corrección del error `Cannot read properties of null (reading 'access_token')`.
+- El modo invitado crea y guarda un personaje local sin requerir sesión Supabase.
+- Sesiones vencidas regresan al login sin bloquear la aplicación.
+
+Compila desde GitHub Actions y descarga el artefacto `Astharot-RPG-debug`.
