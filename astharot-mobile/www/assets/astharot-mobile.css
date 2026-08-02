@@ -54,3 +54,38 @@ dialog{width:min(1080px,96vw);height:min(610px,92dvh)}.x{width:38px;height:38px;
 /* Astharot Mobile v7 */
 .studio-intro{position:fixed;inset:0;z-index:99999;background:#000;display:grid;place-items:center;overflow:hidden;opacity:1;transition:opacity .55s ease}.studio-intro.done{opacity:0;pointer-events:none}.studio-intro[hidden]{display:none}.studio-intro img{width:100%;height:100%;object-fit:cover;animation:introZoom 3.1s ease-out both}.studio-intro:after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,210,90,.22) 49%,transparent 68%);transform:translateX(-120%);animation:goldSweep 2.2s .25s ease-out forwards}.studio-intro button{position:absolute;right:18px;bottom:18px;z-index:2;background:#0a0709aa;border:1px solid #d8ae55;color:#f2d486;border-radius:8px;padding:8px 14px;min-height:36px;font-size:13px}.version-badge{position:absolute;top:8px;right:12px;color:#e9bd53;font:700 11px Arial,sans-serif;letter-spacing:1px}@keyframes introZoom{from{transform:scale(1.045);filter:brightness(.45)}to{transform:scale(1);filter:brightness(1)}}@keyframes goldSweep{to{transform:translateX(120%)}}
 @media (orientation:landscape) and (max-height:620px){.creator{padding:4px!important}.creator-panel{width:96vw!important;max-height:94vh!important;padding:8px 12px!important;overflow:hidden!important}.creator-panel h2{font-size:20px!important;margin:2px 0 6px!important}.creator-panel>input{height:38px!important;padding:7px 10px!important;margin-bottom:6px!important}.class-grid{gap:8px!important}.class-grid button{height:210px!important;min-height:0!important}.class-grid button img{height:176px!important;object-fit:cover!important}.class-grid button b{font-size:18px!important;padding:4px!important}.creator-panel>.gold-btn{width:auto!important;min-width:150px!important;min-height:42px!important;padding:8px 20px!important;margin:6px auto!important}.creator-panel p{margin:3px 0!important;min-height:18px!important;font-size:13px!important}.hud{transform:scale(.82);transform-origin:top left;width:122%}.quest{transform:scale(.82);transform-origin:top left}.joystick{transform:scale(.82);transform-origin:bottom left}.skills{transform:scale(.82);transform-origin:bottom right}.bottom{height:56px!important}.bottom button{font-size:17px!important}.bottom small{font-size:8px!important}}
+
+/* Astharot Mobile v8: flujo de arranque y presentación reforzados */
+[hidden]{display:none!important}
+.studio-intro{isolation:isolate;background:#000}
+.studio-intro img{z-index:1;animation:introReveal 4.2s cubic-bezier(.16,.75,.24,1) both}
+.studio-intro:before{content:"";position:absolute;z-index:2;inset:-30%;background:
+ radial-gradient(circle at 50% 48%,rgba(255,196,57,.30),transparent 17%),
+ radial-gradient(circle at 36% 60%,rgba(255,157,24,.18),transparent 11%),
+ radial-gradient(circle at 66% 38%,rgba(255,222,128,.16),transparent 10%);
+ mix-blend-mode:screen;opacity:0;animation:introAura 4.2s ease-in-out both;pointer-events:none}
+.studio-intro:after{z-index:3;background:linear-gradient(105deg,transparent 34%,rgba(255,239,177,.42) 49%,rgba(255,187,41,.16) 55%,transparent 68%);animation:goldSweepV8 3.2s .55s cubic-bezier(.2,.7,.2,1) forwards}
+.studio-intro.done{animation:introExit .7s ease forwards}
+.studio-intro button{z-index:5;opacity:.72;transition:opacity .2s,transform .2s}.studio-intro button:active{transform:scale(.96);opacity:1}
+.loading{background-image:url('art/loading-v7.png')!important;background-position:center;background-size:cover}
+.loading-art{animation:loadingBreath 5s ease-in-out infinite alternate}
+.loading-shade{background:linear-gradient(transparent 56%,rgba(3,2,5,.82) 92%)}
+.loadbar{overflow:hidden;border-radius:10px;height:20px;background:#160b0aee}
+.loadbar i{position:relative;background:linear-gradient(90deg,#8d1a2d,#ff8c23,#ffe170);box-shadow:0 0 16px #ffae32}
+.loadbar i:after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 20%,rgba(255,255,255,.75) 48%,transparent 72%);transform:translateX(-120%);animation:loadGlint 1.15s linear infinite}
+.loading p{font-weight:800;text-shadow:0 2px 7px #000;animation:loadingTextPulse 1.3s ease-in-out infinite}
+@keyframes introReveal{0%{transform:scale(1.12);filter:brightness(.08) blur(5px);opacity:0}18%{opacity:1}55%{filter:brightness(1.08) blur(0)}82%{transform:scale(1.015);filter:brightness(1.12)}100%{transform:scale(1);filter:brightness(1)}}
+@keyframes introAura{0%,12%{opacity:0;transform:scale(.75) rotate(-5deg)}45%{opacity:1;transform:scale(1.02) rotate(0)}82%{opacity:.72;transform:scale(1.1) rotate(3deg)}100%{opacity:.35;transform:scale(1.15)}}
+@keyframes goldSweepV8{0%{transform:translateX(-135%) skewX(-8deg);opacity:0}15%{opacity:1}75%{opacity:1}100%{transform:translateX(135%) skewX(-8deg);opacity:0}}
+@keyframes introExit{to{opacity:0;transform:scale(1.025);filter:brightness(1.4)}}
+@keyframes loadingBreath{from{transform:scale(1.005);filter:saturate(.92) brightness(.92)}to{transform:scale(1.035);filter:saturate(1.12) brightness(1.06)}}
+@keyframes loadGlint{to{transform:translateX(120%)}}
+@keyframes loadingTextPulse{50%{opacity:.62}}
+
+
+/* Astharot Mobile v9: rutas de arranque verificables */
+.boot-version{position:absolute;z-index:50;top:max(10px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right));padding:5px 9px;border:1px solid rgba(238,190,91,.65);border-radius:999px;background:rgba(4,3,6,.72);color:#f1c96d;font:700 11px/1 Arial,sans-serif;letter-spacing:.8px;text-shadow:0 1px 3px #000}
+#login[hidden],#loading[hidden],#creator[hidden],#game[hidden]{display:none!important}
+#login:not([hidden]){display:block!important}
+#loading:not([hidden]){display:grid!important}
+.studio-intro img{animation-duration:5s}

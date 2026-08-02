@@ -102,6 +102,6 @@ jobs:
       - name: Guardar APK
         uses: actions/upload-artifact@v4
         with:
-          name: Astharot-RPG-debug-v7
+          name: Astharot-RPG-debug-v9
           path: astharot-mobile/android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error

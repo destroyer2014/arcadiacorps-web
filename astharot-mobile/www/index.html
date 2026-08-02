@@ -1,12 +1,12 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,height=device-height,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="theme-color" content="#090608"><title>Astharot RPG</title><link rel="stylesheet" href="assets/astharot-mobile.css?v=7"></head><body>
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,height=device-height,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="theme-color" content="#090608"><title>Astharot RPG</title><link rel="stylesheet" href="assets/astharot-mobile.css?v=9"></head><body>
 <div id="studioIntro" class="studio-intro">
   <img src="assets/art/intro-arcadiacorp.png" alt="ArcadiaCorp presenta">
   <audio id="studioAudio" preload="auto" src="assets/audio/intro-arcadiacorp.wav"></audio>
   <button id="skipIntro" type="button">Saltar</button>
 </div>
 <div id="app">
-<section id="loading" class="full loading"><img class="loading-art" src="assets/art/loading-v7.png" alt="Astharot RPG"><div class="loading-shade"></div><div class="loadbar"><i id="loadFill"></i></div><p id="loadText">Cargando aventura...</p></section>
-<section id="login" class="full login" hidden>
+<section id="loading" class="full loading" hidden><div class="boot-version">Astharot v9</div><img class="loading-art" src="assets/art/loading-v7.png" alt="Astharot RPG"><div class="loading-shade"></div><div class="loadbar"><i id="loadFill"></i></div><p id="loadText">Cargando aventura...</p></section>
+<section id="login" class="full login" hidden><div class="boot-version">Astharot v9</div>
   <form id="loginForm" class="login-box">
     <h1 class="sr-only">Astharot RPG</h1>
     <input id="email" type="email" placeholder="Correo" autocomplete="email" required>
@@ -18,7 +18,7 @@
   </form>
 </section>
 <section id="creator" class="full creator" hidden>
-  <div class="creator-panel"><div class="version-badge">Astharot v7</div><h2>Seleccionar clase</h2><input id="heroName" maxlength="18" placeholder="Nombre del héroe"><div class="class-grid">
+  <div class="creator-panel"><div class="version-badge">Astharot v9</div><h2>Seleccionar clase</h2><input id="heroName" maxlength="18" placeholder="Nombre del héroe"><div class="class-grid">
   <button data-class="warrior"><img src="assets/art/warrior-card.png"><b>Guerrero</b></button>
   <button data-class="mage"><img src="assets/art/mage-card.png"><b>Mago</b></button>
   <button data-class="assassin"><img src="assets/art/assassin-card.png"><b>Asesina</b></button></div><button id="createHero" class="gold-btn" disabled>COMENZAR</button><p id="creatorStatus"></p></div>
@@ -35,4 +35,4 @@
   <div id="toast" class="toast" hidden></div>
 </section>
 <dialog id="panel"><button id="panelClose" class="x">×</button><div id="panelBody"></div></dialog>
-</div><script src="assets/astharot-mobile.js?v=7"></script></body></html>
+</div><script src="assets/astharot-mobile.js?v=9"></script></body></html>

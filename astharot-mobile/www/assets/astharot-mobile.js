@@ -3,7 +3,7 @@ const SUPA='https://dtfecbsokpgzyuiyxyvm.supabase.co',KEY='sb_publishable_SU7zJy
 const $=id=>document.getElementById(id);
 const state={session:null,hero:null,selected:null,map:'village',x:48,y:52,keys:{},joy:{x:0,y:0,id:null},moving:false,frame:0,last:0,portalLock:false,guest:false,loopStarted:false};
 const classes={warrior:{icon:'⚔️',sheet:'warrior-sheet.png',mana:45},mage:{icon:'✨',sheet:'mage-sheet.png',mana:90},assassin:{icon:'🗡️',sheet:'assassin-sheet.png',mana:60}};
-async function runStudioIntro(){const intro=$('studioIntro'),audio=$('studioAudio');if(!intro)return;let finished=false;const end=()=>{if(finished)return;finished=true;intro.classList.add('done');setTimeout(()=>{intro.hidden=true},600)};$('skipIntro').onclick=end;try{audio.volume=.45;await audio.play()}catch{}setTimeout(end,3000)}
+async function runStudioIntro(){const intro=$('studioIntro'),audio=$('studioAudio');if(!intro)return;await new Promise(resolve=>{let finished=false;const end=()=>{if(finished)return;finished=true;intro.classList.add('done');setTimeout(()=>{intro.hidden=true;resolve()},700)};$('skipIntro').onclick=end;try{audio.volume=.45;const play=audio.play();if(play&&typeof play.catch==='function')play.catch(()=>{})}catch{}setTimeout(end,5000)})}
 function show(id,on=true){$(id).hidden=!on}function toast(msg){const t=$('toast');t.textContent=msg;show('toast');clearTimeout(toast.timer);toast.timer=setTimeout(()=>show('toast',false),2200)}
 function stored(){try{return JSON.parse(localStorage.getItem('astharot_session')||'null')}catch{return null}}function saveSession(s){state.session=s;if(s)localStorage.setItem('astharot_session',JSON.stringify(s));else localStorage.removeItem('astharot_session')}
 async function login(email,password){const r=await fetch(`${SUPA}/auth/v1/token?grant_type=password`,{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify({email,password})});const d=await r.json().catch(()=>null);if(!r.ok)throw new Error(d?.error_description||d?.msg||'No se pudo iniciar sesión');return d}
@@ -24,7 +24,31 @@ const panelImages={inventory:'v4/inventory.png',mail:'v4/mail.png',quests:'v4/qu
 function openPanel(type){const body=$('panelBody'),d=$('panel');if(panelImages[type])body.innerHTML=`<img class="panel-img" src="assets/${panelImages[type]}" alt="${type}"><div class="panel-overlay"></div>`;else{const h=state.hero,card=h.class==='mage'?'mage-card.png':h.class==='assassin'?'assassin-card.png':'warrior-card.png';body.innerHTML=`<div class="character-panel"><div class="character-art" style="background-image:url('assets/art/${card}')"></div><div><h1>${h.name}</h1><h3>${classes[h.class].icon} ${h.class.toUpperCase()} · Nivel ${h.level}</h3><div class="stats"><div>Vida<br><b>${h.hp}/${h.max_hp}</b></div><div>Maná<br><b>${h.mana}/${h.max_mana}</b></div><div>Ataque<br><b>${h.attack}</b></div><div>Defensa<br><b>${h.defense}</b></div><div>Crítico<br><b>${h.crit_chance}%</b></div><div>Oro<br><b>${h.gold}</b></div></div><button id="logoutBtn" class="gold-btn logout">CERRAR SESIÓN</button></div></div>`}d.showModal()}
 async function createHero(){const name=$('heroName').value.trim();if(name.length<3||!state.selected)return $('creatorStatus').textContent='Escribe un nombre y elige una clase.';const btn=$('createHero');btn.disabled=true;$('creatorStatus').textContent='Creando héroe...';const localHero=normalize({name,class:state.selected,level:1,gold:119,potions:2});state.hero=localHero;localStorage.setItem('astharot_local_hero',JSON.stringify(localHero));const finish=()=>{setTimeout(()=>{btn.disabled=false;$('creatorStatus').textContent='';startGame()},250)};if(state.guest||!state.session?.access_token){localStorage.setItem('astharot_guest_hero',JSON.stringify(localHero));finish();return}try{const remote=api('/rest/v1/rpc/astharot_create_character',{method:'POST',body:JSON.stringify({p_name:name,p_class:state.selected})});const d=await Promise.race([remote,new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),5000))]);if(d)state.hero=normalize(Array.isArray(d)?d[0]:d)}catch(e){console.warn('Se continuará con héroe local.',e)}finish()}
 async function authenticated(){try{let h=await loadHero();show('loading',false);if(!h){show('creator');return}state.hero=normalize(h);startGame()}catch(e){saveSession(null);show('loading',false);show('login');$('loginStatus').textContent=e?.message||'La sesión venció. Inicia sesión nuevamente.'}}
-async function init(){await runStudioIntro();let p=0;const timer=setInterval(()=>{$('loadFill').style.width=(p=Math.min(92,p+9))+'%'},100);state.session=null;saveSession(null);setTimeout(()=>{clearInterval(timer);$('loadFill').style.width='100%';show('loading',false);show('creator',false);show('game',false);show('login');$('loginStatus').textContent='';},1200)}
+async function init(){
+  // Estado inicial inequívoco: solo la presentación del estudio.
+  show('loading',false);show('login',false);show('creator',false);show('game',false);
+  state.session=null;saveSession(null);state.guest=false;state.hero=null;state.selected=null;
+  await runStudioIntro();
+
+  // La carga comienza únicamente después de finalizar la intro.
+  show('login',false);show('creator',false);show('game',false);show('loading',true);
+  $('loadFill').style.width='0%';
+  $('loadText').textContent='Preparando el mundo de Astharot...';
+  await new Promise(resolve=>{
+    let p=0;
+    const timer=setInterval(()=>{
+      p=Math.min(94,p+Math.max(2,Math.round((96-p)*.12)));
+      $('loadFill').style.width=p+'%';
+      if(p>42)$('loadText').textContent='Cargando héroes y mapas...';
+      if(p>76)$('loadText').textContent='Abriendo las puertas de Astharot...';
+    },140);
+    setTimeout(()=>{clearInterval(timer);$('loadFill').style.width='100%';$('loadText').textContent='¡Listo!';setTimeout(resolve,550)},3200);
+  });
+
+  // Ruta obligatoria de arranque: Login. Nunca selección de clase.
+  show('loading',false);show('creator',false);show('game',false);show('login',true);
+  $('loginStatus').textContent='';
+}
 $('loginForm').addEventListener('submit',async e=>{e.preventDefault();const b=$('loginBtn');b.disabled=true;$('loginStatus').textContent='Conectando...';try{state.session=await login($('email').value.trim(),$('password').value);saveSession(state.session);show('login',false);show('loading');$('loadText').textContent='Cargando tu personaje...';await authenticated()}catch(err){$('loginStatus').textContent=err.message;b.disabled=false}});
 $('guestBtn').onclick=()=>{state.guest=true;state.session=null;saveSession(null);let saved=null;try{saved=JSON.parse(localStorage.getItem('astharot_guest_hero')||'null')}catch{}if(saved){state.hero=normalize(saved);startGame()}else{show('login',false);show('creator');$('creatorStatus').textContent='Elige una clase para jugar como invitado.'}};$('eye').onclick=()=>{$('password').type=$('password').type==='password'?'text':'password'};document.querySelectorAll('[data-class]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-class]').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');state.selected=b.dataset.class;$('createHero').disabled=false});$('createHero').onclick=createHero;$('portal').onclick=()=>setMap(state.map==='village'?'forest':'village');document.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>openPanel(b.dataset.open));$('panelClose').onclick=()=>$('panel').close();document.addEventListener('click',e=>{if(e.target?.id==='logoutBtn'){saveSession(null);location.reload()}});$('attack').onclick=()=>toast(state.map==='village'?'No puedes combatir dentro de la aldea.':'Ataque ejecutado');$('skill1').onclick=()=>toast('Habilidad activada');$('skill2').onclick=()=>toast('Habilidad activada');$('potion').onclick=()=>{if(state.hero.potions<1)return toast('No tienes pociones');state.hero.potions--;state.hero.hp=Math.min(state.hero.max_hp,state.hero.hp+45);updateHud();toast('Recuperaste vida')};addEventListener('keydown',e=>state.keys[e.key]=true);addEventListener('keyup',e=>state.keys[e.key]=false);setupJoystick();init();
 })();
