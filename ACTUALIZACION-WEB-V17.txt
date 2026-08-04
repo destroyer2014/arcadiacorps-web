@@ -1,0 +1,6 @@
+ArcadiaCorps Web v17
+- Paleta neón global azul/cian/morado
+- Menú acordeón funcional
+- Social rediseñado
+- Sub-Bots rediseñado
+- Noticias y anuncios rediseñados

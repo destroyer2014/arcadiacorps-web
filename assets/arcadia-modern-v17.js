@@ -1,0 +1,10 @@
+(function(){
+ function init(){
+  const accordions=[...document.querySelectorAll('.sidebar-accordion')];
+  accordions.forEach(acc=>{const btn=acc.querySelector('.sidebar-accordion-head'); if(!btn||btn.dataset.v17)return;btn.dataset.v17='1';let c=btn.querySelector('.chev');if(!c){c=btn.querySelector('span')||document.createElement('span');c.classList.add('chev');c.textContent='⌄';if(!c.parentNode)btn.appendChild(c)}btn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();const opening=!acc.classList.contains('open');accordions.forEach(a=>a.classList.remove('open'));if(opening)acc.classList.add('open')})});
+  const page=(location.pathname.split('/').pop()||'index.html').toLowerCase();document.querySelectorAll('.sidebar-link').forEach(a=>{const href=(a.getAttribute('href')||'').split('#')[0].split('?')[0].toLowerCase();if(href===page){a.classList.add('active');a.closest('.sidebar-accordion')?.classList.add('open')}});
+  const storyBtn=document.getElementById('createStoryBtn'),modal=document.getElementById('storyModal');storyBtn?.addEventListener('click',()=>modal?.classList.add('open'));document.querySelectorAll('[data-close-story]').forEach(x=>x.addEventListener('click',()=>modal?.classList.remove('open')));document.querySelectorAll('.swatch').forEach(x=>x.addEventListener('click',()=>{const p=document.getElementById('storyPreview');if(p)p.style.background=x.dataset.bg}));document.getElementById('storyText')?.addEventListener('input',e=>{const p=document.getElementById('storyPreviewText');if(p)p.textContent=e.target.value||'¡Texto con brillo ✨'});
+  document.querySelectorAll('.link-tab').forEach(t=>t.addEventListener('click',()=>{document.querySelectorAll('.link-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.link-pane').forEach(x=>x.classList.remove('active'));t.classList.add('active');document.getElementById(t.dataset.target)?.classList.add('active')}));
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();document.addEventListener('partialsReady',()=>setTimeout(init,0));
+})();
