@@ -1,3 +1,58 @@
 <!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mis tickets — ArcadiaCorps</title><link rel="stylesheet" href="assets/styles.css?v=18"></head><body><main class="dashboard app-page ticket-page"><div class="page-heading"><div><a class="back-link" href="dashboard.html">← Volver al panel</a><span class="eyebrow">Soporte</span><h1>Mis tickets</h1><p>Consulta tus solicitudes y continúa las conversaciones.</p></div><a class="btn primary compact" href="ticket-new.html">＋ Nuevo ticket</a></div><div class="filters"><select id="statusFilter"><option value="">Todos los estados</option><option value="open">Abiertos</option><option value="in_progress">En proceso</option><option value="waiting_user">Esperando usuario</option><option value="closed">Cerrados</option></select><button id="refresh" class="secondary compact">Actualizar</button></div><div id="msg" class="message"></div><section id="list" class="ticket-list"><div class="panel empty-state">Cargando…</div></section></main><script type="module">
-import {supabase} from './assets/auth.js';import {mountShell} from './assets/shell.js';import {getCurrentAccess} from './assets/access.js';import {esc,fmt,statusLabel,priorityLabel} from './assets/tickets.js';
-const access=await getCurrentAccess();if(!access)throw Error('Sin sesión');await mountShell();const params=new URLSearchParams(location.search);const pageMsg=document.querySelector('#msg');if(params.get('created')==='1'){pageMsg.textContent='✓ Ticket enviado correctamente. Ya aparece en tu lista.';pageMsg.className='message show ok'}const list=document.querySelector('#list'),filter=document.querySelector('#statusFilter');async function load(){let q=supabase.from('tickets').select('*').eq('user_id',access.user.id).order('updated_at',{ascending:false});if(filter.value)q=q.eq('status',filter.value);const{data,error}=await q;if(error){list.innerHTML=`<div class="message show error">${esc(error.message)}</div>`;return}list.innerHTML=data?.length?data.map(t=>`<a class="ticket-card" href="ticket-detail.html?id=${t.id}"><div><span class="ticket-number">${esc(t.ticket_number)}</span><h3>${esc(t.subject)}</h3><p>${esc(t.category)}</p><div class="ticket-badges"><span class="ticket-badge ${t.status}">${statusLabel[t.status]||esc(t.status||'')}</span><span class="ticket-badge ${t.priority}">${priorityLabel[t.priority]||esc(t.priority||'')}</span></div></div><small>${fmt(t.updated_at)}</small></a>`).join(''):'<div class="panel empty-state">Todavía no tienes tickets.</div>'}filter.onchange=load;document.querySelector('#refresh').onclick=load;await load();</script></body></html>
+import { supabase } from './assets/auth.js';
+import { mountShell } from './assets/shell.js';
+import { getCurrentAccess } from './assets/access.js';
+import { esc, fmt, statusLabel, priorityLabel } from './assets/tickets.js';
+
+const access = await getCurrentAccess();
+if (!access) location.replace('login.html');
+await mountShell();
+
+const params = new URLSearchParams(location.search);
+const pageMessage = document.querySelector('#msg');
+const list = document.querySelector('#list');
+const filter = document.querySelector('#statusFilter');
+const refreshButton = document.querySelector('#refresh');
+
+const stored = sessionStorage.getItem('arcadia_ticket_created');
+if (params.get('created') === '1' || stored) {
+  let number = '';
+  try { number = JSON.parse(stored || '{}').number || ''; } catch {}
+  pageMessage.textContent = `✓ Ticket ${number} enviado correctamente. Ya aparece en tu lista.`;
+  pageMessage.className = 'message show ok';
+  sessionStorage.removeItem('arcadia_ticket_created');
+}
+
+async function load() {
+  list.innerHTML = '<div class="panel empty-state">Cargando…</div>';
+  let query = supabase
+    .from('tickets')
+    .select('id,ticket_number,subject,category,status,priority,created_at,updated_at')
+    .eq('user_id', access.user.id)
+    .order('created_at', { ascending: false });
+  if (filter.value) query = query.eq('status', filter.value);
+
+  const { data, error } = await query;
+  if (error) {
+    list.innerHTML = `<div class="message show error">${esc(error.message)}</div>`;
+    return;
+  }
+  list.innerHTML = data?.length ? data.map(ticket => `
+    <a class="ticket-card" href="ticket-detail.html?id=${encodeURIComponent(ticket.id)}">
+      <div>
+        <span class="ticket-number">${esc(ticket.ticket_number ?? '')}</span>
+        <h3>${esc(ticket.subject)}</h3>
+        <p>${esc(ticket.category)}</p>
+        <div class="ticket-badges">
+          <span class="ticket-badge ${esc(ticket.status || '')}">${statusLabel[ticket.status] || esc(ticket.status || '')}</span>
+          <span class="ticket-badge ${esc(ticket.priority || '')}">${priorityLabel[ticket.priority] || esc(ticket.priority || '')}</span>
+        </div>
+      </div>
+      <small>${fmt(ticket.updated_at || ticket.created_at)}</small>
+    </a>`).join('') : '<div class="panel empty-state">Todavía no tienes tickets.</div>';
+}
+
+filter.addEventListener('change', load);
+refreshButton.addEventListener('click', load);
+await load();
+</script></body></html>

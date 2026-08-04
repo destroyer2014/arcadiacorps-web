@@ -1,1 +1,69 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Atender tickets — ArcadiaCorps</title><link rel="stylesheet" href="assets/styles.css?v=18"></head><body><main class="dashboard app-page support-page"><div class="page-heading"><div><a class="back-link" href="dashboard.html">← Volver al panel</a><span class="eyebrow">Soporte</span><h1>Atender tickets</h1><p>Cola compartida para Owner y Staff.</p></div></div><div class="filters"><select id="status"><option value="">Todos</option><option value="open">Abiertos</option><option value="in_progress">En proceso</option><option value="waiting_user">Esperando usuario</option><option value="closed">Cerrados</option></select><input id="search" placeholder="Buscar asunto o número"><button id="refresh" class="secondary compact">Actualizar</button></div><section id="list" class="ticket-list"></section></main><script type="module">import{mountShell}from'./assets/shell.js';import{getCurrentAccess}from'./assets/access.js';import{supabase}from'./assets/auth.js';import{esc,fmt,statusLabel,priorityLabel}from'./assets/tickets.js';const a=await getCurrentAccess();if(!a||!['owner','staff'].includes(String(a.role)))location.replace('access-denied.html');await mountShell();async function load(){let q=supabase.from('tickets').select('*,profiles:user_id(username,full_name,email)').order('updated_at',{ascending:false});if(status.value)q=q.eq('status',status.value);const{data,error}=await q;if(error){list.innerHTML=`<div class="message show error">${esc(error.message)}</div>`;return}const term=String(search.value||'').toLowerCase();const rows=(data||[]).filter(t=>!term||String(t.subject||'').toLowerCase().includes(term)||String(t.ticket_number||'').toLowerCase().includes(term));list.innerHTML=rows.length?rows.map(t=>`<a class="ticket-card" href="ticket-detail.html?id=${t.id}"><div><span class="ticket-number">${esc(t.ticket_number)}</span><h3>${esc(t.subject)}</h3><p>${esc(t.profiles?.full_name||t.profiles?.username||t.profiles?.email||'Usuario')}</p><div class="ticket-badges"><span class="ticket-badge ${t.status}">${statusLabel[t.status]||esc(t.status||'')}</span><span class="ticket-badge ${t.priority}">${priorityLabel[t.priority]||esc(t.priority||'')}</span></div></div><small>${fmt(t.updated_at)}</small></a>`).join(''):'<div class="panel empty-state">No hay tickets.</div>'}status.onchange=load;search.oninput=load;refresh.onclick=load;await load();</script></body></html>
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Atender tickets — ArcadiaCorps</title><link rel="stylesheet" href="assets/styles.css?v=18"></head><body><main class="dashboard app-page support-page"><div class="page-heading"><div><a class="back-link" href="dashboard.html">← Volver al panel</a><span class="eyebrow">Soporte</span><h1>Atender tickets</h1><p>Cola compartida para Owner y Staff.</p></div></div><div class="filters"><select id="status"><option value="">Todos</option><option value="open">Abiertos</option><option value="in_progress">En proceso</option><option value="waiting_user">Esperando usuario</option><option value="closed">Cerrados</option></select><input id="search" placeholder="Buscar asunto o número"><button id="refresh" class="secondary compact">Actualizar</button></div><section id="list" class="ticket-list"></section></main><script type="module">
+import { mountShell } from './assets/shell.js';
+import { getCurrentAccess } from './assets/access.js';
+import { supabase } from './assets/auth.js';
+import { esc, fmt, statusLabel, priorityLabel } from './assets/tickets.js';
+
+const access = await getCurrentAccess();
+if (!access || !['owner', 'staff'].includes(String(access.role))) location.replace('access-denied.html');
+await mountShell();
+
+const statusFilter = document.querySelector('#status');
+const searchInput = document.querySelector('#search');
+const refreshButton = document.querySelector('#refresh');
+const list = document.querySelector('#list');
+
+async function load() {
+  list.innerHTML = '<div class="panel empty-state">Cargando…</div>';
+  let query = supabase
+    .from('tickets')
+    .select('id,ticket_number,user_id,subject,category,status,priority,created_at,updated_at')
+    .order('created_at', { ascending: false });
+  if (statusFilter.value) query = query.eq('status', statusFilter.value);
+
+  const { data: tickets, error } = await query;
+  if (error) {
+    list.innerHTML = `<div class="message show error">${esc(error.message)}</div>`;
+    return;
+  }
+
+  const userIds = [...new Set((tickets || []).map(ticket => ticket.user_id).filter(Boolean))];
+  let profiles = {};
+  if (userIds.length) {
+    const { data: profileRows } = await supabase
+      .from('profiles')
+      .select('id,username,full_name,email')
+      .in('id', userIds);
+    profiles = Object.fromEntries((profileRows || []).map(profile => [profile.id, profile]));
+  }
+
+  const term = searchInput.value.trim().toLowerCase();
+  const rows = (tickets || []).filter(ticket => {
+    const profile = profiles[ticket.user_id] || {};
+    return !term || [ticket.subject, ticket.ticket_number, profile.username, profile.full_name, profile.email]
+      .some(value => String(value || '').toLowerCase().includes(term));
+  });
+
+  list.innerHTML = rows.length ? rows.map(ticket => {
+    const profile = profiles[ticket.user_id] || {};
+    const displayName = profile.full_name || profile.username || profile.email || 'Usuario';
+    return `<a class="ticket-card" href="ticket-detail.html?id=${encodeURIComponent(ticket.id)}">
+      <div>
+        <span class="ticket-number">${esc(ticket.ticket_number ?? '')}</span>
+        <h3>${esc(ticket.subject)}</h3>
+        <p>${esc(displayName)}</p>
+        <div class="ticket-badges">
+          <span class="ticket-badge ${esc(ticket.status || '')}">${statusLabel[ticket.status] || esc(ticket.status || '')}</span>
+          <span class="ticket-badge ${esc(ticket.priority || '')}">${priorityLabel[ticket.priority] || esc(ticket.priority || '')}</span>
+        </div>
+      </div>
+      <small>${fmt(ticket.updated_at || ticket.created_at)}</small>
+    </a>`;
+  }).join('') : '<div class="panel empty-state">No hay tickets.</div>';
+}
+
+statusFilter.addEventListener('change', load);
+searchInput.addEventListener('input', load);
+refreshButton.addEventListener('click', load);
+await load();
+</script></body></html>

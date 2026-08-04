@@ -1,2 +1,123 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Nuevo ticket — ArcadiaCorps</title><link rel="stylesheet" href="assets/styles.css?v=18"></head><body><main class="dashboard app-page ticket-page"><div class="page-heading"><div><a class="back-link" href="dashboard.html">← Volver al panel</a><span class="eyebrow">Soporte</span><h1>Abrir ticket</h1><p>Describe el problema y adjunta imágenes si ayudan a explicarlo.</p></div></div><form id="form" class="panel ticket-form"><div class="field"><label>Asunto</label><input id="subject" maxlength="140" required></div><div class="row"><div class="field"><label>Categoría</label><select id="category"><option>Cuenta</option><option>Compra</option><option>Premium</option><option>Subbot</option><option>Error técnico</option><option>Otro</option></select></div><div class="field"><label>Prioridad</label><select id="priority"><option value="normal">Normal</option><option value="low">Baja</option><option value="high">Alta</option><option value="urgent">Urgente</option></select></div></div><div class="field"><label>Descripción</label><textarea id="body" required maxlength="5000"></textarea></div><div class="image-picker"><strong>Imágenes opcionales</strong><small class="hint">JPG, PNG, WEBP o GIF. Máximo 5 MB por imagen.</small><input id="images" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple><div id="previews" class="image-previews"></div></div><div id="msg" class="message"></div><button class="primary" type="submit">Crear ticket</button></form></main><script type="module">
-import {supabase} from './assets/auth.js';import {mountShell} from './assets/shell.js';import {getCurrentAccess} from './assets/access.js';import {uploadTicketImages,insertTicketMessage} from './assets/tickets.js';const access=await getCurrentAccess();if(!access)throw Error('Sin sesión');await mountShell();const input=document.querySelector('#images'),prev=document.querySelector('#previews'),msg=document.querySelector('#msg');let files=[];const show=(t,e=false)=>{msg.textContent=t;msg.className=`message show ${e?'error':'ok'}`};function render(){prev.innerHTML=files.map((f,i)=>`<div class="image-preview"><img src="${URL.createObjectURL(f)}"><button type="button" data-i="${i}">×</button></div>`).join('');prev.querySelectorAll('button').forEach(b=>b.onclick=()=>{files.splice(+b.dataset.i,1);render()})}input.onchange=()=>{files=[...input.files];render()};document.querySelector('#form').onsubmit=async e=>{e.preventDefault();const btn=e.submitter;btn.disabled=true;btn.textContent='Enviando…';msg.className='message';try{const payload={user_id:access.user.id,subject:subject.value.trim(),category:category.value,priority:priority.value,description:body.value.trim()};const{data:t,error}=await supabase.from('tickets').insert(payload).select('*').single();if(error)throw error;let paths=[];try{paths=await uploadTicketImages(files,access.user.id,t.id)}catch(uploadError){console.error(uploadError)}const{error:me}=await insertTicketMessage({ticket:t,authorId:access.user.id,body:payload.description,attachments:paths});if(me)console.error('El ticket se creó, pero falló el primer mensaje:',me);show(`Ticket ${t.ticket_number||''} enviado correctamente.`,false);document.querySelector('#form').reset();files=[];render();setTimeout(()=>location.replace(`tickets.html?created=1&id=${encodeURIComponent(t.id)}`),1400)}catch(err){show(err.message||'No se pudo crear el ticket',true);btn.disabled=false;btn.textContent='Crear ticket'}};</script></body></html>
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Nuevo ticket — ArcadiaCorps</title><link rel="stylesheet" href="assets/styles.css?v=18"></head><body><main class="dashboard app-page ticket-page"><div class="page-heading ticket-heading"><div><a class="back-link ticket-back" href="dashboard.html">← Volver al panel</a><span class="eyebrow">Soporte</span><h1>Abrir ticket</h1><p>Describe el problema y adjunta imágenes si ayudan a explicarlo.</p></div></div><form id="form" class="panel ticket-form"><div class="field"><label>Asunto</label><input id="subject" maxlength="140" required></div><div class="row"><div class="field"><label>Categoría</label><select id="category"><option>Cuenta</option><option>Compra</option><option>Premium</option><option>Subbot</option><option>Error técnico</option><option>Otro</option></select></div><div class="field"><label>Prioridad</label><select id="priority"><option value="normal">Normal</option><option value="low">Baja</option><option value="high">Alta</option><option value="urgent">Urgente</option></select></div></div><div class="field"><label>Descripción</label><textarea id="body" required maxlength="5000"></textarea></div><div class="image-picker"><strong>Imágenes opcionales</strong><small class="hint">JPG, PNG, WEBP o GIF. Máximo 5 MB por imagen.</small><input id="images" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple><div id="previews" class="image-previews"></div></div><div id="msg" class="message"></div><button class="primary" type="submit">Crear ticket</button></form></main><script type="module">
+import { supabase } from './assets/auth.js';
+import { mountShell } from './assets/shell.js';
+import { getCurrentAccess } from './assets/access.js';
+import { uploadTicketImages, insertTicketMessage } from './assets/tickets.js';
+
+const access = await getCurrentAccess();
+if (!access) location.replace('login.html');
+await mountShell();
+
+const form = document.querySelector('#form');
+const subjectInput = document.querySelector('#subject');
+const categoryInput = document.querySelector('#category');
+const priorityInput = document.querySelector('#priority');
+const descriptionInput = document.querySelector('#body');
+const imageInput = document.querySelector('#images');
+const previews = document.querySelector('#previews');
+const message = document.querySelector('#msg');
+let files = [];
+
+function show(text, isError = false) {
+  message.textContent = text;
+  message.className = `message show ${isError ? 'error' : 'ok'}`;
+  message.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function renderPreviews() {
+  previews.innerHTML = '';
+  files.forEach((file, index) => {
+    const card = document.createElement('div');
+    card.className = 'image-preview';
+    const img = document.createElement('img');
+    img.src = URL.createObjectURL(file);
+    img.alt = file.name;
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.textContent = '×';
+    remove.addEventListener('click', () => {
+      files.splice(index, 1);
+      renderPreviews();
+    });
+    card.append(img, remove);
+    previews.append(card);
+  });
+}
+
+imageInput.addEventListener('change', () => {
+  files = [...imageInput.files];
+  renderPreviews();
+});
+
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const button = form.querySelector('button[type="submit"]');
+  button.disabled = true;
+  button.textContent = 'Enviando…';
+  message.className = 'message';
+
+  try {
+    const description = descriptionInput.value.trim();
+    const payload = {
+      user_id: access.user.id,
+      subject: subjectInput.value.trim(),
+      category: categoryInput.value,
+      priority: priorityInput.value,
+      description
+    };
+
+    if (payload.subject.length < 3) throw new Error('El asunto debe tener al menos 3 caracteres.');
+    if (!description) throw new Error('Escribe una descripción para el ticket.');
+
+    const { data: ticket, error: ticketError } = await supabase
+      .from('tickets')
+      .insert(payload)
+      .select('id,ticket_number,user_id,subject,description,category,priority,status,created_at,updated_at')
+      .single();
+
+    if (ticketError) throw ticketError;
+    if (!ticket?.id) throw new Error('El servidor no devolvió el identificador del ticket.');
+
+    let paths = [];
+    if (files.length) {
+      try {
+        paths = await uploadTicketImages(files, access.user.id, ticket.id);
+      } catch (uploadError) {
+        console.error('Falló la carga de imágenes:', uploadError);
+      }
+    }
+
+    const { error: messageError } = await insertTicketMessage({
+      ticket,
+      authorId: access.user.id,
+      body: description,
+      attachments: paths
+    });
+    if (messageError) console.error('Falló el primer mensaje:', messageError);
+
+    const { data: verified, error: verifyError } = await supabase
+      .from('tickets')
+      .select('id,ticket_number')
+      .eq('id', ticket.id)
+      .eq('user_id', access.user.id)
+      .maybeSingle();
+
+    if (verifyError) throw verifyError;
+    if (!verified) throw new Error('El ticket se creó, pero no pudo verificarse en tu cuenta.');
+
+    sessionStorage.setItem('arcadia_ticket_created', JSON.stringify({
+      id: ticket.id,
+      number: ticket.ticket_number || ''
+    }));
+
+    show(`✓ Ticket ${ticket.ticket_number || ''} enviado correctamente.`);
+    button.textContent = 'Ticket enviado';
+    setTimeout(() => location.replace(`tickets.html?created=1&id=${encodeURIComponent(ticket.id)}`), 2200);
+  } catch (error) {
+    console.error(error);
+    show(error?.message || 'No se pudo crear el ticket.', true);
+    button.disabled = false;
+    button.textContent = 'Crear ticket';
+  }
+});
+</script></body></html>
