@@ -4,127 +4,229 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Mi perfil — ArcadiaCorps</title>
-  <link rel="stylesheet" href="assets/styles.css">
+  <link rel="stylesheet" href="assets/styles.css?v=12">
 </head>
 <body>
   <main class="dashboard">
-    <div class="brand"><div class="logo">A</div><div><h1>Mi perfil</h1><p>Información real de tu cuenta</p></div></div>
-    <section class="card">
-      <div class="user-card">
-        <div id="avatarFallback" class="avatar">U</div>
-        <img id="avatar" class="avatar" hidden alt="Avatar del usuario">
-        <div><h2 id="headingName">Usuario</h2><div id="emailText" class="meta"></div><div id="providerText" class="meta"></div></div>
+    <div class="brand"><div class="logo">A</div><div><h1>Mi perfil</h1><p>Cuenta, identidad y seguridad</p></div></div>
+
+    <div class="profile-grid">
+      <div class="profile-main">
+        <section class="panel">
+          <div class="profile-hero">
+            <div class="profile-avatar-wrap">
+              <div id="avatarFallback" class="avatar profile-avatar">U</div>
+              <img id="avatar" class="avatar profile-avatar" hidden alt="Foto de perfil">
+              <button id="avatarEditBtn" class="avatar-edit" type="button" aria-label="Cambiar foto">📷</button>
+            </div>
+            <div>
+              <h2 id="headingName" class="profile-name">Usuario</h2>
+              <div id="emailText" class="meta"></div>
+              <div class="profile-badges">
+                <span id="roleBadge" class="badge">Usuario</span>
+                <span id="verifiedBadge" class="badge">Correo</span>
+              </div>
+            </div>
+          </div>
+          <input id="avatarFile" class="file-control" type="file" accept="image/jpeg,image/png,image/webp,image/gif">
+          <div class="upload-area">
+            <p>JPG, PNG, WEBP o GIF. Máximo 2 MB.</p>
+            <button id="chooseAvatarBtn" class="secondary" type="button">Seleccionar foto</button>
+          </div>
+          <div id="avatarMessage" class="message" role="alert"></div>
+        </section>
+
+        <section class="panel">
+          <h3 class="panel-title"><span class="icon">✦</span>Información del perfil</h3>
+          <form id="profileForm">
+            <div class="field"><label for="username">Nombre de usuario</label><input id="username" maxlength="32" pattern="[A-Za-z0-9_.-]{3,32}" autocomplete="username" required><small class="meta">3–32 caracteres: letras, números, punto, guion o guion bajo.</small></div>
+            <div class="field"><label for="fullName">Nombre visible</label><input id="fullName" maxlength="80" autocomplete="name"></div>
+            <div class="field"><label for="phone">Teléfono</label><input id="phone" type="tel" maxlength="20" inputmode="tel" placeholder="Ej. +51 999 999 999"></div>
+            <div class="form-actions"><button id="saveBtn" class="primary" type="submit">Guardar cambios</button></div>
+          </form>
+          <div id="message" class="message" role="alert"></div>
+        </section>
+
+        <section class="panel">
+          <h3 class="panel-title"><span class="icon">🔑</span>Contraseña</h3>
+          <p class="section-note">Puedes establecer o cambiar la contraseña de esta cuenta. Debe tener al menos 8 caracteres.</p>
+          <form id="passwordForm" class="security-form">
+            <div class="field"><label for="newPassword">Nueva contraseña</label><input id="newPassword" type="password" minlength="8" autocomplete="new-password" required></div>
+            <div class="field"><label for="confirmPassword">Confirmar contraseña</label><input id="confirmPassword" type="password" minlength="8" autocomplete="new-password" required></div>
+            <button id="passwordBtn" class="primary" type="submit">Actualizar contraseña</button>
+          </form>
+          <div id="passwordMessage" class="message" role="alert"></div>
+        </section>
       </div>
-      <form id="profileForm" style="margin-top:24px">
-        <div class="field"><label for="username">Nombre de usuario</label><input id="username" maxlength="32" pattern="[A-Za-z0-9_.-]{3,32}" required><small class="meta">3–32 caracteres: letras, números, punto, guion o guion bajo.</small></div>
-        <div class="field"><label for="fullName">Nombre visible</label><input id="fullName" maxlength="80"></div>
-        <div class="field"><label for="avatarUrl">URL del avatar</label><input id="avatarUrl" type="url" placeholder="https://..."></div>
-        <div class="field"><label>Rol</label><input id="role" readonly></div>
-        <div class="field"><label>Registro</label><input id="createdAt" readonly></div>
-        <button id="saveBtn" class="primary" type="submit">Guardar perfil</button>
-      </form>
-      <div id="message" class="message" role="alert"></div>
-      <div class="row" style="margin-top:18px"><a class="text-btn btn" href="dashboard.html">Volver al panel</a></div>
-    </section>
+
+      <aside class="profile-side">
+        <section class="panel">
+          <h3 class="panel-title"><span class="icon">🔗</span>Cuentas vinculadas</h3>
+          <div id="identitiesList" class="account-list"></div>
+        </section>
+
+        <section class="panel">
+          <h3 class="panel-title"><span class="icon">ⓘ</span>Cuenta</h3>
+          <div class="info-list">
+            <div class="info-row"><span>ID</span><strong id="accountId">—</strong></div>
+            <div class="info-row"><span>Correo</span><strong id="accountEmail">—</strong></div>
+            <div class="info-row"><span>Rol</span><strong id="accountRole">user</strong></div>
+            <div class="info-row"><span>Registro</span><strong id="createdAt">—</strong></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <a class="primary btn" href="dashboard.html">Volver al panel</a>
+        </section>
+      </aside>
+    </div>
   </main>
+
   <script type="module">
-    import { supabase, requireSession } from './assets/auth.js';
+    import { supabase, requireSession, signInWithProvider } from './assets/auth.js';
 
     const session = await requireSession();
     if (!session) throw new Error('No hay sesión');
-    const user = session.user;
+    let user = session.user;
     const metadata = user.user_metadata || {};
+    let currentAvatarUrl = '';
 
-    const form = document.querySelector('#profileForm');
-    const username = document.querySelector('#username');
-    const fullName = document.querySelector('#fullName');
-    const avatarUrl = document.querySelector('#avatarUrl');
-    const role = document.querySelector('#role');
-    const createdAt = document.querySelector('#createdAt');
-    const headingName = document.querySelector('#headingName');
-    const emailText = document.querySelector('#emailText');
-    const providerText = document.querySelector('#providerText');
-    const avatar = document.querySelector('#avatar');
-    const avatarFallback = document.querySelector('#avatarFallback');
-    const saveBtn = document.querySelector('#saveBtn');
-    const message = document.querySelector('#message');
+    const $ = selector => document.querySelector(selector);
+    const show = (el, text, type = 'error') => { el.textContent = text; el.className = `message show ${type}`; };
+    const clear = el => { el.textContent = ''; el.className = 'message'; };
 
-    const show = (text, type = 'error') => {
-      message.textContent = text;
-      message.className = `message show ${type}`;
+    const refs = {
+      form: $('#profileForm'), username: $('#username'), fullName: $('#fullName'), phone: $('#phone'), saveBtn: $('#saveBtn'), message: $('#message'),
+      headingName: $('#headingName'), emailText: $('#emailText'), roleBadge: $('#roleBadge'), verifiedBadge: $('#verifiedBadge'),
+      avatar: $('#avatar'), avatarFallback: $('#avatarFallback'), avatarFile: $('#avatarFile'), chooseAvatarBtn: $('#chooseAvatarBtn'), avatarEditBtn: $('#avatarEditBtn'), avatarMessage: $('#avatarMessage'),
+      identitiesList: $('#identitiesList'), accountId: $('#accountId'), accountEmail: $('#accountEmail'), accountRole: $('#accountRole'), createdAt: $('#createdAt'),
+      passwordForm: $('#passwordForm'), newPassword: $('#newPassword'), confirmPassword: $('#confirmPassword'), passwordBtn: $('#passwordBtn'), passwordMessage: $('#passwordMessage')
     };
 
-    const fallbackUsername = (metadata.user_name || metadata.preferred_username || user.email?.split('@')[0] || `user_${user.id.slice(0, 8)}`)
-      .replace(/[^A-Za-z0-9_.-]/g, '_').slice(0, 32);
+    const fallbackUsername = (metadata.user_name || metadata.preferred_username || user.email?.split('@')[0] || `user_${user.id.slice(0,8)}`)
+      .replace(/[^A-Za-z0-9_.-]/g,'_').slice(0,32);
 
     const defaultProfile = {
-      id: user.id,
-      username: fallbackUsername.length >= 3 ? fallbackUsername : `user_${user.id.slice(0, 8)}`,
-      full_name: metadata.full_name || metadata.name || '',
-      avatar_url: metadata.avatar_url || metadata.picture || '',
-      role: 'user'
+      id:user.id,
+      email:user.email || '',
+      username:fallbackUsername.length >= 3 ? fallbackUsername : `user_${user.id.slice(0,8)}`,
+      full_name:metadata.full_name || metadata.name || '',
+      avatar_url:metadata.avatar_url || metadata.picture || '',
+      phone:user.phone || '',
+      role:'user'
     };
 
-    let { data: profile, error } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
-    if (error) show(`Falta configurar la tabla de perfiles: ${error.message}`);
-    if (!profile && !error) {
-      const inserted = await supabase.from('profiles').upsert(defaultProfile).select().single();
-      profile = inserted.data;
-      if (inserted.error) show(inserted.error.message);
+    let { data: profile, error: loadError } = await supabase.from('profiles').select('*').eq('id',user.id).maybeSingle();
+    if (loadError) show(refs.message, `No se pudo cargar el perfil: ${loadError.message}`);
+    if (!profile && !loadError) {
+      const { data, error } = await supabase.from('profiles').insert(defaultProfile).select().single();
+      if (error) show(refs.message, error.message); else profile = data;
     }
     profile ||= defaultProfile;
+    currentAvatarUrl = profile.avatar_url || defaultProfile.avatar_url || '';
 
-    username.value = profile.username || defaultProfile.username;
-    fullName.value = profile.full_name || '';
-    avatarUrl.value = profile.avatar_url || '';
-    role.value = profile.role || 'user';
-    createdAt.value = new Date(profile.created_at || user.created_at).toLocaleString('es-PE');
-    emailText.textContent = user.email || 'Correo no disponible';
-    providerText.textContent = `Proveedor: ${user.app_metadata?.provider || 'email'}`;
+    function renderAvatar(url = currentAvatarUrl) {
+      const display = refs.fullName.value.trim() || refs.username.value.trim() || 'Usuario';
+      refs.headingName.textContent = display;
+      refs.avatarFallback.textContent = (display[0] || 'U').toUpperCase();
+      if (!url) { refs.avatar.hidden = true; refs.avatarFallback.hidden = false; return; }
+      refs.avatar.onload = () => { refs.avatar.hidden = false; refs.avatarFallback.hidden = true; };
+      refs.avatar.onerror = () => { refs.avatar.hidden = true; refs.avatarFallback.hidden = false; };
+      refs.avatar.src = url;
+    }
 
-    const refreshIdentity = () => {
-      const display = fullName.value.trim() || username.value.trim() || 'Usuario';
-      headingName.textContent = display;
-      avatarFallback.textContent = display[0].toUpperCase();
-      const url = avatarUrl.value.trim();
-      if (url) {
-        avatar.onload = () => { avatar.hidden = false; avatarFallback.hidden = true; };
-        avatar.onerror = () => { avatar.hidden = true; avatarFallback.hidden = false; };
-        avatar.src = url;
-      } else {
-        avatar.hidden = true;
-        avatarFallback.hidden = false;
+    refs.username.value = profile.username || defaultProfile.username;
+    refs.fullName.value = profile.full_name || '';
+    refs.phone.value = profile.phone || user.phone || '';
+    refs.emailText.textContent = user.email || 'Correo no disponible';
+    refs.roleBadge.textContent = (profile.role || 'user').toUpperCase();
+    refs.verifiedBadge.textContent = user.email_confirmed_at ? '✓ Correo verificado' : 'Correo sin verificar';
+    refs.verifiedBadge.classList.add(user.email_confirmed_at ? 'good' : 'warn');
+    refs.accountId.textContent = user.id;
+    refs.accountEmail.textContent = user.email || '—';
+    refs.accountRole.textContent = profile.role || 'user';
+    refs.createdAt.textContent = new Date(profile.created_at || user.created_at).toLocaleString('es-PE');
+    renderAvatar();
+
+    refs.fullName.addEventListener('input',()=>renderAvatar());
+    refs.username.addEventListener('input',()=>renderAvatar());
+
+    function renderIdentities() {
+      const linked = new Set((user.identities || []).map(i=>i.provider));
+      const providers = [
+        {id:'google',name:'Google',icon:'G'},
+        {id:'github',name:'GitHub',icon:'◉'},
+        {id:'email',name:'Correo',icon:'✉'}
+      ];
+      refs.identitiesList.innerHTML = '';
+      for (const provider of providers) {
+        const active = provider.id === 'email' ? Boolean(user.email) : linked.has(provider.id);
+        const row = document.createElement('div');
+        row.className = 'account-row';
+        row.innerHTML = `<div class="account-icon">${provider.icon}</div><div><strong>${provider.name}</strong><small>${active ? 'Vinculado' : 'No vinculado'}</small></div>`;
+        if (!active && provider.id !== 'email') {
+          const btn = document.createElement('button');
+          btn.type = 'button'; btn.className = 'secondary account-action'; btn.textContent = 'Vincular';
+          btn.addEventListener('click',async()=>{ try { await signInWithProvider(provider.id); } catch(e) { show(refs.message,e.message); } });
+          row.appendChild(btn);
+        } else {
+          const badge = document.createElement('span'); badge.className = 'badge good'; badge.textContent = '✓'; row.appendChild(badge);
+        }
+        refs.identitiesList.appendChild(row);
       }
-    };
-    refreshIdentity();
-    fullName.addEventListener('input', refreshIdentity);
-    username.addEventListener('input', refreshIdentity);
-    avatarUrl.addEventListener('change', refreshIdentity);
+    }
+    renderIdentities();
 
-    form.addEventListener('submit', async event => {
-      event.preventDefault();
-      saveBtn.disabled = true;
-      saveBtn.textContent = 'Guardando…';
+    refs.chooseAvatarBtn.addEventListener('click',()=>refs.avatarFile.click());
+    refs.avatarEditBtn.addEventListener('click',()=>refs.avatarFile.click());
+    refs.avatarFile.addEventListener('change', async () => {
+      clear(refs.avatarMessage);
+      const file = refs.avatarFile.files?.[0];
+      if (!file) return;
+      if (!['image/jpeg','image/png','image/webp','image/gif'].includes(file.type)) return show(refs.avatarMessage,'Formato no permitido.');
+      if (file.size > 2*1024*1024) return show(refs.avatarMessage,'La imagen supera el límite de 2 MB.');
+      const objectUrl = URL.createObjectURL(file); renderAvatar(objectUrl);
+      refs.chooseAvatarBtn.disabled = true; refs.chooseAvatarBtn.textContent = 'Subiendo…';
       try {
-        const payload = {
-          id: user.id,
-          username: username.value.trim(),
-          full_name: fullName.value.trim() || null,
-          avatar_url: avatarUrl.value.trim() || null,
-          updated_at: new Date().toISOString()
-        };
-        const { error: profileError } = await supabase.from('profiles').upsert(payload);
+        const ext = (file.name.split('.').pop() || 'webp').toLowerCase();
+        const path = `${user.id}/avatar.${ext}`;
+        const { error: uploadError } = await supabase.storage.from('avatars').upload(path,file,{upsert:true,contentType:file.type,cacheControl:'3600'});
+        if (uploadError) throw uploadError;
+        const { data } = supabase.storage.from('avatars').getPublicUrl(path);
+        currentAvatarUrl = `${data.publicUrl}?v=${Date.now()}`;
+        const { error: profileError } = await supabase.from('profiles').update({avatar_url:currentAvatarUrl,updated_at:new Date().toISOString()}).eq('id',user.id);
         if (profileError) throw profileError;
-        const { error: authError } = await supabase.auth.updateUser({ data: { full_name: payload.full_name, avatar_url: payload.avatar_url, user_name: payload.username } });
+        const { error: authError } = await supabase.auth.updateUser({data:{avatar_url:currentAvatarUrl,picture:currentAvatarUrl}});
         if (authError) throw authError;
-        show('Perfil actualizado correctamente.', 'ok');
-        refreshIdentity();
-      } catch (saveError) {
-        show(saveError.message);
-      } finally {
-        saveBtn.disabled = false;
-        saveBtn.textContent = 'Guardar perfil';
-      }
+        renderAvatar(currentAvatarUrl); show(refs.avatarMessage,'Foto actualizada correctamente.','ok');
+      } catch(e) { renderAvatar(currentAvatarUrl); show(refs.avatarMessage,e.message); }
+      finally { URL.revokeObjectURL(objectUrl); refs.chooseAvatarBtn.disabled=false; refs.chooseAvatarBtn.textContent='Seleccionar foto'; refs.avatarFile.value=''; }
+    });
+
+    refs.form.addEventListener('submit',async event=>{
+      event.preventDefault(); clear(refs.message); refs.saveBtn.disabled=true; refs.saveBtn.textContent='Guardando…';
+      try {
+        const payload = {email:user.email || '',username:refs.username.value.trim(),full_name:refs.fullName.value.trim() || null,phone:refs.phone.value.trim() || null,avatar_url:currentAvatarUrl || null,updated_at:new Date().toISOString()};
+        const { data, error } = await supabase.from('profiles').update(payload).eq('id',user.id).select().maybeSingle();
+        if (error) throw error;
+        if (!data) {
+          const inserted = await supabase.from('profiles').insert({id:user.id,role:'user',created_at:new Date().toISOString(),...payload}).select().single();
+          if (inserted.error) throw inserted.error;
+        }
+        const { error: authError } = await supabase.auth.updateUser({data:{full_name:payload.full_name,user_name:payload.username,avatar_url:payload.avatar_url,phone:payload.phone}});
+        if (authError) throw authError;
+        refs.headingName.textContent = payload.full_name || payload.username; show(refs.message,'Perfil actualizado correctamente.','ok');
+      } catch(e) { show(refs.message,e.message); }
+      finally { refs.saveBtn.disabled=false; refs.saveBtn.textContent='Guardar cambios'; }
+    });
+
+    refs.passwordForm.addEventListener('submit',async event=>{
+      event.preventDefault(); clear(refs.passwordMessage);
+      if (refs.newPassword.value !== refs.confirmPassword.value) return show(refs.passwordMessage,'Las contraseñas no coinciden.');
+      refs.passwordBtn.disabled=true; refs.passwordBtn.textContent='Actualizando…';
+      try { const {error}=await supabase.auth.updateUser({password:refs.newPassword.value}); if(error)throw error; refs.passwordForm.reset(); show(refs.passwordMessage,'Contraseña actualizada correctamente.','ok'); }
+      catch(e){ show(refs.passwordMessage,e.message); }
+      finally{ refs.passwordBtn.disabled=false; refs.passwordBtn.textContent='Actualizar contraseña'; }
     });
   </script>
 </body>
