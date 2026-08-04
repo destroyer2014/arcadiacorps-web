@@ -12,3 +12,6 @@ button:disabled { opacity: .65; cursor: wait; }
 .dashboard-actions>*{flex:1;margin:0;text-align:center}
 small.meta{display:block;margin-top:8px;line-height:1.4}
 input[readonly]{opacity:.72;cursor:not-allowed}
+
+.recovery-link{position:relative;z-index:5;margin-top:14px;text-decoration:none;min-height:44px}
+button:disabled{opacity:.65;cursor:not-allowed}

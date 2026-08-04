@@ -17,7 +17,7 @@
         <div class="field"><label for="password">Contraseña</label><input id="password" type="password" autocomplete="current-password" minlength="6" required></div>
         <button class="primary" type="submit">Iniciar sesión</button>
       </form>
-      <button class="text-btn wide-link" id="recoverBtn" type="button">¿Olvidaste tu contraseña?</button>
+      <a class="text-btn wide-link recovery-link" href="forgot-password.html">¿Olvidaste tu contraseña?</a>
       <div class="divider">o continúa con</div>
       <button class="oauth" id="googleBtn" type="button">G&nbsp;&nbsp;Continuar con Google</button>
       <button class="oauth" id="githubBtn" type="button">◉&nbsp;&nbsp;Continuar con GitHub</button>
@@ -26,7 +26,7 @@
     </section>
   </main>
   <script type="module">
-    import { supabase, signInWithProvider, signInWithPassword, signUpWithPassword, sendPasswordRecovery } from './assets/auth.js';
+    import { supabase, signInWithProvider, signInWithPassword, signUpWithPassword } from './assets/auth.js';
 
     const message = document.querySelector('#message');
     const emailInput = document.querySelector('#email');
@@ -35,7 +35,6 @@
     const googleBtn = document.querySelector('#googleBtn');
     const githubBtn = document.querySelector('#githubBtn');
     const registerBtn = document.querySelector('#registerBtn');
-    const recoverBtn = document.querySelector('#recoverBtn');
 
     const show = (text, type = 'error') => {
       message.textContent = text;
@@ -73,21 +72,7 @@
       } catch (error) { show(error.message); }
     });
 
-    recoverBtn.addEventListener('click', async () => {
-      const email = emailInput.value.trim();
-      if (!email) return show('Escribe primero el correo de tu cuenta.');
-      recoverBtn.disabled = true;
-      recoverBtn.textContent = 'Enviando enlace…';
-      try {
-        await sendPasswordRecovery(email);
-        show('Te enviamos un enlace para crear una contraseña nueva.', 'ok');
-      } catch (error) {
-        show(error.message);
-      } finally {
-        recoverBtn.disabled = false;
-        recoverBtn.textContent = '¿Olvidaste tu contraseña?';
-      }
-    });
+
   </script>
 </body>
 </html>
