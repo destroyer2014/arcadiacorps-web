@@ -38,6 +38,7 @@ export async function mountShell() {
           <summary>Principal <span>⌄</span></summary>
           <a class="${active('dashboard.html')}" href="${APP_URL}/dashboard.html">⌂ <span>Inicio</span></a>
           <a class="${active('profile.html')}" href="${APP_URL}/profile.html">◉ <span>Mi perfil</span></a>
+          <a class="${active('news.html') || active('news-detail.html') || active('news-editor.html')}" href="${APP_URL}/news.html">▤ <span>Noticias</span></a>
         </details>
         ${role === 'owner' ? `<details open><summary>Administración <span>⌄</span></summary><a class="${active('admin-users.html')}" href="${APP_URL}/admin-users.html">♛ <span>Usuarios y roles</span></a></details>` : ''}
       </nav>
