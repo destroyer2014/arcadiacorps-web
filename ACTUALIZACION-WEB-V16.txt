@@ -1,0 +1,13 @@
+ARCADIACORPS WEB V16 — FASE 1
+
+Incluye:
+- Nueva barra lateral plegable por secciones.
+- Nueva identidad visual neón y lluvia luminosa.
+- Eliminación del menú de Casino, Estatus, Astharot RPG, Tops, Configuración, Perfil antiguo y Mi Panel.
+- Número oficial actualizado a +51 972 564 492.
+- Andy eliminado del apartado de contacto.
+- Sección Comandos reemplazada con catálogo actual de Nero Bot y prefijo punto.
+- Bases visuales para Noticias, Chats y Mi Cuenta.
+- Botones visuales Google/GitHub/CAPTCHA preparados; requieren activar proveedores y CAPTCHA real en Supabase.
+
+Esta es la fase estructural. Las funciones completas de Social, Subbots, Chat, Noticias, Perfil y presencia requieren la siguiente migración SQL/Supabase.

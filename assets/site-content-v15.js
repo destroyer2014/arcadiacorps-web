@@ -16,7 +16,7 @@ function applySettings(s){window.ArcadiaSiteSettings=s;document.dispatchEvent(ne
  document.querySelectorAll('a[href*="whatsapp.com/channel"]').forEach(a=>{if(s.whatsapp_channel_url)a.href=s.whatsapp_channel_url;});
  document.querySelectorAll('a[href*="chat.whatsapp.com"]').forEach(a=>{if(s.whatsapp_group_url)a.href=s.whatsapp_group_url;});
 }
-function renderNews(rows){const list=document.getElementById('dynamicHomeNews');if(!list||!rows.length)return;list.innerHTML=rows.slice(0,6).map(n=>`<a href="${esc(n.action_url||'proyecto.html')}"><b>${esc(n.badge||'Nuevo')}</b><span><strong>${esc(n.title)}</strong><small>${esc(n.summary)}</small></span></a>`).join('');}
+function renderNews(rows){const list=document.getElementById('dynamicHomeNews');if(!list||!rows.length)return;list.innerHTML=rows.slice(0,6).map(n=>`<a href="${esc(n.action_url||'noticias.html')}"><b>${esc(n.badge||'Nuevo')}</b><span><strong>${esc(n.title)}</strong><small>${esc(n.summary)}</small></span></a>`).join('');}
 async function load(){try{const [settings,news]=await Promise.all([get('/site_settings?select=key,value'),get('/site_news?select=id,title,summary,badge,action_label,action_url,starts_at,expires_at,sort_order&is_active=eq.true&order=sort_order.asc,created_at.desc&limit=6')]);applySettings(Object.fromEntries(settings.map(x=>[x.key,x.value])));renderNews(news);}catch(e){console.warn('[contenido v15] se conserva el contenido HTML:',e);}}
 function start(){load();setTimeout(load,1200);}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();document.addEventListener('partialsReady',()=>setTimeout(load,50));

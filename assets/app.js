@@ -341,7 +341,7 @@
 // ── Fondo dinámico: hongos, estrellas y monedas flotantes ──
 (function(){
   const field = document.getElementById('particleField');
-  if(!field) return;
+  return; // reemplazado por lluvia neón v16
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if(reduceMotion) return;
 

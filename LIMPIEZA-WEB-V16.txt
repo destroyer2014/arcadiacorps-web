@@ -1,0 +1,9 @@
+ArcadiaCorps Web v16 - Fase 1 limpia
+
+Este paquete contiene únicamente la web y los módulos necesarios para su funcionamiento.
+Se retiraron del paquete: proyecto móvil Astharot, workflow de APK, Casino, Estatus del bot,
+Tops, Configuración antigua, Mi panel y páginas/recursos obsoletos asociados.
+
+Se conservan la tienda, Premium, autenticación, Supabase, soporte/tickets,
+paneles Owner/Staff y la estructura de Fase 1 para Social, Chat, Noticias,
+Cuenta, Subbots y Comandos.

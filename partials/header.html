@@ -1,186 +1,58 @@
-<div class="scanlines"></div>
-<div class="crt-vignette"></div>
-<div id="ambientGlow" aria-hidden="true">
-  <div class="blob blob-1"></div>
-  <div class="blob blob-2"></div>
-  <div class="blob blob-3"></div>
-</div>
-<div id="particleField" aria-hidden="true"></div>
+<div id="ambientGlow" aria-hidden="true"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div></div>
+<div id="neonRain" class="neon-rain" aria-hidden="true"></div>
 
 <div id="authGate">
-  <div class="auth-card">
-    <div class="auth-banner">
-      <h2>PRAGMATA BOT</h2>
-      <p>Inicia sesión para entrar al sitio</p>
-    </div>
+  <div class="auth-card modern-auth-card">
+    <div class="auth-banner"><div class="auth-logo-mark">A</div><h2>ARCADIACORPS</h2><p>Accede a tu cuenta</p></div>
     <div class="auth-body">
-      <div class="auth-tabs">
-        <div class="auth-tab active" id="tabLogin">Iniciar sesión</div>
-        <div class="auth-tab" id="tabRegister">Registrarme</div>
+      <div class="auth-tabs"><div class="auth-tab active" id="tabLogin">Iniciar sesión</div><div class="auth-tab" id="tabRegister">Registrarme</div></div>
+      <div class="oauth-row">
+        <button type="button" class="oauth-btn" id="authGoogle"><span>G</span> Google</button>
+        <button type="button" class="oauth-btn" id="authGithub"><span>◉</span> GitHub</button>
       </div>
-
+      <div class="auth-separator"><span>o continúa con correo</span></div>
       <form id="authForm" autocomplete="on">
-        <div class="auth-field">
-          <label>Correo electrónico</label>
-          <input type="email" id="authEmail" placeholder="tucorreo@ejemplo.com" required autocomplete="email" />
-        </div>
-        <div class="auth-field">
-          <label>Contraseña</label>
-          <input type="password" id="authPass" placeholder="••••••••" required minlength="6" autocomplete="current-password" />
-          <div class="hint" id="passHint" style="display:none;">Mínimo 6 caracteres</div>
-        </div>
-        <div class="auth-row-between">
-          <label class="auth-remember"><input type="checkbox" id="authRemember" /> Recordarme</label>
-          <a href="#" class="auth-forgot" id="authForgot">¿Olvidaste la clave?</a>
-        </div>
-        <button type="submit" class="auth-submit" id="authSubmit">$ INICIAR SESIÓN</button>
+        <div class="auth-field"><label>Correo electrónico</label><input type="email" id="authEmail" placeholder="tucorreo@ejemplo.com" required autocomplete="email"></div>
+        <div class="auth-field"><label>Contraseña</label><input type="password" id="authPass" placeholder="••••••••" required minlength="6" autocomplete="current-password"><div class="hint" id="passHint" hidden>Mínimo 6 caracteres</div></div>
+        <div class="captcha-placeholder" id="captchaPlaceholder"><span class="captcha-box">✓</span><span>No soy un robot</span><small>Protección CAPTCHA</small></div>
+        <div class="auth-row-between"><label class="auth-remember"><input type="checkbox" id="authRemember"> Recordarme</label><a href="#" class="auth-forgot" id="authForgot">¿Olvidaste la clave?</a></div>
+        <button type="submit" class="auth-submit" id="authSubmit">INICIAR SESIÓN</button>
       </form>
-      <div class="auth-status" id="authStatus"></div>
-      <a href="#" class="auth-guest" id="authGuest">continuar como invitado →</a>
+      <div class="auth-status" id="authStatus"></div><a href="#" class="auth-guest" id="authGuest">continuar como invitado →</a>
     </div>
   </div>
 </div>
 
-
-<!-- ═══════════════════════════════════════
-     LOADING SCREEN
-     ═══════════════════════════════════════ -->
-
-<!-- ═══════════════════════════════════════
-     NAVBAR
-     ═══════════════════════════════════════ -->
-<nav id="nav">
-  <div class="nav-inner">
-    <button class="nav-sidebar-toggle" id="sidebarToggle" aria-label="Abrir menú">☰</button>
-    <a class="nav-brand nav-brand-premium" id="navBrand" href="index.html"><span class="nav-crest">P</span><span><b>PRAGMATA</b><small>BOT DE WHATSAPP</small></span></a>
-    <div class="nav-links">
-      <a href="index.html">Inicio</a>
-      <a href="comandos.html">Comandos</a>
-      <a href="premium.html">Premium</a>
-      <a href="contacto.html">Contacto</a>
-      <a href="soporte.html">🎫 Soporte</a>
-    </div>
-    <div class="nav-actions">
-      <div class="notif-wrapper" style="position:relative;">
-        <button class="nav-icon-btn" id="notifBtn" aria-label="Notificaciones">
-          🔔<span class="notif-badge" id="notifBadge">2</span>
-        </button>
-        <div class="notif-panel" id="notifPanel">
-          <div class="notif-head">Notificaciones</div>
-          <div class="notif-empty">Abre la campana para consultar tus avisos.</div>
-        </div>
-      </div>
-      <a href="panel.html" class="home-nav-panel-btn nav-cta">▣ PANEL WEB</a>
-    </div>
+<nav id="nav" class="modern-nav"><div class="nav-inner">
+  <button class="nav-sidebar-toggle" id="sidebarToggle" aria-label="Abrir menú">☰</button>
+  <a class="nav-brand" href="index.html"><span class="nav-crest">A</span><span><b>ARCADIA</b><small>CORPS</small></span></a>
+  <div class="nav-links"><a href="index.html">Inicio</a><a href="premium.html">Tienda</a><a href="social.html">Social</a><a href="noticias.html">Noticias</a></div>
+  <div class="nav-actions">
+    <div class="nav-user-presence"><span class="presence-dot online" id="navPresenceDot"></span><span><b id="navUsername">Invitado</b><small id="navPresenceText">Conectado</small></span></div>
+    <div class="notif-wrapper"><button class="nav-icon-btn" id="notifBtn" aria-label="Notificaciones">🔔<span class="notif-badge" id="notifBadge">2</span></button><div class="notif-panel" id="notifPanel"><div class="notif-head">Notificaciones</div><div class="notif-empty">No tienes avisos nuevos.</div></div></div>
   </div>
-</nav>
+</div></nav>
 
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
-<aside class="app-sidebar" id="appSidebar">
-  <div class="sidebar-brand"><span class="nav-crest">P</span> PRAGMATA BOT</div>
-
-  <div class="sidebar-group">
-    <span class="sidebar-label">Principal</span>
-    <a href="index.html" class="sidebar-link active">🏠 Inicio</a>
-    <a href="premium.html" class="sidebar-link">🛒 Premium</a>
-    <a href="contacto.html" class="sidebar-link">📇 Contacto</a>
-    <a href="soporte.html" class="sidebar-link">🎫 Soporte</a>
-    <a href="staff-tickets.html" class="sidebar-link" data-staff-only hidden>🛡️ Panel de soporte</a>
-    <a href="owner-panel.html" class="sidebar-link" data-owner-only hidden>👑 Panel Owner</a>
+<aside class="app-sidebar modern-sidebar" id="appSidebar">
+  <div class="sidebar-brand"><span class="nav-crest">A</span><div><b>ArcadiaCorps</b><small>Centro de control</small></div></div>
+  <div class="sidebar-user-card"><div class="sidebar-avatar" id="sidebarAvatar">U</div><div><b id="sidebarUsername">Usuario</b><small><span class="presence-dot online"></span> En línea</small></div></div>
+  <div class="sidebar-scroll">
+    <div class="sidebar-accordion open"><button class="sidebar-accordion-head">Principal <span>⌄</span></button><div class="sidebar-accordion-body">
+      <a href="index.html" class="sidebar-link">⌂ Inicio</a><a href="premium.html" class="sidebar-link">◇ Tienda</a><a href="soporte.html" class="sidebar-link">◈ Abrir ticket</a>
+    </div></div>
+    <div class="sidebar-accordion open"><button class="sidebar-accordion-head">Subbots <span>⌄</span></button><div class="sidebar-accordion-body">
+      <a href="subbot.html" class="sidebar-link">◉ Mis Sub-Bots</a><a href="comandos.html" class="sidebar-link">⌘ Comandos</a>
+    </div></div>
+    <div class="sidebar-accordion open"><button class="sidebar-accordion-head">Comunidad <span>⌄</span></button><div class="sidebar-accordion-body">
+      <a href="social.html" class="sidebar-link">◎ Social</a><a href="chat.html" class="sidebar-link">◌ Chats</a><a href="noticias.html" class="sidebar-link">▤ Noticias</a>
+    </div></div>
+    <div class="sidebar-accordion"><button class="sidebar-accordion-head">Cuenta <span>⌄</span></button><div class="sidebar-accordion-body">
+      <a href="cuenta.html" class="sidebar-link">♙ Mi cuenta</a><a href="soporte.html#mis-tickets" class="sidebar-link">◇ Mis tickets</a><a href="cuenta.html#compras" class="sidebar-link">▣ Historial de compras</a>
+    </div></div>
+    <div class="sidebar-accordion"><button class="sidebar-accordion-head">Administración <span>⌄</span></button><div class="sidebar-accordion-body">
+      <a href="staff-tickets.html" class="sidebar-link" data-staff-only hidden>🛡 Panel Staff</a><a href="owner-panel.html" class="sidebar-link" data-owner-only hidden>♛ Panel Owner</a>
+    </div></div>
   </div>
-
-  <div class="sidebar-group">
-    <span class="sidebar-label">Cuenta</span>
-    <a href="#" class="sidebar-link" id="sidebarProfileLink">👤 Mi Perfil</a>
-    <a href="panel.html" class="sidebar-link">📊 Mi Panel</a>
-    <a href="configuracion.html" class="sidebar-link">⚙️ Configuración</a>
-    <a href="estado.html" class="sidebar-link">📶 Status del bot</a>
-  </div>
-
-  <div class="sidebar-group">
-    <span class="sidebar-label">Servicios</span>
-    <a href="comandos.html" class="sidebar-link">📜 Comandos</a>
-    <a href="casino.html" class="sidebar-link">🎰 Casino</a>
-    <a href="astharot-rpg.html" class="sidebar-link">⚔️ Astharot RPG</a>
-    <a href="tops.html" class="sidebar-link">🏆 Tops</a>
-    <a href="subbot.html" class="sidebar-link">🔌 Sub-Bot</a>
-    <a href="social.html" class="sidebar-link">💬 Redes Sociales</a>
-  </div>
-
-  <div class="sidebar-group">
-    <span class="sidebar-label">Social</span>
-    <a href="https://whatsapp.com/channel/0029VbADsUx6LwHo4wdirM0v" target="_blank" rel="noopener" class="sidebar-link">📢 Canal de WhatsApp</a>
-    <a href="https://wa.me/51917611323" target="_blank" rel="noopener" class="sidebar-link">💬 Comunidad</a>
-  </div>
+  <div class="sidebar-footer"><a href="https://wa.me/51972564492" target="_blank" rel="noopener">Bot oficial: +51 972 564 492</a><small>ArcadiaCorps Web v16</small></div>
 </aside>
-
-<div class="profile-overlay" id="profileOverlay">
-  <div class="profile-modal">
-    <div class="profile-cover">
-      <button class="profile-close" id="profileClose">✕</button>
-      <div class="profile-avatar-big" id="profileAvatarBig">👤</div>
-    </div>
-    <div class="profile-body">
-      <div class="profile-name-box">
-        <span class="profile-badge">◈ Cuenta verificada</span>
-        <h3 id="profileGreeting">Hola, Usuario</h3>
-        <div class="p-email" id="profileEmail">correo@ejemplo.com</div>
-      </div>
-
-      <div class="profile-section">
-        <span class="profile-section-label">Datos personales</span>
-        <div class="profile-field">
-          <label>Nombre visible</label>
-          <input type="text" id="profileName" placeholder="Tu nombre" maxlength="40" />
-        </div>
-        <div class="profile-field">
-          <label>Username</label>
-          <input type="text" id="profileUsername" placeholder="tu_usuario" maxlength="24" />
-        </div>
-        <div class="profile-field">
-          <label>Bio</label>
-          <textarea id="profileBio" rows="3" maxlength="240" placeholder="Cuéntanos algo sobre ti"></textarea>
-          <div class="p-charcount"><span id="bioCount">0</span>/240</div>
-        </div>
-        <div class="profile-save-row">
-          <button class="profile-btn profile-btn-ghost" id="profileCancel">Descartar</button>
-          <button class="profile-btn profile-btn-save" id="profileSave">Guardar cambios</button>
-        </div>
-        <div class="profile-status" id="profileStatus"></div>
-      </div>
-
-      <div class="profile-divider"></div>
-
-      <div class="profile-section">
-        <span class="profile-section-label">Seguridad</span>
-        <div class="profile-field">
-          <label>Nueva contraseña</label>
-          <input type="password" id="profileNewPass" placeholder="Mínimo 6 caracteres" minlength="6" />
-        </div>
-        <button class="profile-btn profile-btn-save" id="profileChangePass" style="width:100%;">Actualizar contraseña</button>
-        <div class="profile-status" id="profilePassStatus"></div>
-      </div>
-
-      <button class="profile-logout" id="profileLogout">Cerrar sesión</button>
-    </div>
-  </div>
-</div>
-
-
-
-  <a href="index.html">Inicio</a>
-  <a href="proyecto.html">Pragmata Bot</a>
-  <a href="comandos.html">Comandos</a>
-  <a href="premium.html">Premium</a>
-  <a href="subbot.html">Sub-Bot</a>
-  <a href="casino.html">🎰 Casino</a>
-  <a href="tops.html">Tops</a>
-  <a href="estado.html">Estado</a>
-  <a href="social.html">💬 Social</a>
-  <a href="contacto.html">Contacto</a>
-  <a href="soporte.html">🎫 Soporte</a>
-  <a href="panel.html">📊 Mi Panel</a>
-  <a href="configuracion.html">⚙️ Configuración</a>
-</div>
-
-<!-- ═══════════════════════════════════════

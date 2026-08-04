@@ -144,7 +144,7 @@
         badge.textContent=unreadItems.length>99?'99+':String(unreadItems.length);
         badge.classList.toggle('hide',unreadItems.length===0);
 
-        panel.innerHTML='<div class="notif-head"><span>Notificaciones</span><a href="panel.html#notifications">Ver todas</a></div>'+
+        panel.innerHTML='<div class="notif-head"><span>Notificaciones</span><a href="cuenta.html#notifications">Ver todas</a></div>'+
           (visible.length?visible.slice(0,8).map(n=>`
             <article class="notif-card dynamic-notif ${readMap.has(String(n.id))?'is-read':''}" data-notification-id="${n.id}">
               <div class="notif-icon">${n.notification_type==='ticket_reply'?'🎫':n.notification_type==='new_ticket'?'🎧':'🔔'}</div>

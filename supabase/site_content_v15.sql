@@ -95,7 +95,7 @@ grant insert, update, delete on public.site_news to authenticated;
 grant insert, update on public.site_settings to authenticated;
 
 insert into public.site_settings(key,value,label) values
- ('whatsapp_number','51917611323','Número de WhatsApp'),
+ ('whatsapp_number','51972564492','Número de WhatsApp'),
  ('hero_eyebrow','El bot todo en uno para WhatsApp','Etiqueta del inicio'),
  ('hero_title','PRAGMATA','Título principal'),
  ('hero_accent','BOT','Texto destacado'),
