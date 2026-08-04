@@ -45,3 +45,9 @@ button,.btn{width:100%;border:0;border-radius:15px;padding:15px 17px;font-weight
 .ticket-page .page-heading>div{display:flex;flex-direction:column;align-items:flex-start}
 .ticket-page .message.show.ok{background:rgba(22,163,74,.14);border:1px solid rgba(74,222,128,.55);color:#86efac;padding:16px 18px;border-radius:16px;margin:18px 0;font-weight:700}
 @media(max-width:700px){.ticket-heading{padding-top:14px}.ticket-heading .ticket-back{margin-bottom:20px}.ticket-heading h1{margin-top:8px}}
+
+/* Tickets v20: navegación separada del título */
+.ticket-back-standalone{display:inline-flex!important;width:max-content;margin:0 0 22px 0!important;position:relative;z-index:3;line-height:1.3;text-decoration:none}
+.ticket-heading{padding-top:0!important}
+.ticket-heading .eyebrow{display:block!important;margin:0 0 8px!important}
+@media(max-width:700px){.ticket-back-standalone{margin-bottom:24px!important}.ticket-heading{padding-top:0!important}}
