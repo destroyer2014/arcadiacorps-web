@@ -1,5 +1,56 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Verificando acceso — ArcadiaCorps</title><link rel="stylesheet" href="../assets/styles.css"></head><body><main class="shell"><section class="card"><h2>Verificando acceso</h2><p id="state" class="loading">Procesando la sesión segura…</p></section></main><script type="module">
-import { supabase } from '../assets/auth.js';import { APP_URL } from '../assets/config.js';
-const state=document.querySelector('#state');
-try{const params=new URLSearchParams(location.search);const code=params.get('code');if(code){const {error}=await supabase.auth.exchangeCodeForSession(code);if(error)throw error;}const {data:{session},error}=await supabase.auth.getSession();if(error)throw error;if(!session)throw new Error('No se pudo crear la sesión. Revisa la configuración OAuth.');location.replace(`${APP_URL}/dashboard.html`);}catch(e){state.textContent=e.message;state.style.color='#ff9aaa';setTimeout(()=>location.replace(`${APP_URL}/login.html`),3500)}
-</script></body></html>
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Verificando acceso — ArcadiaCorps</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <main class="shell">
+    <section class="card">
+      <h2>Verificando acceso</h2>
+      <p id="state" class="loading">Procesando la sesión segura…</p>
+    </section>
+  </main>
+
+  <script type="module">
+    import { supabase } from '../assets/auth.js';
+    import { APP_URL } from '../assets/config.js';
+
+    const state = document.querySelector('#state');
+    let finished = false;
+
+    function finish(session) {
+      if (finished || !session) return;
+      finished = true;
+      window.location.replace(`${APP_URL}/dashboard.html`);
+    }
+
+    try {
+      const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+        finish(session);
+      });
+
+      for (let attempt = 0; attempt < 20 && !finished; attempt += 1) {
+        const { data, error } = await supabase.auth.getSession();
+        if (error) throw error;
+        if (data.session) {
+          finish(data.session);
+          break;
+        }
+        await new Promise(resolve => setTimeout(resolve, 250));
+      }
+
+      if (!finished) {
+        listener.subscription.unsubscribe();
+        throw new Error('No se pudo completar la sesión. Vuelve al login e inténtalo otra vez.');
+      }
+    } catch (error) {
+      state.textContent = error.message;
+      state.style.color = '#ff9aaa';
+      setTimeout(() => window.location.replace(`${APP_URL}/login.html`), 4000);
+    }
+  </script>
+</body>
+</html>

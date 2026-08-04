@@ -16,3 +16,7 @@ Para el futuro subdominio beta:
 
 ## Proveedores
 Activa Google y GitHub en Supabase Dashboard > Authentication > Providers y coloca allí los Client ID/Secret. Los secretos nunca van en este repositorio.
+
+
+## Corrección OAuth
+Esta revisión usa el flujo OAuth implícito para hosting estático y evita el intercambio PKCE manual en callback.html.
