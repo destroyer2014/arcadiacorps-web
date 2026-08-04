@@ -1,1 +1,15 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ArcadiaCorps Web 2.0</title></head><body><script>location.replace('./login.html')</script></body></html>
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ArcadiaCorps Web 2.0</title>
+</head>
+<body>
+  <script type="module">
+    import { supabase } from './assets/auth.js';
+    const { data: { session } } = await supabase.auth.getSession();
+    window.location.replace(session ? './dashboard.html' : './login.html');
+  </script>
+</body>
+</html>

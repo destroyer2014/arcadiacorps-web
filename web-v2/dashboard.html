@@ -1,5 +1,96 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Panel — ArcadiaCorps</title><link rel="stylesheet" href="assets/styles.css"></head><body><main class="dashboard"><div class="brand"><div class="logo">A</div><div><h1>ArcadiaCorps Web 2.0</h1><p>Autenticación real</p></div></div><section class="card"><p class="status">● Sesión activa</p><div class="user-card"><div id="avatarFallback" class="avatar">U</div><img id="avatar" class="avatar" hidden alt="Avatar"><div><h2 id="name">Usuario</h2><div id="email" class="meta"></div><div id="provider" class="meta"></div></div></div><p class="sub" style="margin-top:22px">Este panel solo muestra información real de la sesión autenticada. Los demás módulos se añadirán cuando estén conectados.</p><button id="logout" class="logout">Cerrar sesión</button></section></main><script type="module">
-import { supabase, requireSession } from './assets/auth.js';import { APP_URL } from './assets/config.js';
-const session=await requireSession();if(session){const u=session.user;const meta=u.user_metadata||{};name.textContent=meta.full_name||meta.user_name||meta.name||'Usuario';email.textContent=u.email||'';provider.textContent=`Proveedor: ${u.app_metadata?.provider||'email'}`;const src=meta.avatar_url;if(src){avatar.src=src;avatar.hidden=false;avatarFallback.hidden=true}else avatarFallback.textContent=(name.textContent[0]||'U').toUpperCase();}
-logout.onclick=async()=>{await supabase.auth.signOut();location.replace(`${APP_URL}/login.html`)};
-</script></body></html>
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Panel — ArcadiaCorps</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <main class="dashboard">
+    <div class="brand">
+      <div class="logo">A</div>
+      <div><h1>ArcadiaCorps Web 2.0</h1><p>Autenticación real</p></div>
+    </div>
+
+    <section class="card">
+      <p class="status">● Sesión activa</p>
+      <div class="user-card">
+        <div id="avatarFallback" class="avatar">U</div>
+        <img id="avatar" class="avatar" hidden alt="">
+        <div>
+          <h2 id="userName">Usuario</h2>
+          <div id="userEmail" class="meta"></div>
+          <div id="userProvider" class="meta"></div>
+        </div>
+      </div>
+      <p class="sub" style="margin-top:22px">Este panel solo muestra información real de la sesión autenticada. Los demás módulos se añadirán cuando estén conectados.</p>
+      <button id="logoutBtn" class="logout" type="button">Cerrar sesión</button>
+      <div id="logoutMessage" class="message" role="alert"></div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { supabase, requireSession } from './assets/auth.js';
+    import { APP_URL } from './assets/config.js';
+
+    const userName = document.querySelector('#userName');
+    const userEmail = document.querySelector('#userEmail');
+    const userProvider = document.querySelector('#userProvider');
+    const avatar = document.querySelector('#avatar');
+    const avatarFallback = document.querySelector('#avatarFallback');
+    const logoutBtn = document.querySelector('#logoutBtn');
+    const logoutMessage = document.querySelector('#logoutMessage');
+
+    const session = await requireSession();
+
+    if (session) {
+      const user = session.user;
+      const metadata = user.user_metadata || {};
+      const displayName = metadata.full_name || metadata.user_name || metadata.preferred_username || metadata.name || user.email?.split('@')[0] || 'Usuario';
+
+      userName.textContent = displayName;
+      userEmail.textContent = user.email || 'Correo no disponible';
+      userProvider.textContent = `Proveedor: ${user.app_metadata?.provider || 'email'}`;
+      avatarFallback.textContent = (displayName[0] || 'U').toUpperCase();
+
+      const avatarUrl = metadata.avatar_url || metadata.picture;
+      if (avatarUrl) {
+        avatar.addEventListener('load', () => {
+          avatar.hidden = false;
+          avatarFallback.hidden = true;
+        }, { once: true });
+        avatar.addEventListener('error', () => {
+          avatar.hidden = true;
+          avatarFallback.hidden = false;
+        }, { once: true });
+        avatar.src = avatarUrl;
+      }
+    }
+
+    logoutBtn.addEventListener('click', async () => {
+      logoutBtn.disabled = true;
+      logoutBtn.textContent = 'Cerrando sesión…';
+      logoutMessage.className = 'message';
+      logoutMessage.textContent = '';
+
+      try {
+        const { error } = await supabase.auth.signOut({ scope: 'local' });
+        if (error) throw error;
+
+        // Limpia restos de sesión local del proyecto actual.
+        Object.keys(localStorage)
+          .filter(key => key.startsWith('sb-') && key.includes('auth-token'))
+          .forEach(key => localStorage.removeItem(key));
+
+        window.location.replace(`${APP_URL}/login.html?logout=1`);
+      } catch (error) {
+        logoutMessage.textContent = `No se pudo cerrar la sesión: ${error.message}`;
+        logoutMessage.className = 'message show error';
+        logoutBtn.disabled = false;
+        logoutBtn.textContent = 'Cerrar sesión';
+      }
+    });
+  </script>
+</body>
+</html>
