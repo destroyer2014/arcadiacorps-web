@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Mi perfil — ArcadiaCorps</title>
-  <link rel="stylesheet" href="assets/styles.css?v=12">
+  <link rel="stylesheet" href="assets/styles.css?v=13">
 </head>
 <body>
-  <main class="dashboard">
+  <main class="dashboard app-page">
     <div class="brand"><div class="logo">A</div><div><h1>Mi perfil</h1><p>Cuenta, identidad y seguridad</p></div></div>
 
     <div class="profile-grid">
@@ -84,9 +84,11 @@
 
   <script type="module">
     import { supabase, requireSession, signInWithProvider } from './assets/auth.js';
+    import { mountShell } from './assets/shell.js';
 
     const session = await requireSession();
     if (!session) throw new Error('No hay sesión');
+    await mountShell();
     let user = session.user;
     const metadata = user.user_metadata || {};
     let currentAvatarUrl = '';

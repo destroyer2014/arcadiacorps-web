@@ -1,96 +1,29 @@
 <!doctype html>
-<html lang="es">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Panel — ArcadiaCorps</title>
-  <link rel="stylesheet" href="assets/styles.css?v=12">
-</head>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Panel — ArcadiaCorps</title><link rel="stylesheet" href="assets/styles.css?v=13"></head>
 <body>
-  <main class="dashboard">
-    <div class="brand">
-      <div class="logo">A</div>
-      <div><h1>ArcadiaCorps Web 2.0</h1><p>Autenticación real</p></div>
-    </div>
-
-    <section class="card">
-      <p class="status">● Sesión activa</p>
-      <div class="user-card">
-        <div id="avatarFallback" class="avatar">U</div>
-        <img id="avatar" class="avatar" hidden alt="">
-        <div>
-          <h2 id="userName">Usuario</h2>
-          <div id="userEmail" class="meta"></div>
-          <div id="userProvider" class="meta"></div>
-        </div>
-      </div>
-      <p class="sub" style="margin-top:22px">Este panel solo muestra información real de la sesión autenticada. Los demás módulos se añadirán cuando estén conectados.</p>
-      <div class="row dashboard-actions"><a class="primary btn" href="profile.html">Mi perfil</a><button id="logoutBtn" class="logout" type="button">Cerrar sesión</button></div>
-      <div id="logoutMessage" class="message" role="alert"></div>
-    </section>
-  </main>
-
-  <script type="module">
-    import { supabase, requireSession } from './assets/auth.js';
-    import { APP_URL } from './assets/config.js';
-
-    const userName = document.querySelector('#userName');
-    const userEmail = document.querySelector('#userEmail');
-    const userProvider = document.querySelector('#userProvider');
-    const avatar = document.querySelector('#avatar');
-    const avatarFallback = document.querySelector('#avatarFallback');
-    const logoutBtn = document.querySelector('#logoutBtn');
-    const logoutMessage = document.querySelector('#logoutMessage');
-
-    const session = await requireSession();
-
-    if (session) {
-      const user = session.user;
-      const metadata = user.user_metadata || {};
-      const displayName = metadata.full_name || metadata.user_name || metadata.preferred_username || metadata.name || user.email?.split('@')[0] || 'Usuario';
-
-      userName.textContent = displayName;
-      userEmail.textContent = user.email || 'Correo no disponible';
-      userProvider.textContent = `Proveedor: ${user.app_metadata?.provider || 'email'}`;
-      avatarFallback.textContent = (displayName[0] || 'U').toUpperCase();
-
-      const avatarUrl = metadata.avatar_url || metadata.picture;
-      if (avatarUrl) {
-        avatar.addEventListener('load', () => {
-          avatar.hidden = false;
-          avatarFallback.hidden = true;
-        }, { once: true });
-        avatar.addEventListener('error', () => {
-          avatar.hidden = true;
-          avatarFallback.hidden = false;
-        }, { once: true });
-        avatar.src = avatarUrl;
-      }
-    }
-
-    logoutBtn.addEventListener('click', async () => {
-      logoutBtn.disabled = true;
-      logoutBtn.textContent = 'Cerrando sesión…';
-      logoutMessage.className = 'message';
-      logoutMessage.textContent = '';
-
-      try {
-        const { error } = await supabase.auth.signOut({ scope: 'local' });
-        if (error) throw error;
-
-        // Limpia restos de sesión local del proyecto actual.
-        Object.keys(localStorage)
-          .filter(key => key.startsWith('sb-') && key.includes('auth-token'))
-          .forEach(key => localStorage.removeItem(key));
-
-        window.location.replace(`${APP_URL}/login.html?logout=1`);
-      } catch (error) {
-        logoutMessage.textContent = `No se pudo cerrar la sesión: ${error.message}`;
-        logoutMessage.className = 'message show error';
-        logoutBtn.disabled = false;
-        logoutBtn.textContent = 'Cerrar sesión';
-      }
-    });
-  </script>
-</body>
-</html>
+<main class="dashboard app-page">
+  <div class="page-heading"><div><span class="eyebrow">Centro de control</span><h1 id="welcomeTitle">Bienvenido</h1><p>Tu sesión, perfil y permisos están conectados a datos reales.</p></div><span id="dashboardRole" class="role-pill">Usuario</span></div>
+  <section class="dashboard-grid">
+    <article class="panel account-overview">
+      <div class="user-card"><div id="avatarFallback" class="avatar">U</div><img id="avatar" class="avatar" hidden alt=""><div><h2 id="userName">Usuario</h2><div id="userEmail" class="meta"></div><div id="userProvider" class="meta"></div></div></div>
+      <div class="real-status"><span class="presence-dot"></span><strong>Sesión activa</strong><small>Protegida por Supabase Auth</small></div>
+    </article>
+    <article class="panel quick-panel"><h3 class="panel-title">Accesos</h3><a class="quick-link" href="profile.html"><span>◉</span><div><strong>Mi perfil</strong><small>Identidad, foto y seguridad</small></div><b>›</b></a><a id="adminShortcut" class="quick-link" href="admin-users.html" hidden><span>♛</span><div><strong>Usuarios y roles</strong><small>Solo Owner</small></div><b>›</b></a></article>
+  </section>
+</main>
+<script type="module">
+  import { getCurrentAccess, ROLE_LABELS } from './assets/access.js';
+  import { mountShell } from './assets/shell.js';
+  const access = await getCurrentAccess(); if (!access) throw new Error('No hay sesión'); await mountShell();
+  const { user, profile, role } = access;
+  const display = profile.full_name || profile.username || user.email?.split('@')[0] || 'Usuario';
+  document.querySelector('#welcomeTitle').textContent = `Hola, ${display}`;
+  document.querySelector('#userName').textContent = display;
+  document.querySelector('#userEmail').textContent = user.email || 'Correo no disponible';
+  document.querySelector('#userProvider').textContent = `Acceso: ${user.app_metadata?.provider || 'email'}`;
+  const badge = document.querySelector('#dashboardRole'); badge.textContent = ROLE_LABELS[role] || role; badge.classList.add(`role-${role}`);
+  const fallback = document.querySelector('#avatarFallback'); fallback.textContent = display[0].toUpperCase();
+  const avatarUrl = profile.avatar_url || user.user_metadata?.avatar_url || user.user_metadata?.picture;
+  if (avatarUrl) { const img=document.querySelector('#avatar'); img.onload=()=>{img.hidden=false;fallback.hidden=true}; img.onerror=()=>{img.hidden=true;fallback.hidden=false}; img.src=avatarUrl; }
+  if (role === 'owner') document.querySelector('#adminShortcut').hidden = false;
+</script></body></html>
