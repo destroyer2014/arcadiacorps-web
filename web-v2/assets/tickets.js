@@ -18,3 +18,13 @@ export async function signedUrls(paths=[]){
 }
 export const statusLabel={open:'Abierto',in_progress:'En proceso',waiting_user:'Esperando usuario',closed:'Cerrado'};
 export const priorityLabel={low:'Baja',normal:'Normal',high:'Alta',urgent:'Urgente'};
+
+export async function insertTicketMessage({ticket, authorId, body, attachments=[]}){
+  const modern={ticket_id:ticket.id,author_id:authorId,body,attachments};
+  const compatible={...modern,ticket_number:ticket.ticket_number,sender_id:authorId,message:body,is_internal:false};
+  let result=await supabase.from('ticket_messages').insert(compatible);
+  if(result.error && ['PGRST204','42703'].includes(String(result.error.code))){
+    result=await supabase.from('ticket_messages').insert(modern);
+  }
+  return result;
+}
