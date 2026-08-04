@@ -6,3 +6,9 @@
 .user-card h2, .user-card .meta { overflow-wrap: anywhere; }
 .avatar { flex: 0 0 auto; object-fit: cover; }
 button:disabled { opacity: .65; cursor: wait; }
+
+.wide-link{display:block;width:100%;margin-top:12px;text-align:center}
+.dashboard-actions{margin-top:22px;align-items:stretch}
+.dashboard-actions>*{flex:1;margin:0;text-align:center}
+small.meta{display:block;margin-top:8px;line-height:1.4}
+input[readonly]{opacity:.72;cursor:not-allowed}

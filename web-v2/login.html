@@ -1,53 +1,93 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Acceder — ArcadiaCorps</title><link rel="stylesheet" href="assets/styles.css"></head><body><main class="shell"><div class="brand"><div class="logo">A</div><div><h1>ArcadiaCorps</h1><p>Centro de control</p></div></div><section class="card"><h2>Iniciar sesión</h2><p class="sub">Accede con tu cuenta real. No se mostrarán datos de demostración.</p><form id="loginForm"><div class="field"><label for="email">Correo electrónico</label><input id="email" type="email" autocomplete="email" required></div><div class="field"><label for="password">Contraseña</label><input id="password" type="password" autocomplete="current-password" minlength="6" required></div><button class="primary" type="submit">Iniciar sesión</button></form><div class="divider">o continúa con</div><button class="oauth" id="googleBtn" type="button">G&nbsp;&nbsp;Continuar con Google</button><button class="oauth" id="githubBtn" type="button">◉&nbsp;&nbsp;Continuar con GitHub</button><div class="row" style="margin-top:14px"><button class="text-btn" id="registerBtn" type="button">Crear cuenta</button><a class="text-btn btn" href="../restablecer-clave.html">Olvidé mi contraseña</a></div><div id="message" class="message" role="alert"></div></section></main><script type="module">
-import { supabase, signInWithProvider, signInWithPassword, signUpWithPassword } from './assets/auth.js';
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Acceder — ArcadiaCorps</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <main class="shell">
+    <div class="brand"><div class="logo">A</div><div><h1>ArcadiaCorps</h1><p>Centro de control</p></div></div>
+    <section class="card">
+      <h2>Iniciar sesión</h2>
+      <p class="sub">Accede con tu cuenta real.</p>
+      <form id="loginForm">
+        <div class="field"><label for="email">Correo electrónico</label><input id="email" type="email" autocomplete="email" required></div>
+        <div class="field"><label for="password">Contraseña</label><input id="password" type="password" autocomplete="current-password" minlength="6" required></div>
+        <button class="primary" type="submit">Iniciar sesión</button>
+      </form>
+      <button class="text-btn wide-link" id="recoverBtn" type="button">¿Olvidaste tu contraseña?</button>
+      <div class="divider">o continúa con</div>
+      <button class="oauth" id="googleBtn" type="button">G&nbsp;&nbsp;Continuar con Google</button>
+      <button class="oauth" id="githubBtn" type="button">◉&nbsp;&nbsp;Continuar con GitHub</button>
+      <div class="row" style="margin-top:14px"><button class="text-btn" id="registerBtn" type="button">Crear cuenta</button></div>
+      <div id="message" class="message" role="alert"></div>
+    </section>
+  </main>
+  <script type="module">
+    import { supabase, signInWithProvider, signInWithPassword, signUpWithPassword, sendPasswordRecovery } from './assets/auth.js';
 
-const message = document.querySelector('#message');
-const emailInput = document.querySelector('#email');
-const passwordInput = document.querySelector('#password');
-const loginForm = document.querySelector('#loginForm');
-const googleBtn = document.querySelector('#googleBtn');
-const githubBtn = document.querySelector('#githubBtn');
-const registerBtn = document.querySelector('#registerBtn');
+    const message = document.querySelector('#message');
+    const emailInput = document.querySelector('#email');
+    const passwordInput = document.querySelector('#password');
+    const loginForm = document.querySelector('#loginForm');
+    const googleBtn = document.querySelector('#googleBtn');
+    const githubBtn = document.querySelector('#githubBtn');
+    const registerBtn = document.querySelector('#registerBtn');
+    const recoverBtn = document.querySelector('#recoverBtn');
 
-const show = (text, type = 'error') => {
-  message.textContent = text;
-  message.className = `message show ${type}`;
-};
+    const show = (text, type = 'error') => {
+      message.textContent = text;
+      message.className = `message show ${type}`;
+    };
 
-const params = new URLSearchParams(window.location.search);
-if (params.get('logout') === '1') show('Sesión cerrada correctamente.', 'ok');
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('logout') === '1') show('Sesión cerrada correctamente.', 'ok');
+    if (params.get('password') === 'updated') show('Contraseña actualizada. Ya puedes iniciar sesión.', 'ok');
 
-const { data: { session } } = await supabase.auth.getSession();
-if (session && params.get('logout') !== '1') window.location.replace('./dashboard.html');
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session && params.get('logout') !== '1') window.location.replace('./dashboard.html');
 
-googleBtn.addEventListener('click', async () => {
-  try { await signInWithProvider('google'); } catch (error) { show(error.message); }
-});
+    googleBtn.addEventListener('click', async () => {
+      try { await signInWithProvider('google'); } catch (error) { show(error.message); }
+    });
 
-githubBtn.addEventListener('click', async () => {
-  try { await signInWithProvider('github'); } catch (error) { show(error.message); }
-});
+    githubBtn.addEventListener('click', async () => {
+      try { await signInWithProvider('github'); } catch (error) { show(error.message); }
+    });
 
-loginForm.addEventListener('submit', async event => {
-  event.preventDefault();
-  try {
-    await signInWithPassword(emailInput.value.trim(), passwordInput.value);
-    window.location.replace('./dashboard.html');
-  } catch (error) {
-    show(error.message);
-  }
-});
+    loginForm.addEventListener('submit', async event => {
+      event.preventDefault();
+      try {
+        await signInWithPassword(emailInput.value.trim(), passwordInput.value);
+        window.location.replace('./dashboard.html');
+      } catch (error) { show(error.message); }
+    });
 
-registerBtn.addEventListener('click', async () => {
-  if (!emailInput.value || !passwordInput.value) {
-    show('Escribe correo y contraseña para crear la cuenta.');
-    return;
-  }
-  try {
-    await signUpWithPassword(emailInput.value.trim(), passwordInput.value);
-    show('Cuenta creada. Revisa tu correo para confirmarla.', 'ok');
-  } catch (error) {
-    show(error.message);
-  }
-});
-</script></body></html>
+    registerBtn.addEventListener('click', async () => {
+      if (!emailInput.value || !passwordInput.value) return show('Escribe correo y contraseña para crear la cuenta.');
+      try {
+        await signUpWithPassword(emailInput.value.trim(), passwordInput.value);
+        show('Cuenta creada. Revisa tu correo para confirmarla.', 'ok');
+      } catch (error) { show(error.message); }
+    });
+
+    recoverBtn.addEventListener('click', async () => {
+      const email = emailInput.value.trim();
+      if (!email) return show('Escribe primero el correo de tu cuenta.');
+      recoverBtn.disabled = true;
+      recoverBtn.textContent = 'Enviando enlace…';
+      try {
+        await sendPasswordRecovery(email);
+        show('Te enviamos un enlace para crear una contraseña nueva.', 'ok');
+      } catch (error) {
+        show(error.message);
+      } finally {
+        recoverBtn.disabled = false;
+        recoverBtn.textContent = '¿Olvidaste tu contraseña?';
+      }
+    });
+  </script>
+</body>
+</html>

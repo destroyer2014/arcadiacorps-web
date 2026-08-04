@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Mi perfil — ArcadiaCorps</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <main class="dashboard">
+    <div class="brand"><div class="logo">A</div><div><h1>Mi perfil</h1><p>Información real de tu cuenta</p></div></div>
+    <section class="card">
+      <div class="user-card">
+        <div id="avatarFallback" class="avatar">U</div>
+        <img id="avatar" class="avatar" hidden alt="Avatar del usuario">
+        <div><h2 id="headingName">Usuario</h2><div id="emailText" class="meta"></div><div id="providerText" class="meta"></div></div>
+      </div>
+      <form id="profileForm" style="margin-top:24px">
+        <div class="field"><label for="username">Nombre de usuario</label><input id="username" maxlength="32" pattern="[A-Za-z0-9_.-]{3,32}" required><small class="meta">3–32 caracteres: letras, números, punto, guion o guion bajo.</small></div>
+        <div class="field"><label for="fullName">Nombre visible</label><input id="fullName" maxlength="80"></div>
+        <div class="field"><label for="avatarUrl">URL del avatar</label><input id="avatarUrl" type="url" placeholder="https://..."></div>
+        <div class="field"><label>Rol</label><input id="role" readonly></div>
+        <div class="field"><label>Registro</label><input id="createdAt" readonly></div>
+        <button id="saveBtn" class="primary" type="submit">Guardar perfil</button>
+      </form>
+      <div id="message" class="message" role="alert"></div>
+      <div class="row" style="margin-top:18px"><a class="text-btn btn" href="dashboard.html">Volver al panel</a></div>
+    </section>
+  </main>
+  <script type="module">
+    import { supabase, requireSession } from './assets/auth.js';
+
+    const session = await requireSession();
+    if (!session) throw new Error('No hay sesión');
+    const user = session.user;
+    const metadata = user.user_metadata || {};
+
+    const form = document.querySelector('#profileForm');
+    const username = document.querySelector('#username');
+    const fullName = document.querySelector('#fullName');
+    const avatarUrl = document.querySelector('#avatarUrl');
+    const role = document.querySelector('#role');
+    const createdAt = document.querySelector('#createdAt');
+    const headingName = document.querySelector('#headingName');
+    const emailText = document.querySelector('#emailText');
+    const providerText = document.querySelector('#providerText');
+    const avatar = document.querySelector('#avatar');
+    const avatarFallback = document.querySelector('#avatarFallback');
+    const saveBtn = document.querySelector('#saveBtn');
+    const message = document.querySelector('#message');
+
+    const show = (text, type = 'error') => {
+      message.textContent = text;
+      message.className = `message show ${type}`;
+    };
+
+    const fallbackUsername = (metadata.user_name || metadata.preferred_username || user.email?.split('@')[0] || `user_${user.id.slice(0, 8)}`)
+      .replace(/[^A-Za-z0-9_.-]/g, '_').slice(0, 32);
+
+    const defaultProfile = {
+      id: user.id,
+      username: fallbackUsername.length >= 3 ? fallbackUsername : `user_${user.id.slice(0, 8)}`,
+      full_name: metadata.full_name || metadata.name || '',
+      avatar_url: metadata.avatar_url || metadata.picture || '',
+      role: 'user'
+    };
+
+    let { data: profile, error } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
+    if (error) show(`Falta configurar la tabla de perfiles: ${error.message}`);
+    if (!profile && !error) {
+      const inserted = await supabase.from('profiles').upsert(defaultProfile).select().single();
+      profile = inserted.data;
+      if (inserted.error) show(inserted.error.message);
+    }
+    profile ||= defaultProfile;
+
+    username.value = profile.username || defaultProfile.username;
+    fullName.value = profile.full_name || '';
+    avatarUrl.value = profile.avatar_url || '';
+    role.value = profile.role || 'user';
+    createdAt.value = new Date(profile.created_at || user.created_at).toLocaleString('es-PE');
+    emailText.textContent = user.email || 'Correo no disponible';
+    providerText.textContent = `Proveedor: ${user.app_metadata?.provider || 'email'}`;
+
+    const refreshIdentity = () => {
+      const display = fullName.value.trim() || username.value.trim() || 'Usuario';
+      headingName.textContent = display;
+      avatarFallback.textContent = display[0].toUpperCase();
+      const url = avatarUrl.value.trim();
+      if (url) {
+        avatar.onload = () => { avatar.hidden = false; avatarFallback.hidden = true; };
+        avatar.onerror = () => { avatar.hidden = true; avatarFallback.hidden = false; };
+        avatar.src = url;
+      } else {
+        avatar.hidden = true;
+        avatarFallback.hidden = false;
+      }
+    };
+    refreshIdentity();
+    fullName.addEventListener('input', refreshIdentity);
+    username.addEventListener('input', refreshIdentity);
+    avatarUrl.addEventListener('change', refreshIdentity);
+
+    form.addEventListener('submit', async event => {
+      event.preventDefault();
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Guardando…';
+      try {
+        const payload = {
+          id: user.id,
+          username: username.value.trim(),
+          full_name: fullName.value.trim() || null,
+          avatar_url: avatarUrl.value.trim() || null,
+          updated_at: new Date().toISOString()
+        };
+        const { error: profileError } = await supabase.from('profiles').upsert(payload);
+        if (profileError) throw profileError;
+        const { error: authError } = await supabase.auth.updateUser({ data: { full_name: payload.full_name, avatar_url: payload.avatar_url, user_name: payload.username } });
+        if (authError) throw authError;
+        show('Perfil actualizado correctamente.', 'ok');
+        refreshIdentity();
+      } catch (saveError) {
+        show(saveError.message);
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Guardar perfil';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,22 +1,16 @@
-# ArcadiaCorps Web 2.0 — Autenticación real
+# ArcadiaCorps Web 2.0
 
-Primera base limpia. Incluye inicio de sesión real por correo, Google y GitHub mediante Supabase Auth, callback PKCE, sesión persistente, dashboard protegido y cierre de sesión.
+Base funcional sin datos de demostración.
 
-No incluye publicaciones, noticias, subbots ni estadísticas ficticias.
+Incluye:
+- correo y contraseña;
+- Google OAuth;
+- GitHub OAuth;
+- recuperación y cambio de contraseña;
+- dashboard protegido;
+- cierre de sesión;
+- perfil real guardado en `public.profiles`.
 
-## URLs que deben registrarse en Supabase Auth
-
-Para probar dentro del dominio principal:
-- https://arcadiacorps.online/web-v2/auth/callback.html
-- https://arcadiacorps.online/web-v2/**
-
-Para el futuro subdominio beta:
-- https://beta.arcadiacorps.online/auth/callback.html
-- https://beta.arcadiacorps.online/**
-
-## Proveedores
-Activa Google y GitHub en Supabase Dashboard > Authentication > Providers y coloca allí los Client ID/Secret. Los secretos nunca van en este repositorio.
-
-
-## Corrección OAuth
-Esta revisión usa el flujo OAuth implícito para hosting estático y evita el intercambio PKCE manual en callback.html.
+## Configuración pendiente en Supabase
+1. Authentication > URL Configuration: permitir `https://arcadiacorps.online/web-v2/update-password.html`.
+2. Ejecutar `web-v2/supabase/profiles-v2.sql` una vez desde SQL Editor.
