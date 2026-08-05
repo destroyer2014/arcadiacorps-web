@@ -28,9 +28,19 @@ const esc = (value = '') => String(value).replace(/[&<>"']/g, (char) => ({
 const currentUsername = () => profile?.username || profile?.full_name || user.user_metadata?.user_name || user.user_metadata?.name || user.email?.split('@')[0] || 'Usuario';
 const nameOf = (p, fallback = '') => p?.username || p?.full_name || fallback || 'Usuario';
 const postText = (post) => String(post?.body ?? post?.content ?? '');
-const avatar = (p, cls = 'social-avatar') => p?.avatar_url
-  ? `<img class="${cls}" src="${esc(p.avatar_url)}" alt="">`
-  : `<div class="${cls} fallback">${esc(nameOf(p).slice(0, 1).toUpperCase())}</div>`;
+const commentText = (comment) => String(comment?.body ?? comment?.content ?? '');
+const avatarUrl = (p) => {
+  const raw = p?.avatar_url || (p?.id === user.id ? (user.user_metadata?.avatar_url || user.user_metadata?.picture || '') : '');
+  if (!raw) return '';
+  if (/^(https?:|data:|blob:)/i.test(raw)) return raw;
+  return supabase.storage.from('avatars').getPublicUrl(String(raw).replace(/^\/+/, '')).data?.publicUrl || '';
+};
+const avatar = (p, cls = 'social-avatar') => {
+  const url = avatarUrl(p);
+  return url
+    ? `<img class="${cls}" src="${esc(url)}" alt="" loading="lazy" onerror="this.outerHTML='<div class=&quot;${cls} fallback&quot;>${esc(nameOf(p).slice(0, 1).toUpperCase())}</div>'">`
+    : `<div class="${cls} fallback">${esc(nameOf(p).slice(0, 1).toUpperCase())}</div>`;
+};
 const badge = (r) => r === 'owner'
   ? '<span class="social-role owner">🛡 Owner</span>'
   : r === 'staff'
@@ -284,7 +294,7 @@ async function postCard(post, likeCount, comments) {
     <div class="post-actions"><button class="like ${state.liked.has(post.id) ? 'active' : ''}" type="button">♥ <span>${likeCount}</span></button><button class="comments-toggle" type="button">💬 <span>${comments.length}</span></button><button type="button" class="share">↗</button><button type="button" class="save">◌</button></div>
     <div class="comments-list">${comments.map((comment) => {
       const cp = state.profiles.get(comment.user_id);
-      return `<div class="social-comment">${avatar(cp, 'comment-avatar')}<p><strong>${esc(nameOf(cp))} ${badge(cp?.role)}</strong> ${esc(comment.body)}<small>${formatDate(comment.created_at)}</small></p></div>`;
+      return `<div class="social-comment">${avatar(cp, 'comment-avatar')}<p><strong>${esc(nameOf(cp))} ${badge(cp?.role)}</strong> ${esc(commentText(comment))}<small>${formatDate(comment.created_at)}</small></p></div>`;
     }).join('')}</div>
     <form class="comment-form"><input maxlength="800" placeholder="Escribe un comentario…" required><button type="submit">➤</button></form>
     ${canManage ? `<div class="post-admin"><button data-act="feature" type="button">${post.is_featured ? 'Quitar destacada' : '⭐ Destacar'}</button><button data-act="delete" class="danger-btn" type="button">Eliminar</button></div>` : ''}
@@ -316,7 +326,14 @@ async function addComment(event, id) {
   const input = event.currentTarget.querySelector('input');
   const body = input.value.trim();
   if (!body) return;
-  const { error } = await supabase.from('social_comments').insert({ post_id: id, user_id: user.id, body });
+  const username = currentUsername();
+  const { error } = await supabase.from('social_comments').insert({
+    post_id: id,
+    user_id: user.id,
+    username,
+    content: body,
+    body,
+  });
   if (error) return show(error.message);
   input.value = '';
   await loadPosts();
