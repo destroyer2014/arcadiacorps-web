@@ -40,6 +40,7 @@ export async function mountShell() {
           <a class="${active('profile.html')}" href="${APP_URL}/profile.html">◉ <span>Mi perfil</span></a>
           <a class="${active('news.html') || active('news-detail.html') || active('news-editor.html')}" href="${APP_URL}/news.html">▤ <span>Noticias</span></a>
           <a class="${active('social.html')}" href="${APP_URL}/social.html">◎ <span>Social</span></a>
+          <a class="${active('chat.html')}" href="${APP_URL}/chat.html">✉ <span>Chat</span></a>
           <a class="${active('tickets.html') || active('ticket-new.html') || active('ticket-detail.html')}" href="${APP_URL}/tickets.html">🎫 <span>Mis tickets</span></a>
           <a class="${active('store.html')}" href="${APP_URL}/store.html">🛍 <span>Tienda</span></a>
           <a class="${active('purchases.html')}" href="${APP_URL}/purchases.html">🧾 <span>Mis compras</span></a>
