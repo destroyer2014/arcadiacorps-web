@@ -1,4 +1,4 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Nuevo ticket — ArcadiaCorps</title><link rel="stylesheet" href="assets/styles.css?v=23"></head><body><main class="dashboard app-page ticket-page"><a class="back-link ticket-back ticket-back-standalone" href="dashboard.html">← Volver al panel</a><div class="page-heading ticket-heading"><div><span class="eyebrow">Soporte</span><h1>Abrir ticket</h1><p>Describe el problema y adjunta imágenes si ayudan a explicarlo.</p></div></div><form id="form" class="panel ticket-form"><div class="field"><label>Asunto</label><input id="subject" maxlength="140" required></div><div class="row"><div class="field"><label>Categoría</label><select id="category"><option>Cuenta</option><option>Compra</option><option>Premium</option><option>Subbot</option><option>Error técnico</option><option>Otro</option></select></div><div class="field"><label>Prioridad</label><select id="priority"><option value="normal">Normal</option><option value="low">Baja</option><option value="high">Alta</option><option value="urgent">Urgente</option></select></div></div><div class="field"><label>Descripción</label><textarea id="body" required maxlength="5000"></textarea></div><div class="image-picker"><strong>Imágenes opcionales</strong><small class="hint">JPG, PNG, WEBP o GIF. Máximo 5 MB por imagen.</small><input id="images" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple><div id="previews" class="image-previews"></div></div><div id="msg" class="message"></div><button class="primary" type="submit">Crear ticket</button></form></main><script type="module">
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Nuevo ticket — ArcadiaCorps</title><link rel="stylesheet" href="assets/styles.css?v=20"></head><body><main class="dashboard app-page ticket-page"><a class="back-link ticket-back ticket-back-standalone" href="dashboard.html">← Volver al panel</a><div class="page-heading ticket-heading"><div><span class="eyebrow">Soporte</span><h1>Abrir ticket</h1><p>Describe el problema y adjunta imágenes si ayudan a explicarlo.</p></div></div><form id="form" class="panel ticket-form"><div class="field"><label>Asunto</label><input id="subject" maxlength="140" required></div><div class="row"><div class="field"><label>Categoría</label><select id="category"><option>Cuenta</option><option>Compra</option><option>Premium</option><option>Subbot</option><option>Error técnico</option><option>Otro</option></select></div><div class="field"><label>Prioridad</label><select id="priority"><option value="normal">Normal</option><option value="low">Baja</option><option value="high">Alta</option><option value="urgent">Urgente</option></select></div></div><div class="field"><label>Descripción</label><textarea id="body" required maxlength="5000"></textarea></div><div class="image-picker"><strong>Imágenes opcionales</strong><small class="hint">JPG, PNG, WEBP o GIF. Máximo 5 MB por imagen.</small><input id="images" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple><div id="previews" class="image-previews"></div></div><div id="msg" class="message"></div><button class="primary" type="submit">Crear ticket</button></form></main><script type="module">
 import { supabase } from './assets/auth.js';
 import { mountShell } from './assets/shell.js';
 import { getCurrentAccess } from './assets/access.js';
@@ -87,38 +87,13 @@ form.addEventListener('submit', async (event) => {
       }
     }
 
-    // Algunas instalaciones antiguas crean automáticamente el primer mensaje
-    // desde un trigger. Reutilizamos ese registro para no duplicar la descripción.
-    const { data: initialMessages, error: initialLookupError } = await supabase
-      .from('ticket_messages')
-      .select('*')
-      .eq('ticket_id', ticket.id)
-      .order('created_at', { ascending: true })
-      .limit(5);
-    if (initialLookupError) throw initialLookupError;
-
-    const existingInitial = (initialMessages || []).find((row) =>
-      String(row.author_id || row.sender_id || '') === String(access.user.id) &&
-      String(row.body || row.message || '').trim() === description
-    );
-
-    if (existingInitial) {
-      if (paths.length) {
-        const { error: attachmentError } = await supabase
-          .from('ticket_messages')
-          .update({ attachments: paths })
-          .eq('id', existingInitial.id);
-        if (attachmentError) throw attachmentError;
-      }
-    } else {
-      const { error: messageError } = await insertTicketMessage({
-        ticket,
-        authorId: access.user.id,
-        body: description,
-        attachments: paths
-      });
-      if (messageError) throw messageError;
-    }
+    const { error: messageError } = await insertTicketMessage({
+      ticket,
+      authorId: access.user.id,
+      body: description,
+      attachments: paths
+    });
+    if (messageError) throw messageError;
 
     const { data: verified, error: verifyError } = await supabase
       .from('tickets')

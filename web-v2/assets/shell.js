@@ -40,6 +40,7 @@ export async function mountShell() {
           <a class="${active('profile.html')}" href="${APP_URL}/profile.html">◉ <span>Mi perfil</span></a>
           <a class="${active('news.html') || active('news-detail.html') || active('news-editor.html')}" href="${APP_URL}/news.html">▤ <span>Noticias</span></a>
           <a class="${active('tickets.html') || active('ticket-new.html') || active('ticket-detail.html')}" href="${APP_URL}/tickets.html">🎫 <span>Mis tickets</span></a>
+          <a class="${active('store.html')}" href="${APP_URL}/store.html">🛍 <span>Tienda</span></a>
           <a class="${active('purchases.html')}" href="${APP_URL}/purchases.html">🧾 <span>Mis compras</span></a>
         </details>
         ${['owner','staff'].includes(role) ? `<details open><summary>Soporte <span>⌄</span></summary><a class="${active('support-tickets.html')}" href="${APP_URL}/support-tickets.html">🛡 <span>Atender tickets</span></a></details>` : ''}
