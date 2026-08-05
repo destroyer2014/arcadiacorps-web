@@ -1,63 +1,14 @@
 <!doctype html>
-<html lang="es">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Chat — ArcadiaCorps</title>
-  <link rel="stylesheet" href="assets/styles.css?v=28">
-</head>
-<body>
-  <main class="dashboard chat-page">
-    <section class="chat-shell panel">
-      <aside class="chat-sidebar">
-        <header class="chat-sidebar-head">
-          <div><span class="eyebrow">MENSAJERÍA</span><h1>Chat</h1></div>
-          <button id="newChatBtn" class="icon-button" type="button" title="Nueva conversación">＋</button>
-        </header>
-        <div class="chat-tabs" role="tablist">
-          <button class="active" data-tab="conversations" type="button">Conversaciones <span id="unreadTotal">0</span></button>
-          <button data-tab="people" type="button">Usuarios</button>
-        </div>
-        <label class="chat-search"><span>⌕</span><input id="chatSearch" type="search" placeholder="Buscar conversaciones o usuarios"></label>
-        <div id="conversationList" class="chat-list"><div class="chat-list-empty">Cargando…</div></div>
-        <div id="peopleList" class="chat-list" hidden></div>
-      </aside>
-
-      <section class="chat-main">
-        <div id="chatEmpty" class="chat-empty-state">
-          <div class="chat-empty-icon">✦</div>
-          <h2>Tus conversaciones</h2>
-          <p>Selecciona una conversación o busca a alguien para comenzar.</p>
-          <button id="emptyNewChat" class="primary" type="button">Nuevo mensaje</button>
-        </div>
-
-        <div id="chatRoom" class="chat-room" hidden>
-          <header class="chat-room-head">
-            <button id="chatBack" class="chat-mobile-back" type="button">←</button>
-            <div id="roomAvatar" class="chat-avatar fallback">U</div>
-            <div class="chat-room-person"><strong id="roomName">Usuario</strong><span id="roomRole"></span><small id="roomStatus">Disponible</small></div>
-            <button id="blockBtn" class="chat-head-action" type="button">Bloquear</button>
-          </header>
-          <div id="chatNotice" class="message"></div>
-          <div id="messageList" class="message-list"></div>
-          <form id="messageForm" class="message-composer">
-            <label class="attach-button" title="Adjuntar imagen">📎<input id="messageImage" type="file" accept="image/jpeg,image/png,image/webp,image/gif"></label>
-            <div class="composer-field"><textarea id="messageBody" rows="1" maxlength="3000" placeholder="Escribe un mensaje…"></textarea><div id="messagePreview" class="message-preview"></div></div>
-            <button id="sendMessage" class="send-message" type="submit">➤</button>
-          </form>
-        </div>
-      </section>
-    </section>
-  </main>
-
-  <div id="newChatModal" class="social-modal" aria-hidden="true">
-    <div class="social-modal-card chat-new-modal">
-      <header><h2>Nuevo mensaje</h2><button class="modal-close" id="closeNewChat" type="button">×</button></header>
-      <label class="chat-search"><span>⌕</span><input id="newChatSearch" type="search" placeholder="Buscar por nombre o usuario"></label>
-      <div id="newChatPeople" class="chat-list"></div>
-    </div>
-  </div>
-
-  <script type="module" src="assets/chat.js?v=28"></script>
-</body>
-</html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Chat — ArcadiaCorps</title><link rel="stylesheet" href="assets/styles.css?v=29"></head>
+<body><main class="dashboard chat-page chat-v29"><section class="chat-shell panel">
+<aside class="chat-sidebar"><header class="chat-sidebar-head"><div><span class="eyebrow">💬 MENSAJERÍA</span><h1>Chats</h1></div><button id="newChatBtn" class="icon-button" type="button">＋</button></header>
+<div class="chat-tabs"><button class="active" data-tab="conversations" type="button">◷ Conversaciones <span id="unreadTotal">0</span></button><button data-tab="people" type="button">👥 Amigos</button></div>
+<label class="chat-search"><span>⌕</span><input id="chatSearch" type="search" placeholder="Buscar..."></label><div id="conversationList" class="chat-list"><div class="chat-list-empty">Cargando…</div></div><div id="peopleList" class="chat-list" hidden></div></aside>
+<section class="chat-main"><div id="chatEmpty" class="chat-empty-state"><div class="chat-empty-icon">✦</div><h2>Tus conversaciones</h2><p>Selecciona una conversación o crea un grupo.</p><div class="chat-empty-actions"><button id="emptyNewChat" class="primary" type="button">Nuevo mensaje</button><button id="newGroupBtn" class="secondary" type="button">Crear grupo</button></div></div>
+<div id="chatRoom" class="chat-room" hidden><header class="chat-room-head"><button id="chatBack" class="chat-mobile-back" type="button">←</button><div id="roomAvatar" class="chat-avatar fallback">U</div><div class="chat-room-person"><strong id="roomName">Usuario</strong><span id="roomRole"></span><small id="roomStatus">Disponible</small></div><button id="groupInfoBtn" class="chat-head-action" type="button" hidden>Grupo</button><button id="blockBtn" class="chat-head-action" type="button">Bloquear</button></header>
+<div id="chatNotice" class="message"></div><div id="replyPreview" class="reply-preview" hidden><div><strong>Respondiendo a</strong><span id="replyText"></span></div><button id="cancelReply" type="button">×</button></div><div id="messageList" class="message-list"></div>
+<div id="emojiPanel" class="emoji-panel" hidden></div><form id="messageForm" class="message-composer"><label class="attach-button">📎<input id="messageImage" type="file" accept="image/jpeg,image/png,image/webp,image/gif"></label><button id="emojiBtn" class="emoji-button" type="button">😊</button><div class="composer-field"><textarea id="messageBody" rows="1" maxlength="3000" placeholder="Escribe un mensaje…"></textarea><div id="messagePreview" class="message-preview"></div></div><button id="sendMessage" class="send-message" type="submit">➤</button></form></div></section></section></main>
+<div id="newChatModal" class="social-modal" aria-hidden="true"><div class="social-modal-card chat-new-modal"><header><h2>Nuevo mensaje</h2><button class="modal-close" id="closeNewChat" type="button">×</button></header><label class="chat-search"><span>⌕</span><input id="newChatSearch" type="search" placeholder="Buscar por nombre o usuario"></label><div id="newChatPeople" class="chat-list"></div></div></div>
+<div id="groupModal" class="social-modal" aria-hidden="true"><div class="social-modal-card chat-group-modal"><header><h2 id="groupModalTitle">Crear grupo</h2><button class="modal-close" data-close-group type="button">×</button></header><form id="groupForm"><input id="groupName" maxlength="80" placeholder="Nombre del grupo" required><textarea id="groupDescription" maxlength="300" placeholder="Descripción"></textarea><label>Imagen del grupo<input id="groupImage" type="file" accept="image/jpeg,image/png,image/webp"></label><div id="groupMemberPicker" class="group-member-picker"></div><button class="primary" type="submit">Guardar grupo</button></form></div></div>
+<div id="groupInfoModal" class="social-modal" aria-hidden="true"><div class="social-modal-card chat-group-info"><header><h2>Información del grupo</h2><button class="modal-close" data-close-info type="button">×</button></header><div id="groupInfoContent"></div></div></div>
+<script type="module" src="assets/chat.js?v=29"></script></body></html>
