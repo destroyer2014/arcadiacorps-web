@@ -1,48 +1,33 @@
 import { mountShell } from './shell.js';
 import { getCurrentAccess } from './access.js';
-
-const access = await getCurrentAccess();
-if (!access) throw new Error('Sin sesión');
-await mountShell();
-
-const phone = '51972564492';
-const products = [
-  {id:'netflix',name:'Netflix Premium 1 Pantalla',category:'streaming',label:'Streaming',price:15,old:20,badge:'-25%',logo:'netflix.svg',rating:'4.9',sales:'+120 ventas',featured:true},
-  {id:'hbo',name:'HBO Max Premium',category:'streaming',label:'Streaming',price:14,old:18,badge:'Agotado',logo:'hbo-max.svg',rating:'4.8',sales:'+70 ventas',soldout:true,featured:true},
-  {id:'prime',name:'Prime Video',category:'streaming',label:'Streaming',price:12,old:14,badge:'-25%',logo:'prime-video.svg',rating:'4.9',sales:'+120 ventas',featured:true},
-  {id:'disney',name:'Disney+ Premium',category:'streaming',label:'Streaming',price:16,old:22,badge:'-27%',logo:'disney-plus.svg',rating:'4.9',sales:'+120 ventas'},
-  {id:'crunchy',name:'Crunchyroll Mega Fan',category:'streaming',label:'Streaming',price:11,old:15,badge:'Nuevo',logo:'crunchyroll.svg',rating:'4.8',sales:'+40 ventas'},
-  {id:'spotify',name:'Spotify Premium Individual',category:'musica',label:'Música',price:10,old:14,badge:'-29%',logo:'spotify.svg',rating:'4.9',sales:'+120 ventas'},
-  {id:'canva',name:'Canva Pro',category:'software',label:'Software',price:18,old:25,badge:'-28%',logo:'canva.svg',rating:'4.9',sales:'+100 ventas',featured:true},
-  {id:'duolingo',name:'Duolingo Super',category:'educacion',label:'Educación',price:18,old:22,badge:'-20%',logo:'duolingo.svg',rating:'4.8',sales:'+54 ventas'},
-  {id:'dyver',name:'Cuenta Dyver',category:'servicios',label:'Servicios',price:20,old:30,badge:'Digital',logo:'dyver.svg',rating:'4.9',sales:'+120 ventas'}
+import { supabase } from './auth.js';
+const access=await getCurrentAccess(); if(!access) throw new Error('Sin sesión'); await mountShell();
+const PHONE='51917611323';
+const fallback=[
+{id:'netflix',name:'Netflix Premium 1 Pantalla',category:'streaming',label:'Streaming',price:15,old_price:20,badge:'-25%',logo_url:'assets/logos/netflix.svg',rating:'4.9',sales_text:'+120 ventas',featured:true,active:true},
+{id:'hbo',name:'HBO Max Premium',category:'streaming',label:'Streaming',price:14,old_price:18,badge:'Popular',logo_url:'assets/logos/hbo-max.svg',rating:'4.8',sales_text:'+70 ventas',featured:true,active:true},
+{id:'prime',name:'Prime Video',category:'streaming',label:'Streaming',price:12,old_price:14,badge:'-14%',logo_url:'assets/logos/prime-video.svg',rating:'4.9',sales_text:'+120 ventas',featured:true,active:true},
+{id:'disney',name:'Disney+ Premium',category:'streaming',label:'Streaming',price:16,old_price:22,badge:'-27%',logo_url:'assets/logos/disney-plus.svg',rating:'4.9',sales_text:'+120 ventas',active:true},
+{id:'crunchy',name:'Crunchyroll Mega Fan',category:'streaming',label:'Streaming',price:11,old_price:15,badge:'Nuevo',logo_url:'assets/logos/crunchyroll.svg',rating:'4.8',sales_text:'+40 ventas',active:true},
+{id:'spotify',name:'Spotify Premium Individual',category:'musica',label:'Música',price:10,old_price:14,badge:'-29%',logo_url:'assets/logos/spotify.svg',rating:'4.9',sales_text:'+120 ventas',active:true},
+{id:'canva',name:'Canva Pro',category:'software',label:'Software',price:18,old_price:25,badge:'-28%',logo_url:'assets/logos/canva.svg',rating:'4.9',sales_text:'+100 ventas',featured:true,active:true},
+{id:'duolingo',name:'Duolingo Super',category:'educacion',label:'Educación',price:18,old_price:22,badge:'-20%',logo_url:'assets/logos/duolingo.svg',rating:'4.8',sales_text:'+54 ventas',active:true},
+{id:'dyver',name:'Cuenta Dyver',category:'servicios',label:'Servicios',price:20,old_price:30,badge:'Digital',logo_url:'assets/logos/dyver.svg',rating:'4.9',sales_text:'+120 ventas',active:true}
 ];
-const order = ['streaming','musica','software','educacion','servicios'];
-const labels = {streaming:'Streaming',musica:'Música',software:'Software',educacion:'Educación',servicios:'Servicios'};
-let filter='all', query='';
-const featured=document.querySelector('#featured');
-const sections=document.querySelector('#categorySections');
-const empty=document.querySelector('#storeEmpty');
-
-function card(p){
- const text=encodeURIComponent(`Hola, quiero ${p.soldout?'consultar stock de':'comprar'} ${p.name}`);
- return `<article class="product-card${p.soldout?' soldout':''}" data-name="${p.name.toLowerCase()}" data-category="${p.category}">
-  <span class="product-badge">${p.badge}</span><button class="product-fav" type="button" aria-label="Favorito">♡</button>
-  <div class="product-logo"><img src="assets/logos/${p.logo}" alt="${p.name}" loading="lazy"></div>
-  <span class="product-category">${p.label}</span><h3>${p.name}</h3>
-  <div class="product-rating">★ ${p.rating} <span>${p.sales}</span></div>
-  <div class="product-price"><strong>S/ ${p.price.toFixed(2)}</strong><del>S/ ${p.old.toFixed(2)}</del></div>
-  <a class="btn ${p.soldout?'secondary':'primary'} product-buy" target="_blank" rel="noopener" href="https://wa.me/${phone}?text=${text}">${p.soldout?'Consultar stock':'Comprar ahora'}</a>
- </article>`;
-}
-featured.innerHTML=products.filter(p=>p.featured).map(card).join('');
-function render(){
- const list=products.filter(p=>(filter==='all'||p.category===filter)&&(!query||p.name.toLowerCase().includes(query)||p.label.toLowerCase().includes(query)));
- sections.innerHTML=order.map(cat=>{const items=list.filter(p=>p.category===cat);if(!items.length)return'';return `<section class="category-block"><div class="category-title"><h3>${labels[cat]}</h3><div class="carousel-buttons"><button data-target="row-${cat}" data-dir="-1">‹</button><button data-target="row-${cat}" data-dir="1">›</button></div></div><div class="product-carousel" id="row-${cat}">${items.map(card).join('')}</div></section>`}).join('');
- empty.hidden=!!list.length;
-}
-render();
-document.querySelector('#storeTabs').addEventListener('click',e=>{const b=e.target.closest('button[data-filter]');if(!b)return;filter=b.dataset.filter;document.querySelectorAll('#storeTabs button').forEach(x=>x.classList.toggle('active',x===b));render();});
-document.querySelector('#storeSearch').addEventListener('input',e=>{query=e.target.value.trim().toLowerCase();render();});
-document.addEventListener('click',e=>{const b=e.target.closest('[data-scroll],[data-target]');if(!b)return;const el=document.getElementById(b.dataset.scroll||b.dataset.target);el?.scrollBy({left:Number(b.dataset.dir)*Math.max(280,el.clientWidth*.75),behavior:'smooth'});});
-document.addEventListener('click',e=>{const b=e.target.closest('.product-fav');if(!b)return;b.classList.toggle('active');b.textContent=b.classList.contains('active')?'♥':'♡';});
+let products=fallback;
+try{const {data,error}=await supabase.from('store_products').select('*').eq('active',true).order('sort_order');if(!error&&data?.length)products=data;}catch{}
+const order=['streaming','musica','software','educacion','servicios']; const labels={streaming:'Streaming',musica:'Música',software:'Software',educacion:'Educación',servicios:'Servicios'};
+let filter='all',query=''; let cart=JSON.parse(localStorage.getItem('arcadia_cart_v25')||'[]');
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=n=>`S/ ${Number(n||0).toFixed(2)}`;
+function card(p){return `<article class="product-card${p.sold_out?' soldout':''}"><span class="product-badge">${esc(p.badge||p.label||'Digital')}</span><button class="product-fav" type="button">♡</button><div class="product-logo"><img src="${esc(p.logo_url||'')}" alt="${esc(p.name)}" loading="lazy"></div><span class="product-category">${esc(p.label||labels[p.category]||p.category)}</span><h3>${esc(p.name)}</h3><div class="product-rating">★ ${esc(p.rating||'4.9')} <span>${esc(p.sales_text||'')}</span></div><div class="product-price"><strong>${money(p.price)}</strong>${p.old_price?`<del>${money(p.old_price)}</del>`:''}</div><button class="btn ${p.sold_out?'secondary':'primary'} product-buy" data-add="${esc(p.id)}" ${p.sold_out?'disabled':''}>${p.sold_out?'Sin stock':'Añadir al carrito'}</button></article>`}
+function render(){const list=products.filter(p=>(filter==='all'||p.category===filter)&&(!query||`${p.name} ${p.label||''}`.toLowerCase().includes(query)));document.querySelector('#featured').innerHTML=products.filter(p=>p.featured).map(card).join('');document.querySelector('#categorySections').innerHTML=order.map(cat=>{const items=list.filter(p=>p.category===cat);return items.length?`<section class="category-block"><div class="category-title"><h3>${labels[cat]}</h3><div class="carousel-buttons"><button data-target="row-${cat}" data-dir="-1">‹</button><button data-target="row-${cat}" data-dir="1">›</button></div></div><div class="product-carousel" id="row-${cat}">${items.map(card).join('')}</div></section>`:''}).join('');document.querySelector('#storeEmpty').hidden=!!list.length;}
+function saveCart(){localStorage.setItem('arcadia_cart_v25',JSON.stringify(cart));renderCart();}
+function renderCart(){const items=cart.map(id=>products.find(p=>String(p.id)===String(id))).filter(Boolean);document.querySelector('#cartCount').textContent=items.length;document.querySelector('#cartItems').innerHTML=items.length?items.map(p=>`<article class="cart-item"><img src="${esc(p.logo_url||'')}" alt=""><div><strong>${esc(p.name)}</strong><small>${esc(p.label||labels[p.category]||'')}</small><b>${money(p.price)}</b></div><button data-remove="${esc(p.id)}" type="button">×</button></article>`).join(''):'<div class="empty-state">Tu carrito está vacío.</div>';document.querySelector('#cartSubtotal').textContent=money(items.reduce((a,p)=>a+Number(p.price||0),0));document.querySelector('#checkoutCart').disabled=!items.length;}
+function openCart(){document.body.classList.add('cart-open')} function closeCart(){document.body.classList.remove('cart-open')}
+document.addEventListener('click',e=>{const add=e.target.closest('[data-add]');if(add){if(!cart.includes(add.dataset.add))cart.push(add.dataset.add);saveCart();openCart();return}const rem=e.target.closest('[data-remove]');if(rem){cart=cart.filter(id=>String(id)!==String(rem.dataset.remove));saveCart();return}const b=e.target.closest('[data-scroll],[data-target]');if(b){document.getElementById(b.dataset.scroll||b.dataset.target)?.scrollBy({left:Number(b.dataset.dir)*320,behavior:'smooth'})}const fav=e.target.closest('.product-fav');if(fav){fav.classList.toggle('active');fav.textContent=fav.classList.contains('active')?'♥':'♡'}});
+document.querySelector('#storeTabs').addEventListener('click',e=>{const b=e.target.closest('[data-filter]');if(!b)return;filter=b.dataset.filter;document.querySelectorAll('#storeTabs button').forEach(x=>x.classList.toggle('active',x===b));render()});document.querySelector('#storeSearch').addEventListener('input',e=>{query=e.target.value.trim().toLowerCase();render()});
+document.querySelector('#openCart').onclick=openCart;document.querySelector('#closeCart').onclick=closeCart;document.querySelector('#cartBackdrop').onclick=closeCart;document.querySelector('#clearCart').onclick=()=>{cart=[];saveCart()};
+document.querySelector('#checkoutCart').onclick=()=>{const items=cart.map(id=>products.find(p=>String(p.id)===String(id))).filter(Boolean);if(!items.length)return;const total=items.reduce((a,p)=>a+Number(p.price||0),0);const lines=items.map((p,i)=>`${i+1}. ${p.name} — ${money(p.price)}`).join('\n');const text=`Hola ArcadiaCorps, quiero comprar este pack:\n\n${lines}\n\nTotal referencial: ${money(total)}\nUsuario: ${access.profile?.username||access.user.email||''}\nPor favor confirmen disponibilidad y precio final.`;window.open(`https://wa.me/${PHONE}?text=${encodeURIComponent(text)}`,'_blank','noopener')};
+async function initDeal(){let deal={title:'Arma tu pack Arcadia',description:'Combina tus servicios favoritos antes de que termine la promoción.',ends_at:new Date(Date.now()+36*3600*1000).toISOString(),active:true};try{const {data}=await supabase.from('store_offers').select('*').eq('active',true).gt('ends_at',new Date().toISOString()).order('ends_at').limit(1).maybeSingle();if(data)deal=data}catch{}if(!deal.active)return;const banner=document.querySelector('#dealBanner');banner.hidden=false;document.querySelector('#dealTitle').textContent=deal.title;document.querySelector('#dealText').textContent=deal.description||'';const tick=()=>{const d=new Date(deal.ends_at)-Date.now();if(d<=0){banner.hidden=true;return}const vals={days:Math.floor(d/86400000),hours:Math.floor(d/3600000)%24,minutes:Math.floor(d/60000)%60,seconds:Math.floor(d/1000)%60};for(const[k,v]of Object.entries(vals))document.querySelector(`[data-time="${k}"]`).textContent=String(v).padStart(2,'0')};tick();setInterval(tick,1000)}
+render();renderCart();initDeal();

@@ -44,7 +44,7 @@ export async function mountShell() {
           <a class="${active('purchases.html')}" href="${APP_URL}/purchases.html">🧾 <span>Mis compras</span></a>
         </details>
         ${['owner','staff'].includes(role) ? `<details open><summary>Soporte <span>⌄</span></summary><a class="${active('support-tickets.html')}" href="${APP_URL}/support-tickets.html">🛡 <span>Atender tickets</span></a></details>` : ''}
-        ${role === 'owner' ? `<details open><summary>Administración <span>⌄</span></summary><a class="${active('admin-users.html')}" href="${APP_URL}/admin-users.html">♛ <span>Usuarios y roles</span></a></details>` : ''}
+        ${role === 'owner' ? `<details open><summary>Administración <span>⌄</span></summary><a class="${active('admin-users.html')}" href="${APP_URL}/admin-users.html">♛ <span>Usuarios y roles</span></a><a class="${active('store-admin.html')}" href="${APP_URL}/store-admin.html">🛍 <span>Administrar tienda</span></a></details>` : ''}
       </nav>
       <div class="sidebar-footer">
         <button id="shellLogout" class="sidebar-logout" type="button">Cerrar sesión</button>

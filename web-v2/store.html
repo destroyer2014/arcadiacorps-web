@@ -1,42 +1,9 @@
-<!doctype html>
-<html lang="es">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Tienda — ArcadiaCorps</title>
-  <link rel="stylesheet" href="assets/styles.css?v=24">
-</head>
-<body>
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tienda — ArcadiaCorps</title><link rel="stylesheet" href="assets/styles.css?v=25"></head><body>
 <main class="dashboard app-page store-page">
-  <section class="store-hero panel">
-    <div>
-      <span class="eyebrow">Catálogo oficial</span>
-      <h1>Todo tu entretenimiento, en un solo lugar</h1>
-      <p>Streaming, música, software, educación y servicios digitales con los artículos y precios de la tienda original.</p>
-      <a class="btn primary store-hero-btn" href="#catalogo">Explorar catálogo</a>
-    </div>
-    <div class="store-hero-orbit" aria-hidden="true">
-      <img src="assets/logos/netflix.svg" alt="">
-      <img src="assets/logos/spotify.svg" alt="">
-      <img src="assets/logos/canva.svg" alt="">
-      <img src="assets/logos/disney-plus.svg" alt="">
-    </div>
-  </section>
-
-  <section class="store-section" id="destacados">
-    <div class="store-section-head"><div><span class="eyebrow">Recomendados</span><h2>Servicios más buscados</h2></div><div class="carousel-buttons"><button data-scroll="featured" data-dir="-1" aria-label="Anterior">‹</button><button data-scroll="featured" data-dir="1" aria-label="Siguiente">›</button></div></div>
-    <div class="product-carousel" id="featured"></div>
-  </section>
-
-  <section class="store-section" id="catalogo">
-    <div class="store-section-head"><div><span class="eyebrow">Catálogo</span><h2>Todos los productos</h2></div><label class="store-search">⌕ <input id="storeSearch" type="search" placeholder="Buscar producto..."></label></div>
-    <div class="store-tabs" id="storeTabs">
-      <button class="active" data-filter="all">Todos</button><button data-filter="streaming">Streaming</button><button data-filter="musica">Música</button><button data-filter="software">Software</button><button data-filter="educacion">Educación</button><button data-filter="servicios">Servicios</button>
-    </div>
-    <div id="categorySections"></div>
-    <div class="panel empty-state store-empty" id="storeEmpty" hidden>No se encontraron productos.</div>
-  </section>
+<section class="store-hero panel"><div><span class="eyebrow">Catálogo oficial</span><h1>Arma tu pack y ahorra</h1><p>Elige Netflix, HBO Max, Disney+, música y más. Añade varios servicios al carrito y envía tu pedido completo por WhatsApp.</p><div class="store-hero-actions"><a class="btn primary store-hero-btn" href="#catalogo">Explorar catálogo</a><button class="btn secondary store-hero-btn" id="openCart" type="button">🛒 Carrito <span id="cartCount">0</span></button></div></div><div class="store-hero-orbit" aria-hidden="true"><img src="assets/logos/netflix.svg" alt=""><img src="assets/logos/spotify.svg" alt=""><img src="assets/logos/canva.svg" alt=""><img src="assets/logos/disney-plus.svg" alt=""></div></section>
+<section class="deal-banner panel" id="dealBanner" hidden><div><span class="eyebrow">Oferta por tiempo limitado</span><h2 id="dealTitle">Pack especial</h2><p id="dealText"></p></div><div class="deal-countdown" id="dealCountdown"><span><b data-time="days">00</b><small>Días</small></span><span><b data-time="hours">00</b><small>Horas</small></span><span><b data-time="minutes">00</b><small>Min</small></span><span><b data-time="seconds">00</b><small>Seg</small></span></div></section>
+<section class="store-section" id="destacados"><div class="store-section-head"><div><span class="eyebrow">Recomendados</span><h2>Servicios más buscados</h2></div><div class="carousel-buttons"><button data-scroll="featured" data-dir="-1">‹</button><button data-scroll="featured" data-dir="1">›</button></div></div><div class="product-carousel" id="featured"></div></section>
+<section class="store-section" id="catalogo"><div class="store-section-head"><div><span class="eyebrow">Catálogo</span><h2>Todos los productos</h2></div><label class="store-search">⌕ <input id="storeSearch" type="search" placeholder="Buscar producto..."></label></div><div class="store-tabs" id="storeTabs"><button class="active" data-filter="all">Todos</button><button data-filter="streaming">Streaming</button><button data-filter="musica">Música</button><button data-filter="software">Software</button><button data-filter="educacion">Educación</button><button data-filter="servicios">Servicios</button></div><div id="categorySections"></div><div class="panel empty-state store-empty" id="storeEmpty" hidden>No se encontraron productos.</div></section>
 </main>
-<script type="module" src="assets/store.js?v=24"></script>
-</body>
-</html>
+<div class="cart-backdrop" id="cartBackdrop"></div><aside class="cart-drawer" id="cartDrawer" aria-label="Carrito"><header><div><span class="eyebrow">Tu selección</span><h2>Arma tu pack</h2></div><button id="closeCart" type="button">×</button></header><div id="cartItems" class="cart-items"></div><div class="cart-summary"><div><span>Productos</span><b id="cartSubtotal">S/ 0.00</b></div><small>El precio final y disponibilidad se confirman por WhatsApp.</small><button class="btn primary" id="checkoutCart" type="button">Enviar pedido por WhatsApp</button><button class="btn secondary" id="clearCart" type="button">Vaciar carrito</button></div></aside>
+<script type="module" src="assets/store.js?v=25"></script></body></html>
