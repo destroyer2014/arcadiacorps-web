@@ -1,12 +1,114 @@
-create extension if not exists pgcrypto;
-create table if not exists public.store_products(id uuid primary key default gen_random_uuid(),name text not null,category text not null,label text,price numeric(10,2) not null check(price>=0),old_price numeric(10,2),badge text,logo_url text,rating text default '4.9',sales_text text default '',featured boolean not null default false,sold_out boolean not null default false,active boolean not null default true,sort_order integer not null default 0,created_at timestamptz not null default now(),updated_at timestamptz not null default now());
-create table if not exists public.store_offers(id uuid primary key default gen_random_uuid(),title text not null,description text,ends_at timestamptz not null,active boolean not null default true,created_at timestamptz not null default now());
-alter table public.store_products enable row level security;alter table public.store_offers enable row level security;
-drop policy if exists "store products public read" on public.store_products;create policy "store products public read" on public.store_products for select to authenticated using(active=true or exists(select 1 from public.profiles p where p.id=auth.uid() and p.role::text='owner'));
-drop policy if exists "store products owner write" on public.store_products;create policy "store products owner write" on public.store_products for all to authenticated using(exists(select 1 from public.profiles p where p.id=auth.uid() and p.role::text='owner')) with check(exists(select 1 from public.profiles p where p.id=auth.uid() and p.role::text='owner'));
-drop policy if exists "store offers public read" on public.store_offers;create policy "store offers public read" on public.store_offers for select to authenticated using(active=true or exists(select 1 from public.profiles p where p.id=auth.uid() and p.role::text='owner'));
-drop policy if exists "store offers owner write" on public.store_offers;create policy "store offers owner write" on public.store_offers for all to authenticated using(exists(select 1 from public.profiles p where p.id=auth.uid() and p.role::text='owner')) with check(exists(select 1 from public.profiles p where p.id=auth.uid() and p.role::text='owner'));
-insert into public.store_products(name,category,label,price,old_price,badge,logo_url,featured,sort_order)
-select * from (values ('Netflix Premium 1 Pantalla','streaming','Streaming',15,20,'-25%','assets/logos/netflix.svg',true,10),('HBO Max Premium','streaming','Streaming',14,18,'Popular','assets/logos/hbo-max.svg',true,20),('Prime Video','streaming','Streaming',12,14,'-14%','assets/logos/prime-video.svg',true,30),('Disney+ Premium','streaming','Streaming',16,22,'-27%','assets/logos/disney-plus.svg',false,40),('Crunchyroll Mega Fan','streaming','Streaming',11,15,'Nuevo','assets/logos/crunchyroll.svg',false,50),('Spotify Premium Individual','musica','Música',10,14,'-29%','assets/logos/spotify.svg',false,60),('Canva Pro','software','Software',18,25,'-28%','assets/logos/canva.svg',true,70),('Duolingo Super','educacion','Educación',18,22,'-20%','assets/logos/duolingo.svg',false,80),('Cuenta Dyver','servicios','Servicios',20,30,'Digital','assets/logos/dyver.svg',false,90)) as v(name,category,label,price,old_price,badge,logo_url,featured,sort_order)
-where not exists(select 1 from public.store_products);
-notify pgrst,'reload schema';
+-- ArcadiaCorps Store v25.1 - compatible con tablas antiguas que ya usan is_active
+create table if not exists public.store_products (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  category text not null,
+  label text,
+  price numeric(10,2) not null check (price >= 0),
+  old_price numeric(10,2),
+  badge text,
+  logo_url text,
+  rating text default '4.9',
+  sales_text text default '',
+  featured boolean not null default false,
+  sold_out boolean not null default false,
+  is_active boolean not null default true,
+  sort_order integer not null default 0,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.store_offers (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  description text,
+  ends_at timestamptz not null,
+  is_active boolean not null default true,
+  created_at timestamptz not null default now()
+);
+
+-- Compatibilidad: si una instalación anterior creó active, copiar sus valores.
+alter table public.store_products add column if not exists is_active boolean not null default true;
+alter table public.store_offers add column if not exists is_active boolean not null default true;
+
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns
+    where table_schema='public' and table_name='store_products' and column_name='active'
+  ) then
+    execute 'update public.store_products set is_active = active where active is not null';
+  end if;
+
+  if exists (
+    select 1 from information_schema.columns
+    where table_schema='public' and table_name='store_offers' and column_name='active'
+  ) then
+    execute 'update public.store_offers set is_active = active where active is not null';
+  end if;
+end $$;
+
+alter table public.store_products enable row level security;
+alter table public.store_offers enable row level security;
+
+drop policy if exists "store products public read" on public.store_products;
+drop policy if exists "store_products_read_active" on public.store_products;
+drop policy if exists "store products owner all" on public.store_products;
+drop policy if exists "store_products_owner_all" on public.store_products;
+
+create policy "store products public read"
+on public.store_products for select to authenticated
+using (
+  is_active = true
+  or exists (
+    select 1 from public.profiles p
+    where p.id = auth.uid() and p.role::text = 'owner'
+  )
+);
+
+create policy "store products owner all"
+on public.store_products for all to authenticated
+using (
+  exists (
+    select 1 from public.profiles p
+    where p.id = auth.uid() and p.role::text = 'owner'
+  )
+)
+with check (
+  exists (
+    select 1 from public.profiles p
+    where p.id = auth.uid() and p.role::text = 'owner'
+  )
+);
+
+drop policy if exists "store offers public read" on public.store_offers;
+drop policy if exists "store_offers_read_active" on public.store_offers;
+drop policy if exists "store offers owner all" on public.store_offers;
+drop policy if exists "store_offers_owner_all" on public.store_offers;
+
+create policy "store offers public read"
+on public.store_offers for select to authenticated
+using (
+  is_active = true
+  or exists (
+    select 1 from public.profiles p
+    where p.id = auth.uid() and p.role::text = 'owner'
+  )
+);
+
+create policy "store offers owner all"
+on public.store_offers for all to authenticated
+using (
+  exists (
+    select 1 from public.profiles p
+    where p.id = auth.uid() and p.role::text = 'owner'
+  )
+)
+with check (
+  exists (
+    select 1 from public.profiles p
+    where p.id = auth.uid() and p.role::text = 'owner'
+  )
+);
+
+notify pgrst, 'reload schema';
