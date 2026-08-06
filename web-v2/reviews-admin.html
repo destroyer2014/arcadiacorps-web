@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Moderar reseñas — ArcadiaCorps</title>
+  <link rel="stylesheet" href="assets/styles.css?v=31">
+  <link rel="stylesheet" href="assets/theme-v33.css?v=34">
+  <link rel="stylesheet" href="assets/theme-v35.css?v=35">
+  <link rel="stylesheet" href="assets/ai-support-v35.css?v=35">
+  <script defer src="assets/effects-v33.js?v=34"></script>
+  <script type="module" src="assets/ai-support-v35.js?v=35"></script>
+</head>
+<body>
+<main class="dashboard app-page review-admin-page">
+  <header class="page-heading">
+    <div>
+      <span class="eyebrow">OWNER Y STAFF</span>
+      <h1>Moderar reseñas</h1>
+      <p>Aprueba o rechaza las opiniones enviadas por la comunidad.</p>
+    </div>
+  </header>
+
+  <div id="reviewAdminNotice" class="message"></div>
+
+  <section class="review-admin-toolbar panel">
+    <div>
+      <strong>Reseñas pendientes</strong>
+      <span id="reviewPendingCount" class="review-admin-count">—</span>
+    </div>
+    <button id="reloadReviews" class="secondary" type="button">Actualizar</button>
+  </section>
+
+  <section id="reviewAdminList" class="review-admin-list"></section>
+</main>
+
+<script type="module" src="assets/reviews-admin-v35.js?v=35"></script>
+</body>
+</html>

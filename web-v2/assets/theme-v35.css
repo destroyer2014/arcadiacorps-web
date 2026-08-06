@@ -1,0 +1,206 @@
+/* ArcadiaCorps v35 — correcciones de dashboard, Sub-Bots y soporte IA */
+[hidden]{display:none!important}
+
+/* El usuario sigue visible dentro de la barra lateral, no duplicado en la cabecera */
+.app-header .header-user{display:none!important}
+.app-header .app-brand{margin-right:auto!important}
+
+/* El avatar fallback y la foto nunca deben mostrarse a la vez */
+.control-user .control-avatar[hidden]{display:none!important}
+
+/* Iconos reales para las estadísticas */
+.stat-icon{
+  position:relative!important;
+  overflow:hidden!important;
+  font-size:0!important;
+  color:transparent!important;
+  background-color:rgba(6,27,33,.88)!important;
+  background-repeat:no-repeat!important;
+  background-position:center!important;
+  background-size:72%!important;
+}
+.rpg-stat:first-child .stat-icon{
+  background-image:url("icons/clock-crystal-v35.svg")!important;
+}
+.users-stat .stat-icon{
+  background-image:url("icons/users-rune-v35.svg")!important;
+}
+
+/* Dashboard un poco más compacto */
+.control-strip{
+  min-height:160px!important;
+  padding:20px 22px!important;
+}
+.control-avatar{
+  width:66px!important;
+  height:66px!important;
+  border-radius:19px!important;
+}
+.control-user h1{
+  font-size:30px!important;
+}
+.stats-grid{
+  gap:16px!important;
+  margin:18px 0 30px!important;
+}
+.rpg-stat{
+  min-height:138px!important;
+  padding:18px!important;
+}
+
+/* Sub-Bots: ya no queda detrás de la cabecera ni ocupa demasiado alto */
+.subbots-page.app-page{
+  padding-top:100px!important;
+}
+.subbots-hero{
+  min-height:0!important;
+  padding:18px 20px!important;
+  align-items:center!important;
+}
+.subbots-hero h1{
+  margin:2px 0 5px!important;
+  font-size:30px!important;
+}
+.subbots-hero p{
+  font-size:15px!important;
+  line-height:1.45!important;
+}
+.subbots-hero button{
+  min-height:44px!important;
+  padding:11px 17px!important;
+}
+.subbot-grid{
+  margin-top:14px!important;
+}
+.subbot-empty{
+  min-height:0!important;
+  margin-top:14px!important;
+  padding:28px 20px!important;
+}
+.subbot-empty>div{
+  font-size:48px!important;
+}
+.subbot-empty h2{
+  margin:12px 0 7px!important;
+  font-size:28px!important;
+}
+.subbot-empty p{
+  margin:0 0 18px!important;
+  font-size:15px!important;
+}
+.subbot-empty button{
+  width:auto!important;
+  min-width:200px!important;
+}
+
+/* Moderación de reseñas */
+.review-admin-page{max-width:980px!important}
+.review-admin-toolbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:17px;
+}
+.review-admin-count{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:38px;
+  height:34px;
+  padding:0 11px;
+  border-radius:999px;
+  background:rgba(246,200,95,.1);
+  border:1px solid rgba(246,200,95,.3);
+  color:#f6c85f;
+  font-weight:900;
+}
+.review-admin-list{display:grid;gap:14px}
+.review-admin-card{padding:19px!important}
+.review-admin-head{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:13px;
+}
+.review-admin-avatar{
+  width:48px;
+  height:48px;
+  border-radius:14px;
+  object-fit:cover;
+  display:grid;
+  place-items:center;
+  flex:0 0 auto;
+  background:linear-gradient(135deg,#3972ff,#8758ff);
+  font-weight:900;
+}
+.review-admin-head div{min-width:0}
+.review-admin-head strong,.review-admin-head small{display:block}
+.review-admin-head small{color:var(--muted)}
+.review-admin-stars{margin-left:auto;color:#f6c85f;white-space:nowrap}
+.review-admin-comment{
+  margin:0;
+  color:#dce2f4;
+  line-height:1.6;
+  white-space:pre-wrap;
+}
+.review-admin-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  margin-top:16px;
+  padding-top:14px;
+  border-top:1px solid rgba(120,136,181,.15);
+}
+.review-admin-actions button{width:auto!important;min-width:112px!important}
+.review-approve{
+  background:linear-gradient(135deg,#0ebf85,#087c61)!important;
+  color:#fff!important;
+}
+.review-reject{
+  background:linear-gradient(135deg,#ff4664,#a60f35)!important;
+  color:#fff!important;
+}
+.review-admin-empty{
+  padding:34px!important;
+  text-align:center;
+  color:var(--muted);
+}
+
+@media(max-width:760px){
+  .control-strip{
+    min-height:145px!important;
+    padding:18px!important;
+  }
+  .control-avatar{
+    width:58px!important;
+    height:58px!important;
+  }
+  .control-user h1{
+    font-size:27px!important;
+  }
+  .subbots-page.app-page{
+    padding-top:92px!important;
+  }
+  .subbots-hero{
+    padding:16px!important;
+    gap:14px!important;
+  }
+  .subbots-hero h1{font-size:28px!important}
+  .subbot-empty{
+    padding:24px 17px!important;
+  }
+  .subbot-empty>div{font-size:42px!important}
+  .subbot-empty h2{font-size:25px!important}
+  .review-admin-toolbar{
+    align-items:flex-start;
+  }
+  .review-admin-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+  }
+  .review-admin-actions button{
+    width:100%!important;
+    min-width:0!important;
+  }
+}

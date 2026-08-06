@@ -1,6 +1,9 @@
 <!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Atender tickets — ArcadiaCorps</title><link rel="stylesheet" href="assets/styles.css?v=18">
   <link rel="stylesheet" href="assets/theme-v33.css?v=34">
   <script defer src="assets/effects-v33.js?v=34"></script>
+  <link rel="stylesheet" href="assets/theme-v35.css?v=35">
+  <link rel="stylesheet" href="assets/ai-support-v35.css?v=35">
+  <script type="module" src="assets/ai-support-v35.js?v=35"></script>
 </head><body><main class="dashboard app-page support-page"><div class="page-heading"><div><a class="back-link" href="dashboard.html">← Volver al panel</a><span class="eyebrow">Soporte</span><h1>Atender tickets</h1><p>Cola compartida para Owner y Staff.</p></div></div><div class="filters"><select id="status"><option value="">Todos</option><option value="open">Abiertos</option><option value="in_progress">En proceso</option><option value="waiting_user">Esperando usuario</option><option value="closed">Cerrados</option></select><input id="search" placeholder="Buscar asunto o número"><button id="refresh" class="secondary compact">Actualizar</button></div><section id="list" class="ticket-list"></section></main><script type="module">
 import { mountShell } from './assets/shell.js';
 import { getCurrentAccess } from './assets/access.js';

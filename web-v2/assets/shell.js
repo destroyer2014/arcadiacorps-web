@@ -42,17 +42,11 @@ export async function mountShell() {
     <header class="app-header">
       <button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menú">☰</button>
 
-      <a class="app-brand" href="${APP_URL}/dashboard.html?v=34">
+      <a class="app-brand" href="${APP_URL}/dashboard.html?v=35">
         <img class="app-brand-logo"
              src="${APP_URL}/assets/images/arcadia-logo-rpg.png"
              alt="ArcadiaCorps">
         <span>Arcadia<span>Corps</span></span>
-      </a>
-
-      <a class="header-user" href="${APP_URL}/profile.html" aria-label="Abrir mi perfil">
-        ${avatarUrl
-          ? `<img src="${esc(avatarUrl)}" alt="${esc(displayName)}">`
-          : `<span class="header-initial">${esc(initial)}</span>`}
       </a>
     </header>
 
@@ -72,59 +66,41 @@ export async function mountShell() {
 
       <nav class="sidebar-nav">
         <details open>
-          <summary>
-            <span><span class="nav-section-icon">🏰</span>Portal</span>
-            <span>⌄</span>
-          </summary>
-          ${link('dashboard.html?v=34','⌂','Inicio',['dashboard.html'])}
+          <summary><span><span class="nav-section-icon">🏰</span>Portal</span><span>⌄</span></summary>
+          ${link('dashboard.html?v=35','⌂','Inicio',['dashboard.html'])}
           ${link('profile.html','◉','Mi perfil',['profile.html'])}
           ${link('news.html','▤','Noticias',['news.html','news-detail.html','news-editor.html'])}
         </details>
 
         <details open>
-          <summary>
-            <span><span class="nav-section-icon">✦</span>Social</span>
-            <span>⌄</span>
-          </summary>
+          <summary><span><span class="nav-section-icon">✦</span>Social</span><span>⌄</span></summary>
           ${link('social.html','◎','Comunidad',['social.html'])}
           ${link('chat.html','✉','Chat',['chat.html'])}
         </details>
 
         <details open>
-          <summary>
-            <span><span class="nav-section-icon">🛍</span>Arcadia Shop</span>
-            <span>⌄</span>
-          </summary>
+          <summary><span><span class="nav-section-icon">🛍</span>Arcadia Shop</span><span>⌄</span></summary>
           ${link('store.html','🛍','Tienda',['store.html'])}
           ${link('purchases.html','🧾','Mis compras',['purchases.html'])}
         </details>
 
         <details open>
-          <summary>
-            <span><span class="nav-section-icon">⚙</span>Servicios</span>
-            <span>⌄</span>
-          </summary>
+          <summary><span><span class="nav-section-icon">⚙</span>Servicios</span><span>⌄</span></summary>
           ${link('subbots.html','🤖','Mis Sub-Bots',['subbots.html'])}
-          ${link('tickets.html','🎫','Mis tickets',
-            ['tickets.html','ticket-new.html','ticket-detail.html'])}
+          ${link('tickets.html','🎫','Mis tickets',['tickets.html','ticket-new.html','ticket-detail.html'])}
         </details>
 
         ${['owner','staff'].includes(role) ? `
           <details open>
-            <summary>
-              <span><span class="nav-section-icon">🛡</span>Soporte</span>
-              <span>⌄</span>
-            </summary>
+            <summary><span><span class="nav-section-icon">🛡</span>Soporte</span><span>⌄</span></summary>
             ${link('support-tickets.html','🛡','Atender tickets',['support-tickets.html'])}
+            ${link('reviews-admin.html','★','Moderar reseñas',['reviews-admin.html'])}
           </details>
         ` : ''}
 
         ${role === 'owner' ? `
           <details open>
-            <summary>
-              <span><span class="nav-section-icon">♛</span>Administración</span>
-              <span>⌄</span>
-            </summary>
+            <summary><span><span class="nav-section-icon">♛</span>Administración</span><span>⌄</span></summary>
             ${link('admin-users.html','♛','Usuarios y roles',['admin-users.html'])}
             ${link('store-admin.html','🛍','Administrar tienda',['store-admin.html'])}
           </details>
@@ -132,10 +108,7 @@ export async function mountShell() {
       </nav>
 
       <div class="sidebar-footer">
-        <button id="shellLogout" class="sidebar-logout" type="button">
-          Cerrar sesión
-        </button>
-
+        <button id="shellLogout" class="sidebar-logout" type="button">Cerrar sesión</button>
         <div class="sidebar-credits">
           <strong>ArcadiaCorps</strong>
           <small>© 2014 - 2026 ArcadiaCorps.<br>Todos los derechos y usos reservados.</small>
@@ -153,10 +126,7 @@ export async function mountShell() {
   });
 
   backdrop.addEventListener('click', closeMenu);
-
-  root.querySelectorAll('.sidebar-nav a').forEach(link => {
-    link.addEventListener('click', closeMenu);
-  });
+  root.querySelectorAll('.sidebar-nav a').forEach(item => item.addEventListener('click',closeMenu));
 
   root.querySelector('#shellLogout').addEventListener('click', async event => {
     const button = event.currentTarget;

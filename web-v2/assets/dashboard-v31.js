@@ -1,5 +1,5 @@
 import { getCurrentAccess, ROLE_LABELS } from './access.js';
-import { mountShell } from './shell.js?v=34';
+import { mountShell } from './shell.js?v=35';
 const access=await getCurrentAccess(); if(!access) throw new Error('No hay sesión'); await mountShell();
 const {user,profile,role}=access;
 const display=profile.full_name||profile.username||user.email?.split('@')[0]||'Usuario';
