@@ -1,5 +1,5 @@
 import { supabase } from './auth.js';
-import { mountShell } from './shell.js';
+import { mountShell } from './shell.js?v=34';
 const access=await mountShell();if(!access)throw new Error('Sin sesión');
 const {user}=access,$=s=>document.querySelector(s),esc=(v='')=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const API='/nero-api';let records=[],active=null;

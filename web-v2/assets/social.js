@@ -1,5 +1,5 @@
 import { supabase } from './auth.js';
-import { mountShell } from './shell.js';
+import { mountShell } from './shell.js?v=34';
 
 const access = await mountShell();
 if (!access) throw new Error('Sin sesión');

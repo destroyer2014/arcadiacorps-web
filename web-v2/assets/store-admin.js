@@ -1,6 +1,6 @@
 import { supabase } from './auth.js';
 import { requireRole } from './access.js';
-import { mountShell } from './shell.js';
+import { mountShell } from './shell.js?v=34';
 const access = await requireRole(['owner']); if (!access) throw new Error('Sin permiso'); await mountShell();
 const $ = (s) => document.querySelector(s);
 const esc = (v) => String(v ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
