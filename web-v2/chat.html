@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Chat — ArcadiaCorps</title>
-  <link rel="stylesheet" href="assets/styles.css?v=29.3">
+  <link rel="stylesheet" href="assets/styles.css?v=29.4">
 </head>
 <body>
 <main class="dashboard chat-page chat-v29">
@@ -19,7 +19,7 @@
       <div id="chatEmpty" class="chat-empty-state"><div class="chat-empty-icon">✦</div><h2>Tus conversaciones</h2><p>Selecciona un chat o crea uno nuevo.</p><button id="emptyNewChat" class="primary" type="button">Nuevo chat</button></div>
       <div id="chatRoom" class="chat-room" hidden>
         <header class="chat-room-head compact"><button id="chatBack" class="chat-mobile-back" type="button">←</button><div id="roomAvatar" class="chat-avatar fallback">U</div><div class="chat-room-person"><div class="room-title-line"><span id="roomPresenceDot" class="presence-dot offline"></span><strong id="roomName">Chat</strong><span id="roomRole"></span></div><small id="roomStatus">Desconectado</small></div><button id="roomMenuBtn" class="chat-head-action" type="button">⋮</button></header>
-        <div id="replyBar" class="chat-reply-bar" hidden><div><small>Respondiendo a</small><strong id="replyAuthor"></strong><span id="replyText"></span></div><button id="cancelReply" type="button">×</button></div>
+        <div id="replyBar" class="chat-reply-bar" hidden><div class="chat-reply-copy"><small>Respondiendo a</small><strong id="replyAuthor"></strong><span id="replyText"></span></div><img id="replyThumb" class="chat-reply-thumb" alt="Vista previa" hidden><button id="cancelReply" class="chat-reply-close" type="button" aria-label="Cancelar respuesta">×</button></div>
         <div id="chatNotice" class="message"></div><div id="messageList" class="message-list"></div>
         <form id="messageForm" class="message-composer"><button id="emojiBtn" class="emoji-button" type="button">😊</button><label class="attach-button">📎<input id="messageImage" type="file" accept="image/jpeg,image/png,image/webp,image/gif"></label><div class="composer-field"><textarea id="messageBody" rows="1" maxlength="3000" placeholder="Escribe un mensaje…"></textarea><div id="messagePreview" class="message-preview"></div></div><button id="sendMessage" class="send-message" type="submit">➤</button></form>
         <div id="emojiPanel" class="emoji-panel" hidden></div>
@@ -30,5 +30,5 @@
 <div id="newChatModal" class="social-modal" aria-hidden="true"><div class="social-modal-card chat-new-modal"><header><h2>Nuevo chat</h2><button class="modal-close" id="closeNewChat" type="button">×</button></header><div class="chat-create-actions"><button id="createGroupBtn" class="primary" type="button">Crear grupo</button><button id="joinGroupBtn" class="secondary" type="button">Unirme con invitación</button></div><label class="chat-search"><span>⌕</span><input id="newChatSearch" type="search" placeholder="Buscar usuario"></label><div id="newChatPeople" class="chat-list"></div></div></div>
 <div id="groupModal" class="social-modal" aria-hidden="true"><div class="social-modal-card"><header><h2 id="groupModalTitle">Crear grupo</h2><button class="modal-close" data-close="groupModal" type="button">×</button></header><form id="groupForm"><label>Nombre<input id="groupName" maxlength="80" required></label><label>Descripción<textarea id="groupDescription" maxlength="500"></textarea></label><label>Foto<input id="groupImage" type="file" accept="image/*"></label><div id="groupMembersPick" class="chat-list compact-pick"></div><button class="primary" type="submit">Guardar grupo</button></form></div></div>
 <div id="groupManageModal" class="social-modal" aria-hidden="true"><div class="social-modal-card"><header><h2>Administrar grupo</h2><button class="modal-close" data-close="groupManageModal" type="button">×</button></header><div id="groupManageBody"></div></div></div>
-<script type="module" src="assets/chat.js?v=29.3"></script>
+<script type="module" src="assets/chat.js?v=29.4"></script>
 </body></html>

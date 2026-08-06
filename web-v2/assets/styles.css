@@ -210,3 +210,10 @@ button,.btn{width:100%;border:0;border-radius:15px;padding:15px 17px;font-weight
   .chat-page.chat-v29 .chat-room-head.compact .chat-avatar{width:35px;height:35px}
   .chat-page.chat-v29 .chat-mobile-back{display:grid;place-items:center;width:34px;height:34px;padding:0}
 }
+
+/* Chat v29.4: avatar seguro y respuesta compacta */
+#roomAvatar{overflow:hidden;flex:0 0 auto}#roomAvatar img{width:100%;height:100%;object-fit:cover;display:block}
+.chat-reply-bar{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 46px 34px;align-items:center;gap:8px;min-height:58px;padding:7px 10px 7px 12px;background:#111c35;border-left:4px solid #8b5cf6}
+.chat-reply-copy{display:flex!important;flex-direction:column;min-width:0;line-height:1.2}.chat-reply-copy small{font-size:.72rem;opacity:.68}.chat-reply-copy strong{font-size:.86rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.chat-reply-copy span{font-size:.78rem;opacity:.82;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-reply-thumb{width:44px;height:44px;object-fit:cover;border-radius:8px;border:1px solid rgba(255,255,255,.15)}.chat-reply-close{width:32px;height:32px;display:grid;place-items:center;font-size:1.25rem!important;border-radius:50%!important}
+@media(max-width:640px){.chat-reply-bar{grid-template-columns:minmax(0,1fr) 42px 30px;min-height:54px;padding:6px 8px 6px 10px}.chat-reply-thumb{width:40px;height:40px}.chat-reply-close{width:28px;height:28px}}
