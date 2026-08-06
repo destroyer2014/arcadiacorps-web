@@ -1,29 +1,64 @@
 <!doctype html>
-<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Panel — ArcadiaCorps</title><link rel="stylesheet" href="assets/styles.css?v=13"></head>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Inicio — ArcadiaCorps</title>
+  <link rel="stylesheet" href="assets/styles.css?v=31">
+  <link rel="stylesheet" href="assets/dashboard-v31.css?v=31">
+</head>
 <body>
-<main class="dashboard app-page">
-  <div class="page-heading"><div><span class="eyebrow">Centro de control</span><h1 id="welcomeTitle">Bienvenido</h1><p>Tu sesión, perfil y permisos están conectados a datos reales.</p></div><span id="dashboardRole" class="role-pill">Usuario</span></div>
-  <section class="dashboard-grid">
-    <article class="panel account-overview">
-      <div class="user-card"><div id="avatarFallback" class="avatar">U</div><img id="avatar" class="avatar" hidden alt=""><div><h2 id="userName">Usuario</h2><div id="userEmail" class="meta"></div><div id="userProvider" class="meta"></div></div></div>
-      <div class="real-status"><span class="presence-dot"></span><strong>Sesión activa</strong><small>Protegida por Supabase Auth</small></div>
-    </article>
-    <article class="panel quick-panel"><h3 class="panel-title">Accesos</h3><a class="quick-link" href="profile.html"><span>◉</span><div><strong>Mi perfil</strong><small>Identidad, foto y seguridad</small></div><b>›</b></a><a id="adminShortcut" class="quick-link" href="admin-users.html" hidden><span>♛</span><div><strong>Usuarios y roles</strong><small>Solo Owner</small></div><b>›</b></a></article>
+<main class="dashboard app-page home-v31">
+  <section class="home-hero panel">
+    <div class="hero-glow"></div>
+    <img src="assets/images/arcadia-banner-rpg.png" alt="ArcadiaCorps" class="hero-bg">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-user">
+        <div id="avatarFallback" class="hero-avatar">U</div>
+        <img id="avatar" class="hero-avatar" hidden alt="">
+        <div><span class="eyebrow">CENTRO DE CONTROL</span><h1 id="welcomeTitle">Hola</h1><span id="dashboardRole" class="role-pill">Usuario</span></div>
+      </div>
+      <p>Tu portal para Nero Bot, comunidad, comandos y servicios de ArcadiaCorps.</p>
+      <div class="hero-runes" aria-hidden="true"><span>✦</span><span>⚔</span><span>✧</span></div>
+    </div>
+  </section>
+
+  <section class="stats-grid">
+    <article class="rpg-stat panel"><span class="stat-icon">⚡</span><div><small>TIEMPO ACTIVO</small><strong id="uptimeDays">0</strong><span>días</span></div><div><strong id="uptimeHours">00</strong><span>horas</span></div><div><strong id="uptimeMinutes">00</strong><span>min</span></div><div><strong id="uptimeSeconds">00</strong><span>seg</span></div></article>
+    <article class="rpg-stat users-stat panel"><span class="stat-icon">◉</span><div><small>USUARIOS REGISTRADOS</small><strong id="registeredUsers">—</strong><span>personas</span></div><div><small>ESTADO DEL BOT</small><strong id="botStatus">Consultando…</strong><span id="botStatusLabel">Nero Bot</span></div></article>
+  </section>
+
+  <section class="home-section">
+    <header class="section-heading"><div><span class="section-symbol">&lt;/&gt;</span><div><h2>Creadores</h2><p>Personas detrás de ArcadiaCorps.</p></div></div></header>
+    <div class="team-grid">
+      <a class="team-card panel" href="https://wa.me/51917611323" target="_blank" rel="noopener"><img src="assets/images/arcadia-logo-rpg.png" alt="Zemo"><strong>Zemo</strong><span>CREADOR</span><small>Abrir chat de WhatsApp</small></a>
+    </div>
+  </section>
+
+  <section class="home-section">
+    <header class="section-heading"><div><span class="section-symbol">🛡</span><div><h2>Staff</h2><p>Soporte oficial de la comunidad.</p></div></div></header>
+    <div class="team-grid">
+      <a class="team-card panel" href="https://wa.me/528691009825" target="_blank" rel="noopener"><div class="team-fallback">M</div><strong>Mily</strong><span>STAFF</span><small>Abrir chat de WhatsApp</small></a>
+      <a class="team-card panel" href="https://wa.me/526636649636" target="_blank" rel="noopener"><div class="team-fallback">K</div><strong>Kiwi</strong><span>STAFF</span><small>Abrir chat de WhatsApp</small></a>
+    </div>
+  </section>
+
+  <section class="home-section reviews-section">
+    <header class="section-heading"><div><span class="section-symbol">★</span><div><h2>Lo que dicen nuestros usuarios</h2><p>Reseñas de la comunidad ArcadiaCorps.</p></div></div><div class="rating-summary"><strong>4.8</strong><span>★★★★★</span></div></header>
+    <div class="reviews-track">
+      <article class="review-card panel"><div class="stars">★★★★★</div><p>El bot funciona excelente y la web cada vez se ve más profesional.</p><footer><div class="review-avatar">Z</div><div><strong>ZemoDev</strong><small>Servicio general</small></div></footer></article>
+      <article class="review-card panel"><div class="stars">★★★★★</div><p>Muy buen soporte, comandos rápidos y una comunidad activa.</p><footer><div class="review-avatar">M</div><div><strong>Mily</strong><small>Experiencia Arcadia</small></div></footer></article>
+      <article class="review-card panel"><div class="stars">★★★★★</div><p>La vinculación de Subbots y las herramientas son muy completas.</p><footer><div class="review-avatar">K</div><div><strong>Kiwi</strong><small>Herramientas del bot</small></div></footer></article>
+    </div>
+  </section>
+
+  <section class="home-section commands-section">
+    <header class="section-heading"><div><span class="section-symbol">⚔</span><div><h2>Comandos de Nero Bot</h2><p>Catálogo real con prefijo <b>.</b>, buscador y categorías desplegables.</p></div></div><span id="commandTotal" class="command-total">0 comandos</span></header>
+    <label class="command-search"><span>⌕</span><input id="commandSearch" type="search" placeholder="Buscar un comando… (ej: play, sticker, rpg)"></label>
+    <div id="commandCategories" class="command-categories"></div>
   </section>
 </main>
-<script type="module">
-  import { getCurrentAccess, ROLE_LABELS } from './assets/access.js';
-  import { mountShell } from './assets/shell.js';
-  const access = await getCurrentAccess(); if (!access) throw new Error('No hay sesión'); await mountShell();
-  const { user, profile, role } = access;
-  const display = profile.full_name || profile.username || user.email?.split('@')[0] || 'Usuario';
-  document.querySelector('#welcomeTitle').textContent = `Hola, ${display}`;
-  document.querySelector('#userName').textContent = display;
-  document.querySelector('#userEmail').textContent = user.email || 'Correo no disponible';
-  document.querySelector('#userProvider').textContent = `Acceso: ${user.app_metadata?.provider || 'email'}`;
-  const badge = document.querySelector('#dashboardRole'); badge.textContent = ROLE_LABELS[role] || role; badge.classList.add(`role-${role}`);
-  const fallback = document.querySelector('#avatarFallback'); fallback.textContent = display[0].toUpperCase();
-  const avatarUrl = profile.avatar_url || user.user_metadata?.avatar_url || user.user_metadata?.picture;
-  if (avatarUrl) { const img=document.querySelector('#avatar'); img.onload=()=>{img.hidden=false;fallback.hidden=true}; img.onerror=()=>{img.hidden=true;fallback.hidden=false}; img.src=avatarUrl; }
-  if (role === 'owner') document.querySelector('#adminShortcut').hidden = false;
-</script></body></html>
+<script type="module" src="assets/dashboard-v31.js?v=31"></script>
+</body>
+</html>
