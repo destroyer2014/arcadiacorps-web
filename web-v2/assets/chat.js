@@ -40,8 +40,34 @@ async function loadConversations(){const {data,error}=await supabase.from('arc_c
 function convoName(c){return c.type==='group'?(c.name||'Grupo'):nameOf(state.profiles.get(c.otherId))}
 function renderLists(){const q=state.search.toLowerCase(),direct=state.conversations.filter(c=>c.type!=='group'&&convoName(c).toLowerCase().includes(q)),groups=state.conversations.filter(c=>c.type==='group'&&convoName(c).toLowerCase().includes(q));renderList($('#conversationList'),direct);renderList($('#groupList'),groups);$('#unreadTotal').textContent=state.conversations.filter(c=>c.last&&c.last.sender_id!==user.id&&(!c.lastRead||new Date(c.last.created_at)>new Date(c.lastRead))).length}
 function renderList(el,rows){el.innerHTML=rows.length?'':'<div class="chat-list-empty">No hay resultados.</div>';rows.forEach(c=>{const p=c.type==='group'?null:state.profiles.get(c.otherId),unread=c.last&&c.last.sender_id!==user.id&&(!c.lastRead||new Date(c.last.created_at)>new Date(c.lastRead)),b=document.createElement('button');b.className=`chat-list-item ${state.active?.id===c.id?'active':''}`;b.dataset.conversationId=c.id;b.innerHTML=`<div class="chat-avatar-wrap">${c.type==='group'?'<div class="chat-avatar fallback">👥</div>':avatar(p)}${c.type==='group'?'':presenceDot(c.otherId)}</div><div class="chat-list-copy"><div><strong>${esc(convoName(c))}</strong>${c.type==='group'?'<span class="chat-role group">Grupo</span>':badge(p?.role)}<time>${c.last?fmt(c.last.created_at):''}</time></div><p>${c.last?.deleted_at?'Mensaje eliminado':c.last?.body?esc(c.last.body):c.last?.image_path?'📷 Imagen':'Sin mensajes'}</p></div>${unread?'<span class="unread-dot">1</span>':''}`;b.onclick=()=>openConversation(c);el.appendChild(b)})}
-async function loadPeople(target=$('#peopleList'),q=''){const {data,error}=await supabase.from('profiles').select('id,username,full_name,avatar_url,role').neq('id',user.id).order('username').limit(100);if(error)throw error;(data||[]).forEach(p=>state.profiles.set(p.id,p));const rows=(data||[]).filter(p=>nameOf(p).toLowerCase().includes(q.toLowerCase()));target.innerHTML='';rows.forEach(p=>{const b=document.createElement('button');b.className='chat-list-item person';b.innerHTML=`<div class="chat-avatar-wrap">${avatar(p)}${presenceDot(p.id)}</div><div class="chat-list-copy"><div><strong>${esc(nameOf(p))}</strong>${badge(p.role)}</div><p>@${esc(p.username||'usuario')}</p></div><span class="start-chat">Mensaje</span>`;b.onclick=()=>startDirect(p.id);target.appendChild(b)})}
-async function startDirect(id){const {data,error}=await supabase.rpc('arc_get_or_create_chat',{other_user:id});if(error)return alert(error.message);modal('newChatModal',false);await loadConversations();openConversation(state.conversations.find(c=>c.id===data)||{id:data,type:'direct',otherId:id})}
+async function loadPeople(target=$('#peopleList'),q=''){
+  target.innerHTML='<div class="chat-list-empty">Cargando usuarios…</div>';
+  const {data,error}=await supabase.from('profiles').select('id,username,full_name,avatar_url,role').neq('id',user.id).order('username').limit(100);
+  if(error){target.innerHTML=`<div class="chat-list-empty error">${esc(error.message)}</div>`;throw error}
+  (data||[]).forEach(p=>state.profiles.set(p.id,p));
+  const query=(q||'').trim().toLowerCase();
+  const rows=(data||[]).filter(p=>`${nameOf(p)} ${p.username||''}`.toLowerCase().includes(query));
+  target.innerHTML=rows.length?'':'<div class="chat-list-empty">No hay usuarios.</div>';
+  rows.forEach(p=>{
+    const b=document.createElement('button');
+    b.type='button'; b.className='chat-list-item person'; b.dataset.userId=p.id;
+    b.innerHTML=`<div class="chat-avatar-wrap">${avatar(p)}${presenceDot(p.id)}</div><div class="chat-list-copy"><div><strong>${esc(nameOf(p))}</strong>${badge(p.role)}</div><p>@${esc(p.username||'usuario')}</p></div><span class="start-chat">Mensaje</span>`;
+    b.addEventListener('click',()=>startDirect(p.id));
+    target.appendChild(b)
+  })
+}
+async function startDirect(id){
+  try{
+    const {data,error}=await supabase.rpc('arc_get_or_create_chat',{other_user:id});
+    if(error)throw error;
+    const cid=Array.isArray(data)?(data[0]?.arc_get_or_create_chat||data[0]?.id):data;
+    if(!cid)throw new Error('No se recibió el ID de la conversación.');
+    modal('newChatModal',false);
+    await loadConversations();
+    const existing=state.conversations.find(c=>String(c.id)===String(cid));
+    await openConversation(existing||{id:cid,type:'direct',otherId:id});
+  }catch(err){show(err.message);alert(`No se pudo abrir el chat: ${err.message}`)}
+}
 async function openConversation(c){state.active=c;document.body.classList.add('chat-room-open');document.querySelector('.chat-page')?.classList.add('room-open');$('#chatEmpty').hidden=true;$('#chatRoom').hidden=false;$('#roomName').textContent=convoName(c);$('#roomRole').innerHTML=c.type==='group'?'<span class="chat-role group">Grupo</span>':badge(state.profiles.get(c.otherId)?.role);updateRoomPresence(c);$('#roomAvatar').outerHTML=c.type==='group'?'<div id="roomAvatar" class="chat-avatar fallback">👥</div>':avatar(state.profiles.get(c.otherId),'chat-avatar');$('#roomMenuBtn').textContent=c.type==='group'?'⚙':'⋮';await loadMessages();await markRead();subscribe();renderLists()}
 async function signed(path){if(!path)return'';const {data}=await supabase.storage.from('chat-media').createSignedUrl(path,3600);return data?.signedUrl||''}
 async function loadMessages(){const {data,error}=await supabase.from('arc_chat_messages').select('*').eq('conversation_id',state.active.id).order('created_at',{ascending:true}).limit(400);if(error)return show(error.message);state.messages=data||[];await profiles(state.messages.map(m=>m.sender_id));renderMessages()}
@@ -55,8 +81,36 @@ async function markRead(){await supabase.from('arc_chat_participants').update({l
 function subscribe(){if(state.channel)supabase.removeChannel(state.channel);state.channel=supabase.channel(`chat-${state.active.id}`).on('postgres_changes',{event:'*',schema:'public',table:'arc_chat_messages',filter:`conversation_id=eq.${state.active.id}`},async p=>{if(p.eventType==='INSERT'&&!state.messages.some(m=>m.id===p.new.id))state.messages.push(p.new);else await loadMessages();await renderMessages();await markRead();await loadConversations()}).subscribe()}
 const emojis='😀 😃 😄 😁 😂 😊 😍 🥰 😎 😭 😡 👍 👎 ❤️ 💙 💜 🔥 ✨ 🎉 🤣 🙏 👀 💀 🤖'.split(' ');$('#emojiPanel').innerHTML=emojis.map(e=>`<button type="button">${e}</button>`).join('');$('#emojiBtn').onclick=()=>$('#emojiPanel').hidden=!$('#emojiPanel').hidden;$('#emojiPanel').onclick=e=>{if(e.target.tagName==='BUTTON'){$('#messageBody').value+=e.target.textContent;$('#messageBody').focus()}};
 $('#roomMenuBtn').onclick=()=>state.active?.type==='group'?openGroupManage():alert('Opciones del chat privado');
-async function createGroup(){await loadPeople($('#groupMembersPick'));$('#groupMembersPick').querySelectorAll('.chat-list-item').forEach(b=>{b.onclick=()=>b.classList.toggle('selected')});modal('groupModal',true)}
-$('#groupForm').onsubmit=async e=>{e.preventDefault();const name=$('#groupName').value.trim(),description=$('#groupDescription').value.trim(),selected=[...$('#groupMembersPick').querySelectorAll('.selected')].map(b=>{const label=b.querySelector('strong')?.textContent;return [...state.profiles.values()].find(p=>nameOf(p)===label)?.id}).filter(Boolean);const {data,error}=await supabase.rpc('arc_create_group',{group_name:name,group_description:description,initial_members:selected});if(error)return show(error.message);modal('groupModal',false);await loadConversations();openConversation(state.conversations.find(c=>c.id===data))};
+async function createGroup(){
+  modal('groupModal',true);
+  const pick=$('#groupMembersPick');
+  await loadPeople(pick);
+  pick.querySelectorAll('.chat-list-item[data-user-id]').forEach(b=>{
+    b.onclick=e=>{e.preventDefault();b.classList.toggle('selected')}
+  });
+}
+$('#groupForm').onsubmit=async e=>{
+  e.preventDefault();
+  const form=e.currentTarget, submit=form.querySelector('button[type=submit]');
+  const name=$('#groupName').value.trim(),description=$('#groupDescription').value.trim();
+  const selected=[...$('#groupMembersPick').querySelectorAll('.selected[data-user-id]')].map(b=>b.dataset.userId).filter(Boolean);
+  let feedback=$('#groupFormFeedback');
+  if(!feedback){feedback=document.createElement('div');feedback.id='groupFormFeedback';feedback.className='message';submit.before(feedback)}
+  if(!name){feedback.textContent='Escribe un nombre para el grupo.';feedback.className='message show error';return}
+  submit.disabled=true;feedback.textContent='Creando grupo…';feedback.className='message show ok';
+  try{
+    const {data,error}=await supabase.rpc('arc_create_group',{group_name:name,group_description:description,initial_members:selected});
+    if(error)throw error;
+    const cid=Array.isArray(data)?(data[0]?.arc_create_group||data[0]?.id):data;
+    if(!cid)throw new Error('El grupo se creó, pero no se recibió su ID.');
+    feedback.textContent='Grupo creado correctamente.';feedback.className='message show ok';
+    modal('groupModal',false);form.reset();
+    await loadConversations();
+    const group=state.conversations.find(c=>String(c.id)===String(cid));
+    if(group)await openConversation(group);else{state.tab='groups';renderLists();}
+  }catch(err){feedback.textContent=err.message;feedback.className='message show error';show(err.message);alert(`No se pudo crear el grupo: ${err.message}`)}
+  finally{submit.disabled=false}
+};
 async function openGroupManage(){const c=state.active,{data:members}=await supabase.from('arc_chat_participants').select('user_id,member_role,status').eq('conversation_id',c.id);await profiles((members||[]).map(m=>m.user_id));const {data:reqs}=await supabase.from('arc_chat_group_requests').select('*').eq('conversation_id',c.id).eq('status','pending');await profiles((reqs||[]).map(r=>r.user_id));const can=['owner','admin'].includes(c.memberRole);$('#groupManageBody').innerHTML=`<p><b>Invitación:</b> ${esc(c.invite_code||'')}</p>${can?`<button id="regenInvite" class="secondary">Regenerar enlace</button><h3>Solicitudes</h3>${(reqs||[]).map(r=>`<div class="group-request">${avatar(state.profiles.get(r.user_id),'chat-avatar')}<span>${esc(nameOf(state.profiles.get(r.user_id)))}</span><button data-accept="${r.id}">Aceptar</button><button data-reject="${r.id}">Rechazar</button></div>`).join('')||'<p>Sin solicitudes</p>'}`:''}<h3>Miembros</h3>${(members||[]).filter(m=>m.status==='active').map(m=>`<div class="group-request">${avatar(state.profiles.get(m.user_id),'chat-avatar')}<span>${esc(nameOf(state.profiles.get(m.user_id)))} · ${m.member_role}</span>${can&&m.user_id!==user.id?`<button data-promote="${m.user_id}">${m.member_role==='admin'?'Quitar admin':'Dar admin'}</button><button data-remove="${m.user_id}">Expulsar</button>`:''}</div>`).join('')}<button id="leaveGroup" class="danger-btn">Abandonar grupo</button>${c.memberRole==='owner'?'<button id="deleteGroup" class="danger-btn">Eliminar grupo</button>':''}`;modal('groupManageModal',true);$('#groupManageBody').onclick=async e=>{const t=e.target;if(t.dataset.accept)await supabase.rpc('arc_resolve_group_request',{request_id:t.dataset.accept,approve:true});if(t.dataset.reject)await supabase.rpc('arc_resolve_group_request',{request_id:t.dataset.reject,approve:false});if(t.dataset.promote)await supabase.rpc('arc_set_group_admin',{cid:c.id,target_user:t.dataset.promote,make_admin:t.textContent.includes('Dar')});if(t.dataset.remove)await supabase.rpc('arc_remove_group_member',{cid:c.id,target_user:t.dataset.remove});if(t.id==='regenInvite')await supabase.rpc('arc_regenerate_invite',{cid:c.id});if(t.id==='leaveGroup')await supabase.rpc('arc_leave_group',{cid:c.id});if(t.id==='deleteGroup'&&confirm('¿Eliminar grupo?'))await supabase.rpc('arc_delete_group',{cid:c.id});modal('groupManageModal',false);await loadConversations()}}
 $('#createGroupBtn').onclick=createGroup;$('#newGroupQuick').onclick=createGroup;$('#joinGroupBtn').onclick=async()=>{const code=prompt('Código de invitación');if(!code)return;const {error}=await supabase.rpc('arc_request_group_join',{invite:code.trim()});alert(error?error.message:'Solicitud enviada al administrador')};
 function openNew(){modal('newChatModal',true);loadPeople($('#newChatPeople'),$('#newChatSearch').value)}$('#newChatBtn').onclick=$('#emptyNewChat').onclick=openNew;$('#closeNewChat').onclick=()=>modal('newChatModal',false);$('#newChatSearch').oninput=e=>loadPeople($('#newChatPeople'),e.target.value);$('#chatSearch').oninput=e=>{state.search=e.target.value;renderLists();if(state.tab==='people')loadPeople($('#peopleList'),state.search)};document.querySelectorAll('.chat-tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.chat-tabs button').forEach(x=>x.classList.toggle('active',x===b));state.tab=b.dataset.tab;$('#conversationList').hidden=state.tab!=='conversations';$('#peopleList').hidden=state.tab!=='people';$('#groupList').hidden=state.tab!=='groups';if(state.tab==='people')loadPeople($('#peopleList'),state.search)});$('#chatBack').onclick=()=>{document.body.classList.remove('chat-room-open');document.querySelector('.chat-page')?.classList.remove('room-open');$('#chatRoom').hidden=true;$('#chatEmpty').hidden=false};
