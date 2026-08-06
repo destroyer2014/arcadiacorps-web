@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Mis Sub-Bots — ArcadiaCorps</title>
+  <link rel="stylesheet" href="assets/styles.css?v=30.1">
+  <link rel="stylesheet" href="assets/subbots.css?v=30.1">
+</head>
+<body>
+<main class="dashboard subbots-page">
+  <section class="subbots-hero panel">
+    <div><span class="eyebrow">🤖 NERO BOT</span><h1>Mis Sub-Bots</h1><p>Vincula y personaliza tu instancia de WhatsApp.</p></div>
+    <button id="newSubbot" class="primary" type="button">＋ Nuevo Sub-Bot</button>
+  </section>
+  <div id="subbotNotice" class="message"></div>
+  <section id="subbotList" class="subbot-grid"></section>
+  <section id="emptyState" class="panel subbot-empty" hidden><div>🤖</div><h2>Aún no tienes un Sub-Bot</h2><p>Tu cuenta permite crear 1 Sub-Bot.</p><button id="emptyCreate" class="primary" type="button">Crear mi Sub-Bot</button></section>
+</main>
+
+<div id="subbotModal" class="social-modal" aria-hidden="true">
+  <div class="social-modal-card subbot-modal-card">
+    <header><div><span class="eyebrow">CONFIGURACIÓN</span><h2 id="modalTitle">Nuevo Sub-Bot</h2></div><button id="closeModal" class="modal-close" type="button">×</button></header>
+    <form id="subbotForm">
+      <input id="recordId" type="hidden">
+      <label>Número de WhatsApp <input id="phone" inputmode="numeric" autocomplete="tel" placeholder="51912345678" required><small>Incluye código del país, solo números.</small></label>
+      <label>Nombre <input id="name" maxlength="40" value="Nero Subbot" required></label>
+      <label>Prefijo <input id="prefix" maxlength="4" value="." required></label>
+      <label>Estado <input id="statusText" maxlength="139" placeholder="Activo con ArcadiaCorps"></label>
+      <label>Foto de perfil <input id="avatar" type="file" accept="image/jpeg,image/png,image/webp"></label>
+      <div id="avatarPreview" class="subbot-avatar-preview">🤖</div>
+      <label class="switch-row"><span>Lectura automática</span><input id="autoRead" type="checkbox"></label>
+      <div class="modal-actions"><button id="cancelModal" class="secondary" type="button">Cancelar</button><button class="primary" type="submit">Guardar cambios</button></div>
+    </form>
+  </div>
+</div>
+
+<div id="pairModal" class="social-modal" aria-hidden="true">
+  <div class="social-modal-card subbot-modal-card">
+    <header><div><span class="eyebrow">VINCULACIÓN</span><h2>Conectar WhatsApp</h2></div><button id="closePair" class="modal-close" type="button">×</button></header>
+    <div class="pair-tabs"><button class="active" data-pair-tab="code" type="button">Código</button><button data-pair-tab="qr" type="button">QR</button></div>
+    <section id="pairCodePanel" class="pair-panel"><p>Solicita un código y escríbelo en WhatsApp → Dispositivos vinculados.</p><button id="generateCode" class="primary" type="button">Generar código</button><output id="pairCode" class="pair-code">— — — — — — — —</output></section>
+    <section id="pairQrPanel" class="pair-panel" hidden><p>Escanea este código desde WhatsApp.</p><button id="generateQr" class="primary" type="button">Generar QR</button><div id="qrBox" class="qr-box">QR pendiente</div></section>
+  </div>
+</div>
+<script type="module" src="assets/subbots.js?v=30.1"></script>
+</body></html>
