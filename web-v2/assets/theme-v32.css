@@ -1,0 +1,54 @@
+/* ArcadiaCorps RPG Neon v32 — capa visual global */
+:root{
+  --arc-neon:#22d3ee;--arc-blue:#2f6bff;--arc-purple:#8758ff;--arc-green:#22e7a1;
+  --arc-gold:#f7c75b;--arc-danger:#ff385d;--arc-ink:#03050c;--arc-panel:#091226;
+  --arc-glow:0 0 18px rgba(34,211,238,.22),0 0 46px rgba(135,88,255,.12);
+}
+html{scroll-behavior:smooth}body{overflow-x:hidden}
+body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:
+radial-gradient(circle at 15% 15%,rgba(34,211,238,.055),transparent 26%),
+radial-gradient(circle at 85% 28%,rgba(135,88,255,.07),transparent 30%),
+linear-gradient(115deg,transparent 0 47%,rgba(47,107,255,.025) 48% 49%,transparent 50% 100%);background-size:auto,auto,120px 120px}
+body::before{animation:arcGridDrift 22s linear infinite}
+@keyframes arcGridDrift{to{background-position:34px 34px,34px 34px}}
+@keyframes arcPulse{0%,100%{opacity:.55}50%{opacity:1}}
+@keyframes arcRise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes arcShine{to{transform:translateX(160%) rotate(18deg)}}
+@keyframes arcBorder{0%,100%{filter:hue-rotate(0)}50%{filter:hue-rotate(24deg)}}
+
+/* Marca */
+.app-brand{gap:12px}.mini-logo{clip-path:none!important;border-radius:12px!important;background:url('images/arcadia-logo-rpg.png') center/cover no-repeat!important;color:transparent!important;border:1px solid rgba(135,88,255,.52);box-shadow:0 0 18px rgba(34,211,238,.18),0 0 28px rgba(135,88,255,.14)}
+.app-brand>span:last-child{letter-spacing:-.02em}.app-header{background:linear-gradient(180deg,rgba(3,6,15,.96),rgba(3,6,15,.86));border-bottom:1px solid rgba(34,211,238,.2);box-shadow:0 8px 34px rgba(0,0,0,.42)}
+.app-header::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:linear-gradient(90deg,transparent,var(--arc-blue),var(--arc-neon),var(--arc-purple),transparent);opacity:.72;box-shadow:0 0 14px var(--arc-neon);animation:arcPulse 3s ease-in-out infinite}
+.menu-toggle{position:relative;overflow:hidden}.menu-toggle::after{content:"";position:absolute;inset:-30% auto -30% -35%;width:24%;background:rgba(255,255,255,.24);transform:rotate(18deg);animation:arcShine 5s ease-in-out infinite}
+
+/* Sidebar */
+.app-sidebar{width:300px;padding:18px 16px;background:
+linear-gradient(180deg,rgba(5,10,25,.995),rgba(2,5,13,.995)),
+url('images/arcadia-logo-rpg.png') center 88%/180px no-repeat;border-right:1px solid rgba(34,211,238,.25);box-shadow:22px 0 70px rgba(0,0,0,.48)}
+.app-sidebar::before{content:"";position:absolute;top:0;right:-1px;width:2px;height:100%;background:linear-gradient(transparent,var(--arc-neon),var(--arc-purple),transparent);box-shadow:0 0 12px var(--arc-neon);opacity:.65}
+.sidebar-profile{border-color:rgba(61,123,255,.38);background:linear-gradient(135deg,rgba(17,30,61,.9),rgba(12,13,38,.88));box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 12px 32px rgba(0,0,0,.28)}
+.sidebar-avatar{border:1px solid rgba(34,211,238,.34);box-shadow:0 0 18px rgba(34,211,238,.12)}
+.sidebar-nav{gap:10px}.sidebar-nav details{position:relative;border:1px solid rgba(135,151,190,.1);border-radius:16px;padding:7px;background:rgba(5,9,20,.48);overflow:hidden}.sidebar-nav details[open]{border-color:rgba(64,127,255,.2);background:linear-gradient(180deg,rgba(15,25,50,.56),rgba(4,8,18,.52))}.sidebar-nav details[open]::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:2px;background:linear-gradient(var(--arc-neon),var(--arc-purple));box-shadow:0 0 12px var(--arc-neon)}
+.sidebar-nav summary{padding:10px 12px;text-transform:uppercase;font-size:11px;letter-spacing:.13em;color:#c9d4f6}.sidebar-nav summary span{transition:transform .22s}.sidebar-nav details[open] summary span{transform:rotate(180deg)}
+.sidebar-nav a{position:relative;margin:3px 0;padding:11px 12px;border:1px solid transparent}.sidebar-nav a:hover{transform:translateX(3px)}.sidebar-nav a.active{background:linear-gradient(100deg,rgba(47,107,255,.24),rgba(135,88,255,.21));border-color:rgba(67,128,255,.42);box-shadow:0 0 22px rgba(47,107,255,.11)}.sidebar-nav a.active::after{content:"";position:absolute;right:9px;width:6px;height:6px;border-radius:50%;background:var(--arc-neon);box-shadow:0 0 12px var(--arc-neon)}
+.sidebar-section-icon{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:rgba(47,107,255,.11);border:1px solid rgba(47,107,255,.18);font-size:14px;flex:0 0 auto}
+.sidebar-logout{background:rgba(255,56,93,.12)!important;border-color:rgba(255,56,93,.48)!important;color:#ff9daf!important}.sidebar-logout:hover{background:rgba(255,56,93,.2)!important;box-shadow:0 0 24px rgba(255,56,93,.15)}
+
+/* Componentes globales */
+.card,.panel{animation:arcRise .45s ease both;box-shadow:0 26px 80px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.03),var(--arc-glow)}
+.card:hover,.panel:hover{border-color:rgba(74,139,255,.46)}
+button,.btn{position:relative;overflow:hidden}button::after,.btn::after{content:"";position:absolute;inset:-40% auto -40% -45%;width:18%;background:rgba(255,255,255,.22);transform:rotate(18deg);transition:.55s}button:hover::after,.btn:hover::after{transform:translateX(850%) rotate(18deg)}
+.primary{background:linear-gradient(120deg,var(--arc-blue),var(--arc-purple),#9b4dff);box-shadow:0 12px 30px rgba(47,107,255,.24),0 0 22px rgba(135,88,255,.12)}
+.danger,.danger-btn,[data-delete],.btn-danger{background:linear-gradient(135deg,rgba(255,56,93,.2),rgba(164,20,55,.2))!important;border:1px solid rgba(255,56,93,.55)!important;color:#ff9daf!important}.danger:hover,.danger-btn:hover,[data-delete]:hover,.btn-danger:hover{background:linear-gradient(135deg,#d91f46,#7d102a)!important;color:#fff!important;box-shadow:0 0 28px rgba(255,56,93,.25)}
+input,textarea,select{transition:border-color .2s,box-shadow .2s,transform .2s}input:focus,textarea:focus,select:focus{border-color:var(--arc-neon)!important;box-shadow:0 0 0 3px rgba(34,211,238,.1),0 0 22px rgba(34,211,238,.08)!important}
+.modal,.dialog,.modal-card{backdrop-filter:blur(20px)}
+::-webkit-scrollbar{width:7px;height:7px}::-webkit-scrollbar-thumb{background:linear-gradient(var(--arc-blue),var(--arc-purple));border-radius:20px}::-webkit-scrollbar-track{background:#040813}
+
+/* Login y páginas sin shell */
+body:not(.with-app-shell) .brand .logo{clip-path:none;border-radius:18px;background:url('images/arcadia-logo-rpg.png') center/cover no-repeat;color:transparent;border:1px solid rgba(34,211,238,.25)}
+body:not(.with-app-shell) .card{isolation:isolate}.auth-shell::before,.shell::before{content:"";position:fixed;inset:0;z-index:-2;background:linear-gradient(rgba(3,5,12,.75),rgba(3,5,12,.94)),url('images/arcadia-banner-rpg.png') center/cover fixed no-repeat;opacity:.72}
+
+/* Responsive */
+@media(max-width:760px){.app-header{height:68px;padding:0 16px}.app-brand{font-size:20px}.mini-logo{width:40px;height:40px}.app-sidebar{top:68px;width:min(88vw,310px)}.sidebar-backdrop{inset:68px 0 0}.app-page{padding-top:90px}.panel,.card{box-shadow:0 18px 48px rgba(0,0,0,.42),0 0 22px rgba(47,107,255,.08)}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
