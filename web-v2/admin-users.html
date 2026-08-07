@@ -1,86 +1,9 @@
 <!doctype html>
-<html lang="es">
-<head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Usuarios y roles — ArcadiaCorps</title>
-  <link rel="stylesheet" href="assets/styles.css?v=13">
-
-  <link rel="stylesheet" href="assets/theme-v33.css?v=34">
-  <script defer src="assets/effects-v33.js?v=36.2"></script>
-  <link rel="stylesheet" href="assets/theme-v35.css?v=35">
-  <link rel="stylesheet" href="assets/ai-support-v35.css?v=35">
-  <script type="module" src="assets/ai-support-v35.js?v=35"></script>
-  <link rel="stylesheet" href="assets/theme-v36.css?v=36">
-  <link rel="stylesheet" href="assets/presence-v36.css?v=36">
-  <link rel="stylesheet" href="assets/notifications-v36.css?v=36">
-  <script type="module" src="assets/presence-v36.js?v=36.2"></script>
-  <script type="module" src="assets/notifications-v36.js?v=36"></script>
-  <link rel="stylesheet" href="assets/performance-v36-2.css?v=36.2">
-</head>
-<body>
-  <main class="dashboard app-page">
-    <div class="page-heading"><div><span class="eyebrow">Administración</span><h1>Usuarios y roles</h1><p>Gestión real de permisos. Solo Owner puede acceder.</p></div></div>
-    <section class="panel">
-      <div class="toolbar"><input id="searchInput" type="search" placeholder="Buscar por usuario o correo"><button id="reloadBtn" class="secondary compact" type="button">Actualizar</button></div>
-      <div id="adminMessage" class="message" role="alert"></div>
-      <div id="usersList" class="users-list"><div class="empty-state">Cargando usuarios…</div></div>
-    </section>
-  </main>
-  <script type="module">
-    import { supabase } from './assets/auth.js';
-    import { requireRole, ROLE_LABELS } from './assets/access.js';
-    import { mountShell } from './assets/shell.js?v=36';
-
-    const access = await requireRole(['owner']);
-    if (!access) throw new Error('Acceso denegado');
-    await mountShell();
-
-    const list = document.querySelector('#usersList');
-    const message = document.querySelector('#adminMessage');
-    const search = document.querySelector('#searchInput');
-    let profiles = [];
-
-    const show = (text, type='error') => { message.textContent=text; message.className=`message show ${type}`; };
-    const clear = () => { message.textContent=''; message.className='message'; };
-    const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
-
-    function render() {
-      const term = search.value.trim().toLowerCase();
-      const rows = profiles.filter(p => [p.username,p.full_name,p.email,p.role].some(v => String(v||'').toLowerCase().includes(term)));
-      if (!rows.length) { list.innerHTML='<div class="empty-state">No se encontraron usuarios.</div>'; return; }
-      list.innerHTML = rows.map(profile => `
-        <article class="user-role-row" data-id="${escapeHtml(profile.id)}">
-          <div class="role-user-avatar">${escapeHtml((profile.full_name || profile.username || profile.email || 'U')[0].toUpperCase())}</div>
-          <div class="role-user-info"><strong>${escapeHtml(profile.full_name || profile.username || 'Usuario')}</strong><small>${escapeHtml(profile.email || '')}</small><code>${escapeHtml(profile.id)}</code></div>
-          <select aria-label="Rol de ${escapeHtml(profile.username || profile.email)}">
-            ${['user','staff','owner'].map(role => `<option value="${role}" ${profile.role===role?'selected':''}>${ROLE_LABELS[role]}</option>`).join('')}
-          </select>
-          <button class="primary compact save-role" type="button">Guardar</button>
-        </article>`).join('');
-
-      list.querySelectorAll('.save-role').forEach(button => button.addEventListener('click', async event => {
-        clear();
-        const row = event.currentTarget.closest('.user-role-row');
-        const role = row.querySelector('select').value;
-        event.currentTarget.disabled = true;
-        event.currentTarget.textContent = 'Guardando…';
-        const { error } = await supabase.rpc('admin_set_user_role', { target_user_id: row.dataset.id, new_role: role });
-        if (error) show(error.message); else { show('Rol actualizado correctamente.','ok'); await load(); }
-        event.currentTarget.disabled = false;
-        event.currentTarget.textContent = 'Guardar';
-      }));
-    }
-
-    async function load() {
-      clear();
-      const { data, error } = await supabase.from('profiles').select('id,email,username,full_name,role,created_at').order('created_at',{ascending:false});
-      if (error) { show(error.message); return; }
-      profiles = data || [];
-      render();
-    }
-    search.addEventListener('input',render);
-    document.querySelector('#reloadBtn').addEventListener('click',load);
-    await load();
-  </script>
-</body>
-</html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Usuarios y roles — ArcadiaCorps</title>
+<link rel="stylesheet" href="assets/styles.css?v=37"><link rel="stylesheet" href="assets/theme-v33.css?v=34"><link rel="stylesheet" href="assets/theme-v35.css?v=35"><link rel="stylesheet" href="assets/theme-v36.css?v=36"><link rel="stylesheet" href="assets/presence-v36.css?v=36"><link rel="stylesheet" href="assets/notifications-v36.css?v=36"><link rel="stylesheet" href="assets/performance-v36-2.css?v=36.2"><link rel="stylesheet" href="assets/admin-roles-v37.css?v=37"><link rel="stylesheet" href="assets/ai-support-v35.css?v=35">
+<script type="module" src="assets/presence-v36.js?v=36.2"></script><script type="module" src="assets/notifications-v36.js?v=36"></script><script type="module" src="assets/ai-support-v35.js?v=35"></script></head>
+<body><main class="dashboard app-page admin-users-v37"><div class="page-heading"><div><span class="eyebrow">Administración</span><h1>Usuarios y roles</h1><p>Gestión protegida para Owner con historial de cambios.</p></div></div>
+<section class="panel admin-summary-v37"><div><small>Total</small><strong id="totalUsers">—</strong></div><div><small>Usuarios</small><strong id="userCount">—</strong></div><div><small>Staff</small><strong id="staffCount">—</strong></div><div><small>Owner</small><strong id="ownerCount">—</strong></div></section>
+<section class="panel"><div class="toolbar admin-toolbar-v37"><input id="searchInput" type="search" placeholder="Buscar por usuario, correo o rol"><button id="reloadBtn" class="secondary compact" type="button">Actualizar</button></div><div id="adminMessage" class="message" role="alert"></div><div id="usersList" class="users-list"><div class="empty-state">Cargando usuarios…</div></div></section>
+<section class="panel role-audit-panel"><div class="panel-title-row"><div><span class="eyebrow">Auditoría</span><h2>Últimos cambios de rol</h2></div><button id="reloadAuditBtn" class="secondary compact" type="button">Actualizar</button></div><div id="roleAuditList" class="role-audit-list"><div class="empty-state">Cargando historial…</div></div></section>
+</main><script type="module" src="assets/admin-roles-v37.js?v=37"></script></body></html>

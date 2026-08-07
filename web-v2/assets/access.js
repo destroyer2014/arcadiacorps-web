@@ -6,6 +6,8 @@ export const ROLE_LABELS = Object.freeze({
   user: 'Usuario'
 });
 
+export const VALID_ROLES = Object.freeze(['owner','staff','user']);
+
 export async function getCurrentAccess() {
   const session = await requireSession();
   if (!session) return null;
@@ -17,6 +19,9 @@ export async function getCurrentAccess() {
     .maybeSingle();
 
   if (error) throw error;
+
+  const rawRole = String(profile?.role || 'user').toLowerCase();
+  const role = VALID_ROLES.includes(rawRole) ? rawRole : 'user';
 
   return {
     session,
@@ -30,7 +35,7 @@ export async function getCurrentAccess() {
       role: 'user',
       created_at: session.user.created_at
     },
-    role: profile?.role || 'user'
+    role
   };
 }
 
@@ -39,12 +44,13 @@ export function hasRole(role, allowedRoles) {
 }
 
 export async function requireRole(allowedRoles) {
+  const normalized = allowedRoles.filter(role => VALID_ROLES.includes(role));
   const access = await getCurrentAccess();
   if (!access) return null;
 
-  if (!hasRole(access.role, allowedRoles)) {
+  if (!hasRole(access.role, normalized)) {
     const target = new URL('access-denied.html', window.location.href);
-    target.searchParams.set('required', allowedRoles.join(','));
+    target.searchParams.set('required', normalized.join(','));
     window.location.replace(target.href);
     return null;
   }
