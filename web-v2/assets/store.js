@@ -1,4 +1,4 @@
-import { mountShell } from './shell.js?v=35';
+import { mountShell } from './shell.js?v=36';
 import { getCurrentAccess } from './access.js';
 import { supabase } from './auth.js';
 

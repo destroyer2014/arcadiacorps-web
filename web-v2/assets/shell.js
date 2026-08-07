@@ -9,13 +9,16 @@ const esc = (value='') => String(value).replace(/[&<>'"]/g, c => ({
 const active = (...paths) =>
   paths.some(path => window.location.pathname.endsWith(path)) ? ' active' : '';
 
-function link(href, icon, label, paths=[href]) {
-  return `<a class="${active(...paths)}" href="${APP_URL}/${href}">
+function link(href, icon, label, paths=[href], extra='') {
+  return `<a class="${active(...paths)}" href="${APP_URL}/${href}" ${extra}>
     <span class="nav-icon">${icon}</span><span>${label}</span>
   </a>`;
 }
 
 export async function mountShell() {
+  const existing = document.querySelector('#arcadiaShell');
+  if (existing) return getCurrentAccess();
+
   const access = await getCurrentAccess();
   if (!access) return null;
 
@@ -42,24 +45,30 @@ export async function mountShell() {
     <header class="app-header">
       <button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menú">☰</button>
 
-      <a class="app-brand" href="${APP_URL}/dashboard.html?v=35">
+      <a class="app-brand" href="${APP_URL}/dashboard.html?v=36">
         <img class="app-brand-logo"
              src="${APP_URL}/assets/images/arcadia-logo-rpg.png"
              alt="ArcadiaCorps">
         <span>Arcadia<span>Corps</span></span>
       </a>
+
+      <div id="arcadiaHeaderActions" class="arcadia-header-actions"></div>
     </header>
 
     <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
     <aside class="app-sidebar" id="appSidebar" aria-label="Navegación principal">
       <div class="sidebar-profile">
-        ${avatarUrl
-          ? `<img src="${esc(avatarUrl)}" alt="" class="sidebar-avatar">`
-          : `<div class="sidebar-avatar fallback">${esc(initial)}</div>`}
+        <div class="sidebar-avatar-wrap">
+          ${avatarUrl
+            ? `<img src="${esc(avatarUrl)}" alt="" class="sidebar-avatar">`
+            : `<div class="sidebar-avatar fallback">${esc(initial)}</div>`}
+          <span class="arc-presence-dot" data-presence-user="${esc(user.id)}"></span>
+        </div>
         <div>
           <strong>${esc(displayName)}</strong>
           <small>${esc(user.email || '')}</small>
+          <span id="sidebarPresenceText" class="sidebar-presence-text">Conectando…</span>
           <span class="role-pill role-${esc(role)}">${esc(ROLE_LABELS[role] || role)}</span>
         </div>
       </div>
@@ -67,7 +76,7 @@ export async function mountShell() {
       <nav class="sidebar-nav">
         <details open>
           <summary><span><span class="nav-section-icon">🏰</span>Portal</span><span>⌄</span></summary>
-          ${link('dashboard.html?v=35','⌂','Inicio',['dashboard.html'])}
+          ${link('dashboard.html?v=36','⌂','Inicio',['dashboard.html'])}
           ${link('profile.html','◉','Mi perfil',['profile.html'])}
           ${link('news.html','▤','Noticias',['news.html','news-detail.html','news-editor.html'])}
         </details>
@@ -76,6 +85,14 @@ export async function mountShell() {
           <summary><span><span class="nav-section-icon">✦</span>Social</span><span>⌄</span></summary>
           ${link('social.html','◎','Comunidad',['social.html'])}
           ${link('chat.html','✉','Chat',['chat.html'])}
+        </details>
+
+        <details open>
+          <summary><span><span class="nav-section-icon">🧠</span>IA’s</span><span>⌄</span></summary>
+          ${link('ais.html#chatgpt','◈','ChatGPT',['ais.html'])}
+          ${link('ais.html#claude','◆','Claude',['ais.html'])}
+          ${link('ais.html#image-prompt','▧','Imagen a Prompt',['ais.html'])}
+          ${link('ais.html#nano-banana','✦','Nano Banana',['ais.html'])}
         </details>
 
         <details open>
@@ -94,7 +111,11 @@ export async function mountShell() {
           <details open>
             <summary><span><span class="nav-section-icon">🛡</span>Soporte</span><span>⌄</span></summary>
             ${link('support-tickets.html','🛡','Atender tickets',['support-tickets.html'])}
-            ${link('reviews-admin.html','★','Moderar reseñas',['reviews-admin.html'])}
+            <a class="${active('reviews-admin.html')}" href="${APP_URL}/reviews-admin.html">
+              <span class="nav-icon">★</span>
+              <span>Moderar reseñas</span>
+              <span id="reviewPendingBadge" class="nav-count" hidden>0</span>
+            </a>
           </details>
         ` : ''}
 
@@ -135,6 +156,21 @@ export async function mountShell() {
     await supabase.auth.signOut({ scope:'local' });
     window.location.replace(`${APP_URL}/login.html?logout=1`);
   });
+
+  if (['owner','staff'].includes(role)) {
+    supabase
+      .from('arc_reviews')
+      .select('id',{ count:'exact',head:true })
+      .eq('status','pending')
+      .then(({ count }) => {
+        const badge = root.querySelector('#reviewPendingBadge');
+        const total = Number(count || 0);
+        if (!badge || !total) return;
+        badge.textContent = total > 99 ? '99+' : String(total);
+        badge.hidden = false;
+      })
+      .catch(() => {});
+  }
 
   return access;
 }

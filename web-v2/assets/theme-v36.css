@@ -1,0 +1,52 @@
+/* ArcadiaCorps v36 */
+.app-header{z-index:1000!important}
+.app-sidebar{z-index:990!important}
+.sidebar-backdrop{z-index:980!important}
+.sidebar-nav details{scroll-margin-top:90px}
+.sidebar-nav a[href*="ais.html"] .nav-icon{
+  color:#63e6ff;
+  text-shadow:0 0 12px rgba(35,215,255,.38);
+}
+.review-admin-page{max-width:1050px!important}
+.review-filter-tabs{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding-bottom:4px;
+}
+.review-filter-tabs button{
+  width:auto!important;
+  min-width:130px!important;
+  background:#0b1326!important;
+  border:1px solid rgba(83,112,181,.22)!important;
+}
+.review-filter-tabs button.active{
+  background:linear-gradient(135deg,rgba(47,107,255,.28),rgba(135,88,255,.22))!important;
+  border-color:rgba(68,127,255,.42)!important;
+}
+.review-status{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  width:max-content;
+  padding:6px 9px;
+  border-radius:999px;
+  font-size:10px;
+  font-weight:900;
+  text-transform:uppercase;
+}
+.review-status.pending{color:#ffd56c;background:rgba(246,200,95,.10);border:1px solid rgba(246,200,95,.28)}
+.review-status.approved{color:#77ffd4;background:rgba(36,231,164,.09);border:1px solid rgba(36,231,164,.26)}
+.review-status.rejected{color:#ff9aad;background:rgba(255,70,100,.09);border:1px solid rgba(255,70,100,.26)}
+.review-moderation-meta{
+  margin-top:12px;
+  color:#7f8aa7;
+  font-size:11px;
+}
+.review-delete{
+  background:linear-gradient(135deg,#ff4664,#a70f35)!important;
+  color:#fff!important;
+}
+@media(max-width:600px){
+  .review-filter-tabs button{min-width:118px!important}
+}

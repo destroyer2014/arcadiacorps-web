@@ -10,6 +10,11 @@
   <link rel="stylesheet" href="assets/theme-v35.css?v=35">
   <link rel="stylesheet" href="assets/ai-support-v35.css?v=35">
   <script type="module" src="assets/ai-support-v35.js?v=35"></script>
+  <link rel="stylesheet" href="assets/theme-v36.css?v=36">
+  <link rel="stylesheet" href="assets/presence-v36.css?v=36">
+  <link rel="stylesheet" href="assets/notifications-v36.css?v=36">
+  <script type="module" src="assets/presence-v36.js?v=36"></script>
+  <script type="module" src="assets/notifications-v36.js?v=36"></script>
 </head>
 <body>
   <main class="dashboard app-page">
@@ -23,7 +28,7 @@
   <script type="module">
     import { supabase } from './assets/auth.js';
     import { requireRole, ROLE_LABELS } from './assets/access.js';
-    import { mountShell } from './assets/shell.js';
+    import { mountShell } from './assets/shell.js?v=36';
 
     const access = await requireRole(['owner']);
     if (!access) throw new Error('Acceso denegado');

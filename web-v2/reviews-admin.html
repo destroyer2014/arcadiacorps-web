@@ -7,8 +7,13 @@
   <link rel="stylesheet" href="assets/styles.css?v=31">
   <link rel="stylesheet" href="assets/theme-v33.css?v=34">
   <link rel="stylesheet" href="assets/theme-v35.css?v=35">
+  <link rel="stylesheet" href="assets/theme-v36.css?v=36">
+  <link rel="stylesheet" href="assets/presence-v36.css?v=36">
+  <link rel="stylesheet" href="assets/notifications-v36.css?v=36">
   <link rel="stylesheet" href="assets/ai-support-v35.css?v=35">
   <script defer src="assets/effects-v33.js?v=34"></script>
+  <script type="module" src="assets/presence-v36.js?v=36"></script>
+  <script type="module" src="assets/notifications-v36.js?v=36"></script>
   <script type="module" src="assets/ai-support-v35.js?v=35"></script>
 </head>
 <body>
@@ -17,23 +22,23 @@
     <div>
       <span class="eyebrow">OWNER Y STAFF</span>
       <h1>Moderar reseñas</h1>
-      <p>Aprueba o rechaza las opiniones enviadas por la comunidad.</p>
+      <p>Aprueba, rechaza o elimina opiniones de la comunidad.</p>
     </div>
   </header>
 
   <div id="reviewAdminNotice" class="message"></div>
 
   <section class="review-admin-toolbar panel">
-    <div>
-      <strong>Reseñas pendientes</strong>
-      <span id="reviewPendingCount" class="review-admin-count">—</span>
+    <div class="review-filter-tabs">
+      <button class="active" data-review-filter="pending" type="button">Pendientes <span data-count="pending">0</span></button>
+      <button data-review-filter="approved" type="button">Aprobadas <span data-count="approved">0</span></button>
+      <button data-review-filter="rejected" type="button">Rechazadas <span data-count="rejected">0</span></button>
     </div>
     <button id="reloadReviews" class="secondary" type="button">Actualizar</button>
   </section>
 
   <section id="reviewAdminList" class="review-admin-list"></section>
 </main>
-
-<script type="module" src="assets/reviews-admin-v35.js?v=35"></script>
+<script type="module" src="assets/reviews-admin-v36.js?v=36"></script>
 </body>
 </html>

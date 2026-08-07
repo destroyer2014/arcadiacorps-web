@@ -1,7 +1,7 @@
 import { supabase } from './auth.js';
-import { mountShell } from './shell.js?v=35';
+import { mountShell } from './shell.js?v=36';
 const access=await mountShell(); if(!access) throw new Error('Sin sesión');
-const {user,role}=access,$=s=>document.querySelector(s),esc=(v='')=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const {user,role,profile}=access,$=s=>document.querySelector(s),esc=(v='')=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const state={profiles:new Map(),conversations:[],active:null,messages:[],reply:null,channel:null,presenceChannel:null,online:new Set(),tab:'conversations',search:'',blocked:false};
 const nameOf=p=>p?.full_name||p?.username||'Usuario',badge=r=>r==='owner'?'<span class="chat-role owner">🛡 Owner</span>':r==='staff'?'<span class="chat-role staff">🛡 Adm</span>':'',fmt=v=>new Intl.DateTimeFormat('es-PE',{hour:'numeric',minute:'2-digit'}).format(new Date(v));
 const avatar=(p,cls='chat-avatar')=>p?.avatar_url?`<img class="${cls}" src="${esc(p.avatar_url)}" alt="">`:`<div class="${cls} fallback">${esc(nameOf(p)[0]||'U')}</div>`;
@@ -34,7 +34,7 @@ async function initPresence(){
       if(state.tab==='people') loadPeople($('#peopleList'),state.search);
       updateRoomPresence();
     })
-    .subscribe(async status=>{if(status==='SUBSCRIBED')await state.presenceChannel.track({user_id:user.id,online_at:new Date().toISOString()})});
+    .subscribe(async status=>{if(status==='SUBSCRIBED' && profile?.presence_visible!==false)await state.presenceChannel.track({user_id:user.id,online_at:new Date().toISOString()})});
 }
 
 async function loadConversations(){const {data,error}=await supabase.from('arc_chat_participants').select('conversation_id,last_read_at,member_role,arc_chat_conversations(*)').eq('user_id',user.id).order('joined_at',{ascending:false});if(error)throw error;const ids=(data||[]).map(x=>x.conversation_id);if(!ids.length){state.conversations=[];renderLists();return}const {data:parts}=await supabase.from('arc_chat_participants').select('conversation_id,user_id,member_role').in('conversation_id',ids);await profiles((parts||[]).map(x=>x.user_id));const {data:last}=await supabase.from('arc_chat_messages').select('*').in('conversation_id',ids).order('created_at',{ascending:false});const lb=new Map();(last||[]).forEach(m=>{if(!lb.has(m.conversation_id))lb.set(m.conversation_id,m)});state.conversations=(data||[]).map(x=>{const c=x.arc_chat_conversations||{},ps=(parts||[]).filter(p=>p.conversation_id===x.conversation_id),other=ps.find(p=>p.user_id!==user.id);return{id:x.conversation_id,type:c.type||'direct',name:c.name,description:c.description,avatar_path:c.avatar_path,invite_code:c.invite_code,owner_id:c.owner_id,memberRole:x.member_role,otherId:other?.user_id,lastRead:x.last_read_at,last:lb.get(x.conversation_id),updated:c.updated_at}}).sort((a,b)=>new Date(b.last?.created_at||b.updated)-new Date(a.last?.created_at||a.updated));renderLists()}

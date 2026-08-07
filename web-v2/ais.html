@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>IA’s — ArcadiaCorps</title>
+  <link rel="stylesheet" href="assets/styles.css?v=31">
+  <link rel="stylesheet" href="assets/theme-v33.css?v=34">
+  <link rel="stylesheet" href="assets/theme-v35.css?v=35">
+  <link rel="stylesheet" href="assets/theme-v36.css?v=36">
+  <link rel="stylesheet" href="assets/presence-v36.css?v=36">
+  <link rel="stylesheet" href="assets/notifications-v36.css?v=36">
+  <link rel="stylesheet" href="assets/ais-v36.css?v=36">
+  <link rel="stylesheet" href="assets/ai-support-v35.css?v=35">
+  <script defer src="assets/effects-v33.js?v=34"></script>
+  <script type="module" src="assets/presence-v36.js?v=36"></script>
+  <script type="module" src="assets/notifications-v36.js?v=36"></script>
+  <script type="module" src="assets/ai-support-v35.js?v=35"></script>
+</head>
+<body>
+<main class="dashboard app-page ai-page">
+  <section class="ai-hero panel">
+    <div>
+      <span class="eyebrow">INTELIGENCIA ARTIFICIAL</span>
+      <h1>Centro de IA’s</h1>
+      <p>Conversa, programa, analiza imágenes y crea ediciones desde un solo lugar.</p>
+    </div>
+    <div class="ai-hero-orb">AI</div>
+  </section>
+
+  <div class="ai-layout">
+    <nav class="ai-tool-nav panel" aria-label="Herramientas de IA">
+      <button class="ai-tool-tab active" data-ai-tool="chatgpt" type="button">
+        <span>◈</span><span><strong>ChatGPT</strong><small>Soporte general</small></span>
+      </button>
+      <button class="ai-tool-tab" data-ai-tool="claude" type="button">
+        <span>◆</span><span><strong>Claude</strong><small>Código y desarrollo</small></span>
+      </button>
+      <button class="ai-tool-tab" data-ai-tool="image-prompt" type="button">
+        <span>▧</span><span><strong>Imagen a Prompt</strong><small>Analizar imágenes</small></span>
+      </button>
+      <button class="ai-tool-tab" data-ai-tool="nano-banana" type="button">
+        <span>✦</span><span><strong>Nano Banana</strong><small>Editar imágenes</small></span>
+      </button>
+    </nav>
+
+    <section class="ai-workspace">
+      <article class="ai-tool-panel active" data-ai-panel="chatgpt">
+        <header class="ai-tool-title">
+          <span>◈</span>
+          <div><h2>ChatGPT</h2><p>Asistente oficial para ArcadiaCorps y ayuda general.</p></div>
+        </header>
+        <div class="ai-chat panel">
+          <div id="gptMessages" class="ai-messages"></div>
+          <form class="ai-composer" data-chat-model="chatgpt">
+            <textarea rows="1" maxlength="1800" placeholder="Escribe tu consulta…"></textarea>
+            <button class="primary" type="submit">➤</button>
+            <div class="ai-chat-actions">
+              <button data-clear-chat="chatgpt" type="button">Limpiar conversación</button>
+              <button data-copy-last="chatgpt" type="button">Copiar última respuesta</button>
+            </div>
+          </form>
+        </div>
+      </article>
+
+      <article class="ai-tool-panel" data-ai-panel="claude">
+        <header class="ai-tool-title">
+          <span>◆</span>
+          <div><h2>Claude</h2><p>Especializado en programación, bots y automatización.</p></div>
+        </header>
+        <div class="ai-chat panel">
+          <div id="claudeMessages" class="ai-messages"></div>
+          <form class="ai-composer" data-chat-model="claude">
+            <textarea rows="1" maxlength="1800" placeholder="Describe el código o problema…"></textarea>
+            <button class="primary" type="submit">➤</button>
+            <div class="ai-chat-actions">
+              <button data-clear-chat="claude" type="button">Limpiar conversación</button>
+              <button data-copy-last="claude" type="button">Copiar última respuesta</button>
+            </div>
+          </form>
+        </div>
+      </article>
+
+      <article class="ai-tool-panel" data-ai-panel="image-prompt">
+        <header class="ai-tool-title">
+          <span>▧</span>
+          <div><h2>Imagen a Prompt</h2><p>Genera una descripción detallada a partir de una imagen.</p></div>
+        </header>
+        <form id="imagePromptForm" class="ai-tool-card panel ai-image-form">
+          <div class="ai-method-tabs">
+            <button class="active" data-method="local" type="button">Subir imagen</button>
+            <button data-method="url" type="button">Usar URL</button>
+          </div>
+          <input name="method" type="hidden" value="local">
+          <label class="ai-file-drop" data-local-field>
+            <input name="image" type="file" accept="image/jpeg,image/png,image/webp" required>
+            <span><strong>Seleccionar imagen</strong><small>JPG, PNG o WEBP · máximo 8 MB</small></span>
+          </label>
+          <div class="ai-field" data-url-field hidden>
+            <label for="imagePromptUrl">URL de la imagen</label>
+            <input id="imagePromptUrl" name="url" type="url" placeholder="https://...">
+          </div>
+          <div class="ai-field">
+            <label for="imageLanguage">Idioma del resultado</label>
+            <select id="imageLanguage" name="language">
+              <option value="es">Español</option>
+              <option value="en">Inglés</option>
+              <option value="fr">Francés</option>
+              <option value="pt">Portugués</option>
+            </select>
+          </div>
+          <div class="ai-preview-grid">
+            <div class="ai-preview"><div class="ai-preview-empty">Vista previa de la imagen</div></div>
+            <div class="ai-result-text" data-result>El prompt aparecerá aquí.</div>
+          </div>
+          <div class="ai-result-actions">
+            <button class="secondary" data-copy-result type="button">Copiar prompt</button>
+            <button class="primary" type="submit">Analizar imagen</button>
+          </div>
+        </form>
+      </article>
+
+      <article class="ai-tool-panel" data-ai-panel="nano-banana">
+        <header class="ai-tool-title">
+          <span>✦</span>
+          <div><h2>Nano Banana</h2><p>Edita una imagen mediante instrucciones escritas.</p></div>
+        </header>
+        <form id="nanoForm" class="ai-tool-card panel ai-image-form">
+          <div class="ai-method-tabs">
+            <button class="active" data-method="local" type="button">Subir imagen</button>
+            <button data-method="url" type="button">Usar URL</button>
+          </div>
+          <input name="method" type="hidden" value="local">
+          <label class="ai-file-drop" data-local-field>
+            <input name="image" type="file" accept="image/jpeg,image/png,image/webp" required>
+            <span><strong>Seleccionar imagen</strong><small>JPG, PNG o WEBP · máximo 8 MB</small></span>
+          </label>
+          <div class="ai-field" data-url-field hidden>
+            <label for="nanoUrl">URL de la imagen</label>
+            <input id="nanoUrl" name="url" type="url" placeholder="https://...">
+          </div>
+          <div class="ai-field">
+            <label for="nanoPrompt">Cambios que debe realizar la IA</label>
+            <textarea id="nanoPrompt" name="prompt" maxlength="1200"
+              placeholder="Ejemplo: cambia el fondo por una ciudad futurista…" required></textarea>
+          </div>
+          <div class="ai-preview-grid">
+            <div class="ai-preview"><div class="ai-preview-empty">Imagen original</div></div>
+            <div class="ai-preview" data-output><div class="ai-preview-empty">La edición aparecerá aquí</div></div>
+          </div>
+          <div class="ai-result-actions">
+            <a class="secondary btn" data-save-image hidden>Guardar imagen</a>
+            <button class="primary" type="submit">Generar edición</button>
+          </div>
+        </form>
+      </article>
+    </section>
+  </div>
+</main>
+<script type="module" src="assets/ais-v36.js?v=36"></script>
+</body>
+</html>
