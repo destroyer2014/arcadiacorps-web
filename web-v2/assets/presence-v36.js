@@ -13,7 +13,7 @@ function fmtLastSeen(value) {
 }
 
 async function initPresence() {
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data:{ session } } = await supabase.auth.getSession();
   if (!session?.user) return null;
 
   const user = session.user;
@@ -22,18 +22,26 @@ async function initPresence() {
   let channel = null;
   let touchTimer = null;
   let socialTimer = null;
+  let socialObserver = null;
+  let shellObserver = null;
+  let framePending = false;
+  let lastSignature = '';
   const postUsers = new Map();
 
   try {
-    const { data } = await supabase.rpc('arc_presence_snapshot',{ target_ids:[user.id] });
+    const { data } = await supabase.rpc('arc_presence_snapshot',{
+      target_ids:[user.id]
+    });
     const own = Array.isArray(data) ? data[0] : null;
     if (own) visible = own.presence_visible !== false;
   } catch {}
 
-  const dispatch = () => {
-    document.querySelectorAll('[data-presence-user]').forEach(node => {
+  function renderNodes(root=document) {
+    root.querySelectorAll?.('[data-presence-user]').forEach(node => {
       const id = node.dataset.presenceUser;
       const isOnline = online.has(id);
+      if (node.dataset.presenceState === String(isOnline)) return;
+      node.dataset.presenceState = String(isOnline);
       node.classList.toggle('online',isOnline);
       node.classList.toggle('offline',!isOnline);
       node.title = isOnline ? 'En línea' : 'Desconectado';
@@ -41,37 +49,45 @@ async function initPresence() {
 
     const sidebarText = document.querySelector('#sidebarPresenceText');
     if (sidebarText) {
-      sidebarText.textContent = visible
+      const next = visible
         ? (online.has(user.id) ? 'En línea' : 'Conectando…')
         : 'Estado oculto';
+      if (sidebarText.textContent !== next) sidebarText.textContent = next;
     }
+  }
 
-    window.dispatchEvent(new CustomEvent('arcadia:presence',{
-      detail:{ online:new Set(online),visible,userId:user.id }
-    }));
-  };
+  function dispatch(force=false) {
+    if (framePending && !force) return;
+    framePending = true;
 
-  const touch = async () => {
+    requestAnimationFrame(() => {
+      framePending = false;
+      renderNodes();
+
+      const signature = `${visible}|${[...online].sort().join(',')}`;
+      if (signature === lastSignature && !force) return;
+      lastSignature = signature;
+
+      window.dispatchEvent(new CustomEvent('arcadia:presence',{
+        detail:{ online:new Set(online),visible,userId:user.id }
+      }));
+    });
+  }
+
+  async function touch() {
     try { await supabase.rpc('arc_touch_presence'); } catch {}
-  };
+  }
 
-  const connect = async () => {
-    if (channel) {
-      try { await supabase.removeChannel(channel); } catch {}
-    }
-
+  async function connect() {
     channel = supabase.channel('arc-chat-presence',{
       config:{ presence:{ key:user.id } }
     });
 
     channel
       .on('presence',{ event:'sync' },() => {
-        const state = channel.presenceState();
-        online = new Set(Object.keys(state));
-        dispatch();
+        online = new Set(Object.keys(channel.presenceState()));
+        dispatch(true);
       })
-      .on('presence',{ event:'join' },dispatch)
-      .on('presence',{ event:'leave' },dispatch)
       .subscribe(async status => {
         if (status === 'SUBSCRIBED' && visible) {
           await channel.track({
@@ -81,7 +97,7 @@ async function initPresence() {
           });
         }
       });
-  };
+  }
 
   async function setVisibility(next) {
     const wanted = Boolean(next);
@@ -102,7 +118,8 @@ async function initPresence() {
         await channel.untrack();
       }
     }
-    dispatch();
+
+    dispatch(true);
     return visible;
   }
 
@@ -118,67 +135,101 @@ async function initPresence() {
 
   async function bindSocialPosts() {
     if (!location.pathname.endsWith('/social.html')) return;
+
     const cards = [...document.querySelectorAll('.social-post[data-id]')]
       .filter(card => !card.dataset.presenceBound);
+    if (!cards.length) return;
 
-    const ids = cards.map(card => card.dataset.id).filter(Boolean);
-    const missing = ids.filter(id => !postUsers.has(id));
+    const ids = cards.map(card=>card.dataset.id).filter(Boolean);
+    const missing = ids.filter(id=>!postUsers.has(id));
 
     if (missing.length) {
       const { data } = await supabase
         .from('social_posts')
         .select('id,user_id')
         .in('id',missing);
-      (data || []).forEach(row => postUsers.set(String(row.id),row.user_id));
+      (data || []).forEach(row=>postUsers.set(String(row.id),row.user_id));
     }
 
     cards.forEach(card => {
       const userId = postUsers.get(String(card.dataset.id));
-      const header = card.querySelector('header > div');
-      if (!userId || !header) return;
+      const strong = card.querySelector('header > div strong');
+      if (!userId || !strong) return;
+
       card.dataset.presenceBound = '1';
       const dot = document.createElement('span');
       dot.className = 'arc-presence-dot social-presence-dot';
       dot.dataset.presenceUser = userId;
-      header.querySelector('strong')?.appendChild(dot);
+      strong.appendChild(dot);
+      renderNodes(card);
     });
-    dispatch();
   }
 
-  const scheduleSocial = () => {
+  function scheduleSocial() {
+    if (!location.pathname.endsWith('/social.html')) return;
     clearTimeout(socialTimer);
-    socialTimer = setTimeout(() => bindSocialPosts().catch(()=>{}),180);
-  };
+    socialTimer = setTimeout(() => {
+      bindSocialPosts().catch(()=>{});
+    },250);
+  }
+
+  function watchShellOnce() {
+    if (document.querySelector('#arcadiaShell')) {
+      renderNodes();
+      return;
+    }
+
+    shellObserver = new MutationObserver((_records,observer) => {
+      const shell = document.querySelector('#arcadiaShell');
+      if (!shell) return;
+      observer.disconnect();
+      shellObserver = null;
+      renderNodes(shell);
+      dispatch(true);
+    });
+
+    shellObserver.observe(document.body,{ childList:true });
+    setTimeout(() => {
+      shellObserver?.disconnect();
+      shellObserver = null;
+    },4000);
+  }
+
+  function watchSocialOnly() {
+    if (!location.pathname.endsWith('/social.html')) return;
+    const feed = document.querySelector('#feed');
+    if (!feed) {
+      setTimeout(watchSocialOnly,400);
+      return;
+    }
+
+    socialObserver = new MutationObserver(scheduleSocial);
+    socialObserver.observe(feed,{ childList:true });
+    scheduleSocial();
+  }
 
   await connect();
   await touch();
-  touchTimer = setInterval(touch,45_000);
+
+  touchTimer = setInterval(() => {
+    if (document.visibilityState === 'visible') touch();
+  },60_000);
 
   document.addEventListener('visibilitychange',async () => {
-    if (document.visibilityState === 'visible') {
-      await touch();
-      if (visible && channel) {
-        await channel.track({
-          user_id:user.id,
-          online_at:new Date().toISOString(),
-          page:location.pathname
-        });
-      }
-    } else {
-      touch();
+    if (document.visibilityState !== 'visible') return;
+    await touch();
+    if (visible && channel) {
+      await channel.track({
+        user_id:user.id,
+        online_at:new Date().toISOString(),
+        page:location.pathname
+      });
     }
   });
 
-  window.addEventListener('pagehide',() => { touch(); },{ once:true });
-
-  const observer = new MutationObserver(() => {
-    dispatch();
-    scheduleSocial();
-  });
-  observer.observe(document.body,{ childList:true,subtree:true });
-
-  scheduleSocial();
-  dispatch();
+  watchShellOnce();
+  watchSocialOnly();
+  dispatch(true);
 
   const controller = {
     userId:user.id,
@@ -187,15 +238,20 @@ async function initPresence() {
     setVisibility,
     snapshot,
     fmtLastSeen,
+    render:renderNodes,
     destroy:async () => {
       clearInterval(touchTimer);
-      observer.disconnect();
+      clearTimeout(socialTimer);
+      shellObserver?.disconnect();
+      socialObserver?.disconnect();
       if (channel) await supabase.removeChannel(channel);
     }
   };
 
   window.ArcadiaPresence = controller;
-  window.dispatchEvent(new CustomEvent('arcadia:presence-ready',{ detail:controller }));
+  window.dispatchEvent(new CustomEvent('arcadia:presence-ready',{
+    detail:controller
+  }));
   return controller;
 }
 

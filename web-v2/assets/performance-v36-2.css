@@ -1,0 +1,150 @@
+/* ArcadiaCorps v36.1 — hotfix de rendimiento móvil */
+html,body{
+  overscroll-behavior-x:none!important;
+}
+button,a,summary,[role="button"]{
+  touch-action:manipulation!important;
+  -webkit-tap-highlight-color:transparent!important;
+}
+
+/* Evita que una capa invisible bloquee clics */
+.sidebar-backdrop{
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+  transition:opacity .14s ease,visibility .14s ease!important;
+}
+.sidebar-open .sidebar-backdrop{
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+}
+.app-sidebar{
+  will-change:transform!important;
+  contain:layout paint style!important;
+}
+.ai-tool-tab{
+  touch-action:manipulation!important;
+}
+.ai-tool-panel{
+  contain:layout paint style!important;
+}
+.ai-tool-panel:not(.active){
+  display:none!important;
+  pointer-events:none!important;
+}
+.ai-tool-panel.active{
+  display:block!important;
+  pointer-events:auto!important;
+}
+
+/* Menos trabajo para la GPU en teléfonos */
+@media(max-width:760px){
+  body::before{
+    display:none!important;
+  }
+  .app-header{
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+    background:#070b16!important;
+  }
+  .app-sidebar{
+    transition:transform .14s ease-out!important;
+    box-shadow:10px 0 32px rgba(0,0,0,.38)!important;
+  }
+  .sidebar-backdrop{
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+  }
+  .arc-reveal,
+  .arc-reveal.arc-visible{
+    opacity:1!important;
+    transform:none!important;
+    transition:none!important;
+  }
+  .arc-ai-launcher::after{
+    animation:none!important;
+  }
+  .ai-tool-panel.active{
+    animation:none!important;
+  }
+  .panel,.card{
+    box-shadow:none!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    scroll-behavior:auto!important;
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.01ms!important;
+  }
+}
+
+/* Sub-Bots v36.2 — copia rápida */
+.pair-code-copy-row{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:10px;
+  align-items:stretch;
+  margin-top:14px;
+}
+.pair-code-copy-row .pair-code{
+  margin:0!important;
+  min-width:0;
+  cursor:default;
+  user-select:text;
+  -webkit-user-select:text;
+}
+.pair-code-copy-row .pair-code.ready{
+  cursor:pointer;
+  border-color:rgba(36,231,164,.42)!important;
+  box-shadow:0 0 20px rgba(36,231,164,.08)!important;
+}
+.pair-copy-button{
+  width:auto!important;
+  min-width:132px!important;
+  padding:10px 13px!important;
+  white-space:nowrap;
+}
+.pair-copy-button:disabled{
+  opacity:.42!important;
+  cursor:not-allowed!important;
+}
+.pair-copy-button.copied{
+  color:#76ffd2!important;
+  border-color:rgba(36,231,164,.42)!important;
+  background:rgba(36,231,164,.10)!important;
+}
+.subbot-id-meta{
+  position:relative;
+  padding-right:38px!important;
+}
+.subbot-id-copy{
+  position:absolute;
+  top:50%;
+  right:8px;
+  transform:translateY(-50%);
+  width:29px!important;
+  min-width:29px!important;
+  height:29px!important;
+  min-height:29px!important;
+  padding:0!important;
+  border-radius:9px!important;
+  background:rgba(47,107,255,.12)!important;
+  border:1px solid rgba(71,126,255,.27)!important;
+  color:#a9c7ff!important;
+  font-size:13px!important;
+}
+.subbot-id-copy.copied{
+  color:#76ffd2!important;
+  border-color:rgba(36,231,164,.36)!important;
+}
+@media(max-width:560px){
+  .pair-code-copy-row{
+    grid-template-columns:1fr;
+  }
+  .pair-copy-button{
+    width:100%!important;
+  }
+}

@@ -1,7 +1,7 @@
 (() => {
-  const VERSION = '34';
+  const VERSION = '36.1';
   document.documentElement.dataset.arcadiaTheme = VERSION;
-  document.body.classList.add('arcadia-v34');
+  document.body.classList.add('arcadia-v36-1');
 
   const revealSelector = [
     '.panel','.card','.ticket-card','.product-card','.order-card',
@@ -11,7 +11,7 @@
 
   function fixBrandLinks() {
     document.querySelectorAll('.app-brand').forEach(link => {
-      link.href = '/web-v2/dashboard.html?v=34';
+      link.href = '/web-v2/dashboard.html?v=36.1';
     });
   }
 
@@ -27,28 +27,33 @@
     const items = [...document.querySelectorAll(revealSelector)]
       .filter(el => !el.classList.contains('arc-reveal'));
 
-    items.forEach(el => el.classList.add('arc-reveal'));
+    if (!items.length) return;
 
-    if (!('IntersectionObserver' in window)) {
-      items.forEach(el => el.classList.add('arc-visible'));
+    if (
+      window.matchMedia('(max-width: 760px)').matches ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+      !('IntersectionObserver' in window)
+    ) {
+      items.forEach(el => el.classList.add('arc-reveal','arc-visible'));
       return;
     }
 
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('arc-visible');
-          observer.unobserve(entry.target);
-        }
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('arc-visible');
+        observer.unobserve(entry.target);
       });
-    }, { threshold:.07, rootMargin:'0px 0px -10px' });
+    }, { threshold:.06, rootMargin:'0px 0px -12px' });
 
-    items.forEach(el => observer.observe(el));
+    items.forEach(el => {
+      el.classList.add('arc-reveal');
+      observer.observe(el);
+    });
   }
 
   function ensureFooter() {
-    const old = document.querySelector('.arcadia-global-footer');
-    if (old) return;
+    if (document.querySelector('.arcadia-global-footer')) return;
 
     const footer = document.createElement('footer');
     footer.className = 'arcadia-global-footer';
@@ -68,19 +73,16 @@
     normalizeSidebar();
     setupReveal();
     ensureFooter();
-
-    const observer = new MutationObserver(() => {
-      fixBrandLinks();
-      normalizeSidebar();
-      setupReveal();
-      ensureFooter();
-    });
-    observer.observe(document.body, { childList:true, subtree:true });
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', run, { once:true });
+    document.addEventListener('DOMContentLoaded',run,{ once:true });
   } else {
     run();
   }
+
+  // Solo una segunda pasada corta para contenido montado por módulos.
+  window.addEventListener('load',() => {
+    requestAnimationFrame(run);
+  },{ once:true });
 })();
