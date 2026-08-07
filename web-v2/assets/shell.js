@@ -45,7 +45,7 @@ export async function mountShell() {
     <header class="app-header">
       <button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menú">☰</button>
 
-      <a class="app-brand" href="${APP_URL}/dashboard.html?v=36">
+      <a class="app-brand" href="${APP_URL}/dashboard.html?v=38.1.1">
         <img class="app-brand-logo"
              src="${APP_URL}/assets/images/arcadia-logo-rpg.png"
              alt="ArcadiaCorps">
@@ -76,7 +76,7 @@ export async function mountShell() {
       <nav class="sidebar-nav">
         <details open>
           <summary><span><span class="nav-section-icon">🏰</span>Portal</span><span>⌄</span></summary>
-          ${link('dashboard.html?v=36','⌂','Inicio',['dashboard.html'])}
+          ${link('dashboard.html?v=38.1.1','⌂','Inicio',['dashboard.html'])}
           ${link('profile.html','◉','Mi perfil',['profile.html'])}
           ${link('news.html','▤','Noticias',['news.html','news-detail.html','news-editor.html'])}
         </details>
@@ -123,6 +123,7 @@ export async function mountShell() {
           <details open>
             <summary><span><span class="nav-section-icon">♛</span>Administración</span><span>⌄</span></summary>
             ${link('admin-users.html','♛','Usuarios y roles',['admin-users.html'])}
+            ${link('system-status.html','◉','Estado del sistema',['system-status.html'])}
             ${link('store-admin.html','🛍','Administrar tienda',['store-admin.html'])}
           </details>
         ` : ''}

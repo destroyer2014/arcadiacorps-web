@@ -1,0 +1,105 @@
+/* ArcadiaCorps v38 — Sub-Bots */
+.subbot-livebar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin:10px 0 16px;
+  padding:10px 12px;
+  border:1px solid rgba(72,111,190,.18);
+  border-radius:14px;
+  background:rgba(5,10,22,.74);
+}
+.subbot-livebar>div{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  column-gap:8px;
+  align-items:center;
+}
+.subbot-livebar strong{font-size:12px}
+.subbot-livebar small{
+  grid-column:2;
+  margin-top:2px;
+  color:#77839f;
+  font-size:9px;
+}
+.subbot-live-dot{
+  width:9px;
+  height:9px;
+  grid-row:1/3;
+  border-radius:999px;
+  background:#22e7a1;
+  box-shadow:0 0 13px rgba(34,231,161,.45);
+}
+.subbot-card-v38{
+  position:relative;
+  overflow:hidden;
+}
+.subbot-card-v38::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:2px;
+  background:rgba(109,126,169,.22);
+}
+.subbot-card-v38[data-status="online"]::before{
+  background:#22e7a1;
+  box-shadow:0 0 15px rgba(34,231,161,.45);
+}
+.subbot-state-line{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:7px;
+  margin-top:5px;
+}
+.subbot-state-line small{
+  color:#69758f;
+  font-size:9px;
+}
+.subbot-meta>div{position:relative}
+.subbot-mini-copy{
+  width:auto!important;
+  min-height:27px!important;
+  margin-top:6px;
+  padding:4px 7px!important;
+  border-radius:8px!important;
+  border:1px solid rgba(77,121,220,.2)!important;
+  background:rgba(47,107,255,.07)!important;
+  color:#91adf1!important;
+  font-size:9px!important;
+}
+.subbot-actions-v38 button{
+  transition:opacity .14s,transform .14s,border-color .14s!important;
+}
+.subbot-actions-v38 button:disabled{
+  opacity:.52!important;
+}
+.pair-code{
+  cursor:pointer;
+  user-select:all;
+  transition:border-color .15s,transform .15s;
+}
+.pair-code:active{transform:scale(.99)}
+.pair-copy-v38{
+  margin-top:9px;
+  width:100%;
+}
+.pair-copy-v38:disabled{opacity:.45}
+.pair-tabs button:disabled{
+  opacity:.4!important;
+  cursor:not-allowed!important;
+}
+@media(max-width:640px){
+  .subbot-livebar{
+    margin-inline:0;
+  }
+  .subbot-actions-v38{
+    grid-template-columns:1fr 1fr!important;
+  }
+  .subbot-actions-v38 .danger{
+    grid-column:1/-1;
+  }
+}

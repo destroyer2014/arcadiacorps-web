@@ -1,0 +1,27 @@
+/* ArcadiaCorps v38 — pulido IA */
+.ai-message p{
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+}
+.ai-stop-v38{
+  width:auto!important;
+  min-width:82px!important;
+  border-color:rgba(255,94,118,.24)!important;
+  color:#ff9baa!important;
+}
+.ai-stop-v38[hidden]{display:none!important}
+.ai-code-block code{
+  tab-size:2;
+  overflow-wrap:normal;
+}
+.ai-preview img,
+.ai-output img{
+  max-width:100%;
+  height:auto;
+}
+.ai-preview-empty{
+  text-align:center;
+  padding:18px;
+  color:#7f8ba8;
+  line-height:1.5;
+}
