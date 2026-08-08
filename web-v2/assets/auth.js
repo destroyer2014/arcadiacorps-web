@@ -22,7 +22,7 @@ export async function signInWithProvider(provider) {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider,
     options: {
-      redirectTo: `${APP_URL}/auth/callback.html`,
+      redirectTo: `${APP_URL}/auth/callback.html?v=40.2`,
       skipBrowserRedirect: false
     }
   });

@@ -4,7 +4,7 @@ import {
   signInWithPassword,
   signUpWithPassword,
   safeNextPath
-} from './auth.js?v=37';
+} from './auth.js?v=40.2';
 import { createCaptchaController, captchaIsConfigured } from './turnstile-v37.js?v=40.1';
 
 const $ = selector => document.querySelector(selector);

@@ -1,13 +1,126 @@
 <!doctype html>
-<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Verificando acceso — ArcadiaCorps</title>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#3972ff">
+  <title>Verificando acceso — ArcadiaCorps</title>
+
+  <link rel="stylesheet" href="../assets/styles.css?v=37">
+  <link rel="stylesheet" href="../assets/theme-v33.css?v=34">
+  <link rel="stylesheet" href="../assets/theme-v36.css?v=36">
+  <link rel="stylesheet" href="../assets/auth-v37.css?v=37">
   <link rel="stylesheet" href="../assets/release-v40.css?v=40">
   <link rel="manifest" href="../manifest.webmanifest">
-  <meta name="theme-color" content="#3972ff">
-<link rel="stylesheet" href="../assets/styles.css?v=37"><link rel="stylesheet" href="../assets/theme-v33.css?v=34"><link rel="stylesheet" href="../assets/theme-v36.css?v=36"><link rel="stylesheet" href="../assets/auth-v37.css?v=37"></head>
-<body class="auth-v37"><main class="auth-shell-v37"><div class="auth-brand-v37"><img src="../assets/images/arcadia-logo-rpg.png" alt="ArcadiaCorps"><div><strong>ArcadiaCorps</strong><small>Verificando acceso</small></div></div><section class="card auth-card-v37"><h1>Verificando acceso</h1><p id="state" class="auth-subtitle">Completando la sesión segura…</p></section></main>
-<script type="module">
-import { supabase, exchangeAuthCode, safeNextPath } from '../assets/auth.js?v=37'; import { APP_URL } from '../assets/config.js';
-const state=document.querySelector('#state');
-try{const params=new URLSearchParams(location.search);const oauthError=params.get('error_description')||params.get('error');if(oauthError)throw new Error(oauthError);const code=params.get('code');if(code)await exchangeAuthCode(code);const {data:{session},error}=await supabase.auth.getSession();if(error)throw error;if(!session)throw new Error('No se pudo crear la sesión.');const stored=sessionStorage.getItem('arcadia-auth-next');sessionStorage.removeItem('arcadia-auth-next');location.replace(safeNextPath(stored,`${APP_URL}/dashboard.html?v=37`))}catch(error){state.textContent='No se pudo completar el acceso. Volviendo al inicio de sesión…';state.style.color='#ff9aaa';setTimeout(()=>location.replace(`${APP_URL}/login.html`),2600)}
+</head>
+
+<body class="auth-v37">
+  <main class="auth-shell-v37">
+    <div class="auth-brand-v37">
+      <img src="../assets/images/arcadia-logo-rpg.png" alt="ArcadiaCorps">
+      <div>
+        <strong>ArcadiaCorps</strong>
+        <small>Verificando acceso</small>
+      </div>
+    </div>
+
+    <section class="card auth-card-v37">
+      <h1>Verificando acceso</h1>
+      <p id="state" class="auth-subtitle">Completando la sesión segura…</p>
+
+      <div id="oauthActions" hidden style="margin-top:18px;display:none;gap:10px;flex-wrap:wrap">
+        <a class="primary auth-submit" href="../login.html?v=40.2" style="text-decoration:none;text-align:center">
+          Volver al login
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import {
+      supabase,
+      exchangeAuthCode,
+      safeNextPath
+    } from '../assets/auth.js?v=40.2';
+
+    const state = document.querySelector('#state');
+    const actions = document.querySelector('#oauthActions');
+
+    function showError(message) {
+      state.textContent = message;
+      state.style.color = '#ff9aaa';
+      actions.hidden = false;
+      actions.style.display = 'flex';
+    }
+
+    async function withTimeout(promise, ms = 20000) {
+      let timer;
+      try {
+        return await Promise.race([
+          promise,
+          new Promise((_, reject) => {
+            timer = setTimeout(
+              () => reject(new Error('La verificación tardó demasiado.')),
+              ms
+            );
+          })
+        ]);
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    try {
+      const params = new URLSearchParams(location.search);
+
+      const oauthError =
+        params.get('error_description') ||
+        params.get('error');
+
+      if (oauthError) {
+        throw new Error(oauthError);
+      }
+
+      const code = params.get('code');
+
+      if (code) {
+        state.textContent = 'Validando acceso con Google…';
+        await withTimeout(exchangeAuthCode(code));
+      }
+
+      state.textContent = 'Confirmando sesión…';
+
+      const {
+        data: { session },
+        error
+      } = await withTimeout(supabase.auth.getSession(), 10000);
+
+      if (error) throw error;
+      if (!session) {
+        throw new Error('Google no pudo crear una sesión válida.');
+      }
+
+      const stored = sessionStorage.getItem('arcadia-auth-next');
+      sessionStorage.removeItem('arcadia-auth-next');
+
+      const destination = safeNextPath(
+        stored,
+        '/web-v2/dashboard.html?v=40.2'
+      );
+
+      state.textContent = 'Acceso correcto. Entrando a ArcadiaCorps…';
+      location.replace(destination);
+
+    } catch (error) {
+      console.error('[Arcadia OAuth v40.2]', error);
+      showError(
+        error?.message ||
+        'No se pudo completar el acceso con Google.'
+      );
+    }
+  </script>
+
   <script defer src="../assets/release-v40.js?v=40"></script>
-</script></body></html>
+</body>
+</html>
