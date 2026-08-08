@@ -5,7 +5,7 @@ import {
   signUpWithPassword,
   safeNextPath
 } from './auth.js?v=37';
-import { createCaptchaController, captchaIsConfigured } from './turnstile-v37.js?v=37';
+import { createCaptchaController, captchaIsConfigured } from './turnstile-v37.js?v=40.1';
 
 const $ = selector => document.querySelector(selector);
 const message = $('#message');

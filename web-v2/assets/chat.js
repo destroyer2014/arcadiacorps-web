@@ -1,5 +1,5 @@
 import { supabase } from './auth.js';
-import { mountShell } from './shell.js?v=36';
+import { mountShell } from './shell.js?v=40.1';
 const access=await mountShell(); if(!access) throw new Error('Sin sesión');
 const {user,role,profile}=access,$=s=>document.querySelector(s),esc=(v='')=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const state={profiles:new Map(),conversations:[],active:null,messages:[],reply:null,channel:null,presenceChannel:null,online:new Set(),tab:'conversations',search:'',blocked:false};

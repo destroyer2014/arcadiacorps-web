@@ -1,4 +1,4 @@
-import { mountShell } from './shell.js?v=36';
+import { mountShell } from './shell.js?v=40.1';
 import { getCurrentAccess } from './access.js';
 import { supabase } from './auth.js';
 const access = await getCurrentAccess(); if (!access) throw new Error('Sin sesión'); await mountShell();

@@ -1,6 +1,6 @@
 import { supabase } from './auth.js?v=37';
 import { requireRole, ROLE_LABELS } from './access.js?v=37';
-import { mountShell } from './shell.js?v=36';
+import { mountShell } from './shell.js?v=40.1';
 
 const access=await requireRole(['owner']);if(!access)throw new Error('Acceso denegado');await mountShell();
 const $=s=>document.querySelector(s),list=$('#usersList'),auditList=$('#roleAuditList'),message=$('#adminMessage'),search=$('#searchInput');let profiles=[];

@@ -1,4 +1,4 @@
-import { TURNSTILE_SITE_KEY } from './captcha-config-v37.js';
+import { TURNSTILE_SITE_KEY } from './captcha-config-v37.js?v=40.1';
 
 const configured =
   Boolean(TURNSTILE_SITE_KEY) &&

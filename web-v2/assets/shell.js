@@ -45,7 +45,7 @@ export async function mountShell() {
     <header class="app-header">
       <button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menú">☰</button>
 
-      <a class="app-brand" href="${APP_URL}/dashboard.html?v=38.1.1">
+      <a class="app-brand" href="${APP_URL}/dashboard.html?v=40.1">
         <img class="app-brand-logo"
              src="${APP_URL}/assets/images/arcadia-logo-rpg.png"
              alt="ArcadiaCorps">
@@ -76,7 +76,7 @@ export async function mountShell() {
       <nav class="sidebar-nav">
         <details open>
           <summary><span><span class="nav-section-icon">🏰</span>Portal</span><span>⌄</span></summary>
-          ${link('dashboard.html?v=38.1.1','⌂','Inicio',['dashboard.html'])}
+          ${link('dashboard.html?v=40.1','⌂','Inicio',['dashboard.html'])}
           ${link('profile.html','◉','Mi perfil',['profile.html'])}
           ${link('news.html','▤','Noticias',['news.html','news-detail.html','news-editor.html'])}
         </details>
@@ -85,6 +85,22 @@ export async function mountShell() {
           <summary><span><span class="nav-section-icon">✦</span>Social</span><span>⌄</span></summary>
           ${link('social.html','◎','Comunidad',['social.html'])}
           ${link('chat.html','✉','Chat',['chat.html'])}
+        </details>
+
+        <details open data-arcadia-redes-v40-1>
+          <summary><span><span class="nav-section-icon">🌐</span>Redes</span><span>⌄</span></summary>
+          <a href="https://whatsapp.com/channel/0029VbADsUx6LwHo4wdirM0v" target="_blank" rel="noopener noreferrer">
+            <span class="nav-icon"><img src="${APP_URL}/assets/images/social-whatsapp-v40-1.svg" alt="" style="width:19px;height:19px;display:block"></span>
+            <span>Canal de WhatsApp</span>
+          </a>
+          <a href="https://chat.whatsapp.com/FhtYMXvnTs6B32bOe2Bs3f?s=cl&p=a&ilr=4" target="_blank" rel="noopener noreferrer">
+            <span class="nav-icon"><img src="${APP_URL}/assets/images/social-whatsapp-v40-1.svg" alt="" style="width:19px;height:19px;display:block"></span>
+            <span>Comunidad WhatsApp</span>
+          </a>
+          <a href="https://t.me/SoyZemo" target="_blank" rel="noopener noreferrer">
+            <span class="nav-icon"><img src="${APP_URL}/assets/images/social-telegram-v40-1.svg" alt="" style="width:19px;height:19px;display:block"></span>
+            <span>Telegram</span>
+          </a>
         </details>
 
         <details open>
