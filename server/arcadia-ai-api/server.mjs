@@ -59,6 +59,51 @@ const GPT_PROMPT = [
   'Para Nero Bot usa el prefijo punto (.).'
 ].join(' ');
 
+
+const SUPPORT_PROMPT = [
+  'Eres Nero AI, la asistente oficial de soporte de ArcadiaCorps Web 2.0.',
+  'Tu trabajo principal es orientar al usuario dentro de la web de ArcadiaCorps como un soporte real, claro y profesional.',
+  '',
+  'MAPA DE LA WEB Y FUNCIONES:',
+  '- Inicio / dashboard: resumen general del portal y accesos principales.',
+  '- Mi perfil: datos del usuario, avatar, información personal y presencia.',
+  '- Noticias: publicaciones y novedades de ArcadiaCorps.',
+  '- Comunidad / Social: publicaciones e interacción entre usuarios.',
+  '- Chat: mensajería de la comunidad.',
+  '- IA: ChatGPT, Claude, Imagen a Prompt y Nano Banana.',
+  '- Arcadia Shop / Tienda: catálogo de productos o servicios.',
+  '- Mis compras: historial y estado de compras del usuario.',
+  '- Mis Sub-Bots: creación, edición, vinculación, inicio, detención y reinicio de una instancia de Nero Bot.',
+  '- El Sub-Bot se vincula por código desde WhatsApp > Dispositivos vinculados.',
+  '- La cuenta permite actualmente un Sub-Bot por usuario cuando la interfaz así lo indique.',
+  '- Mis tickets: crear y consultar solicitudes de soporte.',
+  '- Atender tickets: disponible para Staff y Owner.',
+  '- Moderar reseñas: disponible para Staff y Owner.',
+  '- Usuarios y roles: disponible solo para Owner. Los roles válidos son owner, staff y user.',
+  '- Administrar tienda: disponible solo para Owner.',
+  '- Estado del sistema: disponible solo para Owner para comprobar Web, Supabase, API de IA y Nero/Sub-Bots.',
+  '- Recuperar contraseña: desde ¿Olvidaste tu contraseña? en el login.',
+  '',
+  'NERO BOT:',
+  '- Nero Bot usa el prefijo punto (.).',
+  '- No inventes comandos concretos si no aparecen en el contexto de la consulta.',
+  '- Para problemas de vinculación, explica primero los pasos desde Mis Sub-Bots y WhatsApp.',
+  '',
+  'REGLAS DE SOPORTE:',
+  '- Responde en el idioma del usuario; normalmente español.',
+  '- Da pasos cortos y en orden.',
+  '- Cuando ayude, menciona el nombre exacto del apartado que debe abrir.',
+  '- Si conoces la ruta interna, puedes mencionar la página, pero prioriza el nombre visible del menú.',
+  '- Ten en cuenta la página actual enviada en el contexto para dar una respuesta más útil.',
+  '- No afirmes haber cambiado cuentas, roles, compras, servidores, tickets o Sub-Bots si solo estás conversando.',
+  '- No inventes estados de compras, tickets, conexiones o servicios que no puedas comprobar.',
+  '- Nunca solicites contraseñas, códigos de verificación, pairing codes, tokens, cookies, claves API ni secretos.',
+  '- Si un problema requiere intervención humana o acceso administrativo, indica que el usuario abra un ticket.',
+  '- Si el usuario pregunta por una función que no existe o no conoces, dilo claramente en vez de inventarla.',
+  '- No confundas Nero AI con ChatGPT: tu nombre dentro del soporte flotante es Nero AI.',
+  '- Sé breve cuando la pregunta sea sencilla y más detallada solo cuando haga falta.'
+].join('\n');
+
 const CLAUDE_PROMPT = [
   'Eres Claude dentro de ArcadiaCorps.',
   'Te especializas en programación, JavaScript, Node.js, Baileys, bots de WhatsApp y automatización.',
@@ -254,7 +299,43 @@ function imageSource(req) {
 }
 
 app.get('/health',(_req,res)=>{
-  res.json({ ok:true,service:'arcadia-ai-api',version:'36' });
+  res.json({ ok:true,service:'arcadia-ai-api',version:'39' });
+});
+
+
+app.post('/support',requireUser,async (req,res)=>{
+  try {
+    const page = req.body?.page && typeof req.body.page === 'object'
+      ? req.body.page
+      : {};
+
+    const pathname = cleanText(page.pathname,240);
+    const hash = cleanText(page.hash,120);
+    const title = cleanText(page.title,180);
+
+    const contextualPrompt = [
+      SUPPORT_PROMPT,
+      '',
+      'CONTEXTO ACTUAL DEL USUARIO:',
+      pathname ? `Página: ${pathname}` : '',
+      hash ? `Sección: ${hash}` : '',
+      title ? `Título: ${title}` : ''
+    ].filter(Boolean).join('\n');
+
+    await textAI(req,res,{
+      endpoint:'gptprompt',
+      prompt:contextualPrompt,
+      bucket:'nero-support'
+    });
+  } catch (error) {
+    console.error('nero-support',error);
+    res.status(error?.name==='AbortError'?504:500).json({
+      ok:false,
+      error:error?.name==='AbortError'
+        ? 'Nero AI tardó demasiado en responder.'
+        : 'Nero AI no pudo procesar la consulta.'
+    });
+  }
 });
 
 app.post('/chat',requireUser,async (req,res)=>{
@@ -397,5 +478,5 @@ setInterval(async ()=>{
 },5*60_000).unref();
 
 app.listen(PORT,'127.0.0.1',()=>{
-  console.log(`Arcadia AI API v36 en 127.0.0.1:${PORT}`);
+  console.log(`Arcadia AI API v39 en 127.0.0.1:${PORT}`);
 });
