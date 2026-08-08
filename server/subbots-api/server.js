@@ -48,7 +48,7 @@ async function pm2(args){
   return stdout;
 }
 
-app.get('/health',(q,r)=>r.json({ok:true,version:'41.0',brand:BRAND_CREDIT}));
+app.get('/health',(q,r)=>r.json({ok:true,version:'41.1',brand:BRAND_CREDIT}));
 app.get('/public-stats',async(req,res)=>{
   try{
     const raw=JSON.parse(await pm2(['jlist']));
@@ -99,8 +99,9 @@ app.patch('/subbots/:id/config',user,async(req,res)=>{
       args.push('--avatar',String(body.avatarUrl));
     }
 
-    // Always allow the running worker to apply the selected web profile.
-    args.push('--apply-profile','true');
+    // The web profile belongs to the logical Sub-Bot only. Never mutate the
+    // linked WhatsApp account's real name, status or profile picture.
+    args.push('--apply-profile','false');
     args.push('--pack-author','ArcadiaCorps');
 
     const {stdout}=await exec('node',args,{cwd:BOT,maxBuffer:2e6});
@@ -148,4 +149,4 @@ app.post('/subbots/:id/pairing-code',user,async(req,res)=>{
   }catch(e){res.status(400).json({error:e.message})}
 });
 app.post('/subbots/:id/qr',user,async(req,res)=>res.status(501).json({error:'QR quedará habilitado cuando el worker exponga la imagen QR.'}));
-app.listen(PORT,'127.0.0.1',()=>console.log(`Subbots API v41.0 en 127.0.0.1:${PORT}`));
+app.listen(PORT,'127.0.0.1',()=>console.log(`Subbots API v41.1 en 127.0.0.1:${PORT}`));

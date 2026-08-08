@@ -29,7 +29,7 @@
     <div>
       <span class="eyebrow">🤖 NERO BOT</span>
       <h1>Mis Sub-Bots</h1>
-      <p>Vincula y personaliza tu instancia de WhatsApp.</p>
+      <p>Vincula tu WhatsApp y personaliza la identidad interna de tu Sub-Bot.</p>
     </div>
     <button id="newSubbot" class="primary" type="button">＋ Nuevo Sub-Bot</button>
   </section>
@@ -57,20 +57,20 @@
         <input id="phone" inputmode="numeric" autocomplete="tel" placeholder="51912345678" required>
         <small>Incluye código del país, solo números.</small>
       </label>
-      <label class="subbot-brand-field">Nombre
+      <label class="subbot-brand-field">Nombre del Sub-Bot
         <input id="name" maxlength="40" value="Nero Subbot" required>
         <span class="subbot-brand-lock">🔒 Crédito protegido por ArcadiaCorps</span>
         <span class="subbot-brand-preview">
-          <small>Identidad dentro de Nero</small>
+          <small>Identidad que usará Nero en el menú y mensajes del Sub-Bot</small>
           <strong id="brandPreview">Nero Subbot | Made With © ArcadiaCorps</strong>
-          <small>Nombre visible de WhatsApp (formato compacto)</small>
-          <strong id="waNamePreview">Nero • ArcadiaCorps</strong>
+          <small>Este nombre no modifica el nombre real de tu cuenta de WhatsApp.</small>
         </span>
       </label>
       <label>Prefijo <input id="prefix" maxlength="4" value="." required></label>
-      <label>Estado <input id="statusText" maxlength="139" placeholder="Activo con ArcadiaCorps"></label>
-      <label>Foto de perfil <input id="avatar" type="file" accept="image/jpeg,image/png,image/webp"></label>
+      <label>Estado interno <input id="statusText" maxlength="139" placeholder="Activo con ArcadiaCorps"></label>
+      <label>Avatar del Sub-Bot <input id="avatar" type="file" accept="image/jpeg,image/png,image/webp"></label>
       <div id="avatarPreview" class="subbot-avatar-preview">🤖</div>
+      <small>El avatar se usa dentro de Nero y no reemplaza la foto de perfil de tu WhatsApp.</small>
       <label class="switch-row"><span>Lectura automática</span><input id="autoRead" type="checkbox"></label>
       <div class="modal-actions">
         <button id="cancelModal" class="secondary" type="button">Cancelar</button>
@@ -103,7 +103,7 @@
   </div>
 </div>
 
-<script type="module" src="assets/subbots-v38-1.js?v=38.1"></script>
+<script type="module" src="assets/subbots-v38-1.js?v=41.1"></script>
   <script defer src="assets/release-v40.js?v=40"></script>
 </body>
 </html>
