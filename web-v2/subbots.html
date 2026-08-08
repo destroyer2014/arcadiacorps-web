@@ -18,6 +18,7 @@
   <script type="module" src="assets/notifications-v36.js?v=36"></script>
   <link rel="stylesheet" href="assets/performance-v36-2.css?v=36.2">
   <link rel="stylesheet" href="assets/subbots-v38-1.css?v=38.1">
+  <link rel="stylesheet" href="assets/subbot-branding-v41.css?v=41">
   <link rel="stylesheet" href="assets/release-v40.css?v=40">
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="theme-color" content="#3972ff">
@@ -56,7 +57,16 @@
         <input id="phone" inputmode="numeric" autocomplete="tel" placeholder="51912345678" required>
         <small>Incluye código del país, solo números.</small>
       </label>
-      <label>Nombre <input id="name" maxlength="40" value="Nero Subbot" required></label>
+      <label class="subbot-brand-field">Nombre
+        <input id="name" maxlength="40" value="Nero Subbot" required>
+        <span class="subbot-brand-lock">🔒 Crédito protegido por ArcadiaCorps</span>
+        <span class="subbot-brand-preview">
+          <small>Identidad dentro de Nero</small>
+          <strong id="brandPreview">Nero Subbot | Made With © ArcadiaCorps</strong>
+          <small>Nombre visible de WhatsApp (formato compacto)</small>
+          <strong id="waNamePreview">Nero • ArcadiaCorps</strong>
+        </span>
+      </label>
       <label>Prefijo <input id="prefix" maxlength="4" value="." required></label>
       <label>Estado <input id="statusText" maxlength="139" placeholder="Activo con ArcadiaCorps"></label>
       <label>Foto de perfil <input id="avatar" type="file" accept="image/jpeg,image/png,image/webp"></label>

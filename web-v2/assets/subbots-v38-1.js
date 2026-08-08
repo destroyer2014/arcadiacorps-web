@@ -13,6 +13,37 @@ const esc = (value='') => String(value).replace(/[&<>"']/g,c=>({
 const API = '/nero-api';
 const STATUS_EVERY = 15000;
 
+const BRAND_CREDIT = 'Made With © ArcadiaCorps';
+const BRAND_SUFFIX = ` | ${BRAND_CREDIT}`;
+const PROFILE_SUFFIX = ' • ArcadiaCorps';
+const WA_PROFILE_NAME_MAX = 25;
+
+function baseSubbotName(value='') {
+  return String(value || '')
+    .replace(/\s*\|\s*Made\s+With\s+©\s*ArcadiaCorps\s*$/i,'')
+    .replace(/\s*[•·]\s*ArcadiaCorps\s*$/i,'')
+    .trim();
+}
+
+function fullBrandedName(value='') {
+  const base = baseSubbotName(value) || 'Nero Subbot';
+  return `${base}${BRAND_SUFFIX}`;
+}
+
+function compactWhatsAppName(value='') {
+  const base = baseSubbotName(value) || 'Nero';
+  const allowed = Math.max(1, WA_PROFILE_NAME_MAX - PROFILE_SUFFIX.length);
+  return `${base.slice(0,allowed).trim()}${PROFILE_SUFFIX}`
+    .slice(0,WA_PROFILE_NAME_MAX);
+}
+
+function updateBrandPreview() {
+  const preview = $('#brandPreview');
+  const wa = $('#waNamePreview');
+  if (preview) preview.textContent = fullBrandedName($('#name')?.value || '');
+  if (wa) wa.textContent = compactWhatsAppName($('#name')?.value || '');
+}
+
 let records = [];
 let active = null;
 let refreshTimer = null;
@@ -226,7 +257,7 @@ function render() {
       <div class="subbot-card-head">
         ${avatarHtml(record)}
         <div class="subbot-card-copy">
-          <h2>${esc(record.name)}</h2>
+          <h2>${esc(record.name)}<small class="subbot-brand-credit">Made With © ArcadiaCorps</small></h2>
           <p>+${esc(record.phone)}</p>
           <div class="subbot-state-line">
             <span class="subbot-status ${esc(status)}">${statusLabel(status)}</span>
@@ -283,6 +314,7 @@ function openCreate() {
   $('#prefix').value = '.';
   $('#avatarPreview').textContent = '🤖';
   $('#modalTitle').textContent = 'Nuevo Sub-Bot';
+  updateBrandPreview();
   modal('subbotModal',true);
 }
 
@@ -299,8 +331,11 @@ function openEdit(record) {
     ? `<img src="${esc(record.avatar_url)}" alt="">`
     : '🤖';
   $('#modalTitle').textContent = 'Editar Sub-Bot';
+  updateBrandPreview();
   modal('subbotModal',true);
 }
+
+$('#name').addEventListener('input',updateBrandPreview);
 
 $('#avatar').onchange = event=>{
   const file = event.target.files?.[0];
@@ -404,7 +439,7 @@ $('#subbotForm').onsubmit = async event=>{
         autoRead:row.auto_read,
         avatarUrl:row.avatar_url || null
       })
-    }).catch(()=>{});
+    });
 
     modal('subbotModal',false);
     notice('Configuración guardada.',true);

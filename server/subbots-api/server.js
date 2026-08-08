@@ -9,12 +9,26 @@ const exec=promisify(execFile);
 const app=express();
 const PORT=Number(process.env.PORT||3310);
 const BOT=process.env.NERO_BOT_DIR||'/opt/nero-bot';
+const BRAND_CREDIT='Made With © ArcadiaCorps';
+const BRAND_SUFFIX=` | ${BRAND_CREDIT}`;
 const authClient=createClient(process.env.SUPABASE_URL,process.env.SUPABASE_ANON_KEY,{auth:{persistSession:false}});
 const admin=createClient(process.env.SUPABASE_URL,process.env.SUPABASE_SERVICE_ROLE_KEY,{auth:{persistSession:false}});
 
 app.use(cors({origin:true,credentials:false}));
 app.use(express.json({limit:'3mb'}));
 
+function baseBotName(value=''){
+  const clean=String(value||'')
+    .replace(/\s*\|\s*Made\s+With\s+©\s*ArcadiaCorps\s*$/i,'')
+    .replace(/\s*[•·]\s*ArcadiaCorps\s*$/i,'')
+    .replace(/[\r\n\t]+/g,' ')
+    .trim()
+    .slice(0,40);
+  return clean||'Nero Subbot';
+}
+function brandedBotName(value=''){
+  return `${baseBotName(value)}${BRAND_SUFFIX}`;
+}
 async function user(req,res,next){
   try{
     const token=(req.headers.authorization||'').replace(/^Bearer\s+/,'');
@@ -34,7 +48,7 @@ async function pm2(args){
   return stdout;
 }
 
-app.get('/health',(q,r)=>r.json({ok:true,version:'31.0'}));
+app.get('/health',(q,r)=>r.json({ok:true,version:'41.0',brand:BRAND_CREDIT}));
 app.get('/public-stats',async(req,res)=>{
   try{
     const raw=JSON.parse(await pm2(['jlist']));
@@ -60,17 +74,47 @@ app.get('/subbots',user,async(req,res)=>{
     res.json({items:raw.filter(x=>x.name?.startsWith('nero-subbot-')).map(x=>({name:x.name,phone:x.name.replace('nero-subbot-',''),status:x.pm2_env?.status,pid:x.pid})).filter(x=>allow.has(x.phone))});
   }catch(e){res.status(500).json({error:e.message})}
 });
+
 app.patch('/subbots/:id/config',user,async(req,res)=>{
   try{
-    const s=await own(req),args=[`${BOT}/scripts/subbot-config.js`,s.phone];
-    for(const[k,v]of Object.entries(req.body||{})){
-      if(v===null||v===undefined||v==='')continue;
-      const flag={name:'--name',prefix:'--prefix',statusText:'--status',autoRead:'--auto-read',avatarUrl:'--avatar-url'}[k];
-      if(flag)args.push(flag,String(v));
+    const s=await own(req);
+    const body=req.body||{};
+    const args=[`${BOT}/scripts/subbot-config.js`,s.phone];
+
+    if(body.name!==undefined&&body.name!==null&&String(body.name).trim()){
+      // Security boundary: the browser never controls the final branded name.
+      args.push('--name',brandedBotName(body.name));
     }
-    await exec('node',args,{cwd:BOT});res.json({ok:true});
+    if(body.prefix!==undefined&&body.prefix!==null&&String(body.prefix).trim()){
+      args.push('--prefix',String(body.prefix));
+    }
+    if(body.statusText!==undefined&&body.statusText!==null){
+      args.push('--status',String(body.statusText));
+    }
+    if(body.autoRead!==undefined&&body.autoRead!==null){
+      args.push('--auto-read',String(Boolean(body.autoRead)));
+    }
+    if(body.avatarUrl!==undefined&&body.avatarUrl!==null&&String(body.avatarUrl).trim()){
+      // scripts/subbot-config.js uses --avatar, not --avatar-url.
+      args.push('--avatar',String(body.avatarUrl));
+    }
+
+    // Always allow the running worker to apply the selected web profile.
+    args.push('--apply-profile','true');
+    args.push('--pack-author','ArcadiaCorps');
+
+    const {stdout}=await exec('node',args,{cwd:BOT,maxBuffer:2e6});
+    let config=null;
+    try{config=JSON.parse(stdout)}catch{}
+
+    res.json({
+      ok:true,
+      brandedName:brandedBotName(body.name||s.name),
+      config
+    });
   }catch(e){res.status(400).json({error:e.message})}
 });
+
 app.post('/subbots/:id/start',user,async(req,res)=>{
   try{
     const s=await own(req),name=`nero-subbot-${s.phone}`;
@@ -104,4 +148,4 @@ app.post('/subbots/:id/pairing-code',user,async(req,res)=>{
   }catch(e){res.status(400).json({error:e.message})}
 });
 app.post('/subbots/:id/qr',user,async(req,res)=>res.status(501).json({error:'QR quedará habilitado cuando el worker exponga la imagen QR.'}));
-app.listen(PORT,'127.0.0.1',()=>console.log(`Subbots API v31.0 en 127.0.0.1:${PORT}`));
+app.listen(PORT,'127.0.0.1',()=>console.log(`Subbots API v41.0 en 127.0.0.1:${PORT}`));
