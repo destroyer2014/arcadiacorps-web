@@ -10,6 +10,9 @@
   <script type="module" src="assets/presence-v36.js?v=36.2"></script>
   <script type="module" src="assets/notifications-v36.js?v=36"></script>
   <link rel="stylesheet" href="assets/performance-v36-2.css?v=36.2">
+  <link rel="stylesheet" href="assets/release-v40.css?v=40">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#3972ff">
 </head><body>
 <main class="dashboard app-page store-page">
 <section class="store-hero panel"><div><span class="eyebrow">Catálogo oficial</span><h1>Arma tu pack y ahorra</h1><p>Elige Netflix, HBO Max, Disney+, música y más. Añade varios servicios al carrito y envía tu pedido completo por WhatsApp.</p><div class="store-hero-actions"><a class="btn primary store-hero-btn" href="#catalogo">Explorar catálogo</a><button class="btn secondary store-hero-btn" id="openCart" type="button">🛒 Carrito <span id="cartCount">0</span></button></div></div><div class="store-hero-orbit" aria-hidden="true"><img src="assets/logos/netflix.svg" alt=""><img src="assets/logos/spotify.svg" alt=""><img src="assets/logos/canva.svg" alt=""><img src="assets/logos/disney-plus.svg" alt=""></div></section>
@@ -18,4 +21,5 @@
 <section class="store-section" id="catalogo"><div class="store-section-head"><div><span class="eyebrow">Catálogo</span><h2>Todos los productos</h2></div><label class="store-search">⌕ <input id="storeSearch" type="search" placeholder="Buscar producto..."></label></div><div class="store-tabs" id="storeTabs"><button class="active" data-filter="all">Todos</button><button data-filter="streaming">Streaming</button><button data-filter="musica">Música</button><button data-filter="software">Software</button><button data-filter="educacion">Educación</button><button data-filter="servicios">Servicios</button></div><div id="categorySections"></div><div class="panel empty-state store-empty" id="storeEmpty" hidden>No se encontraron productos.</div></section>
 </main>
 <div class="cart-backdrop" id="cartBackdrop"></div><aside class="cart-drawer" id="cartDrawer" aria-label="Carrito"><header><div><span class="eyebrow">Tu selección</span><h2>Arma tu pack</h2></div><button id="closeCart" type="button">×</button></header><div id="cartItems" class="cart-items"></div><div class="cart-summary"><div><span>Productos</span><b id="cartSubtotal">S/ 0.00</b></div><small>El precio final y disponibilidad se confirman por WhatsApp.</small><button class="btn primary" id="checkoutCart" type="button">Registrar pedido y abrir WhatsApp</button><button class="btn secondary" id="clearCart" type="button">Vaciar carrito</button></div></aside>
+  <script defer src="assets/release-v40.js?v=40"></script>
 <script type="module" src="assets/store.js?v=26"></script></body></html>

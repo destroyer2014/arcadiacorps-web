@@ -10,6 +10,9 @@
   <script type="module" src="assets/presence-v36.js?v=36.2"></script>
   <script type="module" src="assets/notifications-v36.js?v=36"></script>
   <link rel="stylesheet" href="assets/performance-v36-2.css?v=36.2">
+  <link rel="stylesheet" href="assets/release-v40.css?v=40">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#3972ff">
 </head><body>
 <main class="dashboard app-page news-detail-page"><a class="text-btn back-link" href="news.html">← Volver a Noticias</a><article id="postView" class="panel news-article"><div class="empty-state">Cargando noticia…</div></article><section class="panel comments-panel"><h2 class="panel-title">💬 Comentarios <span id="commentCount">0</span></h2><form id="commentForm" class="comment-form"><textarea id="commentText" maxlength="1000" placeholder="Escribe un comentario…" required></textarea><button class="primary compact" type="submit">Publicar</button></form><div id="commentMessage" class="message"></div><div id="commentsList" class="comments-list"></div></section></main>
 <script type="module">
@@ -19,4 +22,5 @@ const author=post.profiles?.full_name||post.profiles?.username||'ArcadiaCorps';c
 const list=document.querySelector('#commentsList'),count=document.querySelector('#commentCount'),message=document.querySelector('#commentMessage');const show=(t,e=false)=>{message.textContent=t;message.className=`message show ${e?'error':'ok'}`};
 async function loadComments(){const rows=await getComments(post.id);count.textContent=rows.length;list.innerHTML=rows.length?rows.map(c=>{const n=c.profiles?.full_name||c.profiles?.username||'Usuario';const mine=c.user_id===access.user.id;const canDelete=mine||['owner','staff'].includes(String(access.role));return `<article class="comment"><div class="comment-avatar">${escapeHtml(n[0]?.toUpperCase()||'U')}</div><div><header><strong>${escapeHtml(n)}</strong><time>${formatDate(c.created_at)}</time></header><p>${escapeHtml(c.content)}</p>${canDelete?`<button class="text-btn delete-comment" data-id="${c.id}" type="button">Eliminar</button>`:''}</div></article>`}).join(''):'<div class="empty-state">Sé el primero en comentar.</div>';list.querySelectorAll('.delete-comment').forEach(b=>b.onclick=async()=>{if(!confirm('¿Eliminar este comentario?'))return;try{await deleteComment(b.dataset.id);await loadComments()}catch(e){show(e.message,true)}})}
 document.querySelector('#commentForm').onsubmit=async e=>{e.preventDefault();const b=e.submitter;b.disabled=true;try{await addComment(post.id,document.querySelector('#commentText').value);document.querySelector('#commentText').value='';show('Comentario publicado.');await loadComments()}catch(err){show(err.message,true)}finally{b.disabled=false}};await loadComments();
+  <script defer src="assets/release-v40.js?v=40"></script>
 </script></body></html>

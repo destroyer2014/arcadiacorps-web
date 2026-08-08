@@ -10,6 +10,9 @@
   <script type="module" src="assets/presence-v36.js?v=36.2"></script>
   <script type="module" src="assets/notifications-v36.js?v=36"></script>
   <link rel="stylesheet" href="assets/performance-v36-2.css?v=36.2">
+  <link rel="stylesheet" href="assets/release-v40.css?v=40">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#3972ff">
 </head><body><main class="dashboard app-page ticket-page"><a class="back-link ticket-back ticket-back-standalone" href="dashboard.html">← Volver al panel</a><div class="page-heading ticket-heading"><div><span class="eyebrow">Soporte</span><h1>Abrir ticket</h1><p>Describe el problema y adjunta imágenes si ayudan a explicarlo.</p></div></div><form id="form" class="panel ticket-form"><div class="field"><label>Asunto</label><input id="subject" maxlength="140" required></div><div class="row"><div class="field"><label>Categoría</label><select id="category"><option>Cuenta</option><option>Compra</option><option>Premium</option><option>Subbot</option><option>Error técnico</option><option>Otro</option></select></div><div class="field"><label>Prioridad</label><select id="priority"><option value="normal">Normal</option><option value="low">Baja</option><option value="high">Alta</option><option value="urgent">Urgente</option></select></div></div><div class="field"><label>Descripción</label><textarea id="body" required maxlength="5000"></textarea></div><div class="image-picker"><strong>Imágenes opcionales</strong><small class="hint">JPG, PNG, WEBP o GIF. Máximo 5 MB por imagen.</small><input id="images" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple><div id="previews" class="image-previews"></div></div><div id="msg" class="message"></div><button class="primary" type="submit">Crear ticket</button></form></main><script type="module">
 import { supabase } from './assets/auth.js';
 import { mountShell } from './assets/shell.js?v=36';
@@ -132,4 +135,5 @@ form.addEventListener('submit', async (event) => {
     button.textContent = 'Crear ticket';
   }
 });
+  <script defer src="assets/release-v40.js?v=40"></script>
 </script></body></html>

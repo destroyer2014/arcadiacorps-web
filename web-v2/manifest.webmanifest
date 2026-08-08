@@ -1,0 +1,26 @@
+{
+  "name": "ArcadiaCorps Web 2.0",
+  "short_name": "ArcadiaCorps",
+  "description": "Portal oficial de ArcadiaCorps",
+  "id": "/web-v2/",
+  "start_url": "/web-v2/dashboard.html",
+  "scope": "/web-v2/",
+  "display": "standalone",
+  "background_color": "#04060d",
+  "theme_color": "#3972ff",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "assets/images/arcadia-logo-rpg.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/images/arcadia-logo-rpg.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

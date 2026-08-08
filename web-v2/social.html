@@ -10,6 +10,9 @@
   <script type="module" src="assets/presence-v36.js?v=36.2"></script>
   <script type="module" src="assets/notifications-v36.js?v=36"></script>
   <link rel="stylesheet" href="assets/performance-v36-2.css?v=36.2">
+  <link rel="stylesheet" href="assets/release-v40.css?v=40">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#3972ff">
 </head><body><main class="dashboard social-page">
 <section class="social-stories panel"><div class="story-strip" id="storyStrip"><button class="story-create" id="openStory" type="button"><span>＋</span><small>Tu historia</small></button></div></section>
 <section class="featured-panel panel"><header><h2>⭐ Destacadas</h2><button id="refreshSocial" class="icon-button" type="button" aria-label="Actualizar">↻</button></header><div id="featuredPosts" class="featured-list"><p class="social-empty">No hay publicaciones destacadas aún</p></div></section>
@@ -19,4 +22,5 @@
 <div class="social-modal" id="composerModal" aria-hidden="true"><div class="social-modal-card"><header><h2>Crear publicación</h2><button class="modal-close" data-close="composerModal" type="button">×</button></header><form id="postForm"><textarea id="postBody" maxlength="3000" placeholder="¿Qué está pasando?" required></textarea><label class="social-file">📷 Imagen opcional<input id="postImage" type="file" accept="image/jpeg,image/png,image/webp,image/gif"></label><div id="postPreview" class="social-preview"></div><button class="primary" type="submit">Publicar</button></form></div></div>
 <div class="social-modal" id="storyModal" aria-hidden="true"><div class="social-modal-card story-editor"><header><h2>↻ Crear historia</h2><button class="modal-close" data-close="storyModal" type="button">×</button></header><form id="storyForm"><div id="storyCanvas" class="story-canvas">¡Texto con brillo ✨</div><label>💬 Texto<textarea id="storyText" maxlength="300" placeholder="¿Qué está pasando?" required>¡Texto con brillo ✨</textarea></label><label>🎨 Fondo<select id="storyBackground"><option value="blue-purple">Azul y morado</option><option value="pink-orange">Rosa y naranja</option><option value="cyan-green">Cian y verde</option><option value="dark">Oscuro</option></select></label><label>📷 Imagen opcional<input id="storyImage" type="file" multiple accept="image/jpeg,image/png,image/webp,image/gif"><small id="storyFileCount" class="story-file-count">Puedes elegir varias imágenes</small></label><button class="primary" type="submit">Publicar historia ✨</button></form></div></div>
 <div class="story-viewer" id="storyViewer" aria-hidden="true"><button id="closeStoryViewer" type="button">×</button><div id="storyViewerContent"></div></div>
+  <script defer src="assets/release-v40.js?v=40"></script>
 <script type="module" src="assets/social.js?v=27.3"></script></body></html>

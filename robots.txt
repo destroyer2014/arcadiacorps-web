@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /web-v2/
+Disallow: /ai-api/
+Disallow: /nero-api/

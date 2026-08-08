@@ -10,6 +10,9 @@
   <script type="module" src="assets/presence-v36.js?v=36.2"></script>
   <script type="module" src="assets/notifications-v36.js?v=36"></script>
   <link rel="stylesheet" href="assets/performance-v36-2.css?v=36.2">
+  <link rel="stylesheet" href="assets/release-v40.css?v=40">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#3972ff">
 </head><body><main class="dashboard app-page support-page"><div class="page-heading"><div><a class="back-link" href="dashboard.html">← Volver al panel</a><span class="eyebrow">Soporte</span><h1>Atender tickets</h1><p>Cola compartida para Owner y Staff.</p></div></div><div class="filters"><select id="status"><option value="">Todos</option><option value="open">Abiertos</option><option value="in_progress">En proceso</option><option value="waiting_user">Esperando usuario</option><option value="closed">Cerrados</option></select><input id="search" placeholder="Buscar asunto o número"><button id="refresh" class="secondary compact">Actualizar</button></div><section id="list" class="ticket-list"></section></main><script type="module">
 import { mountShell } from './assets/shell.js?v=36';
 import { getCurrentAccess } from './assets/access.js';
@@ -78,4 +81,5 @@ statusFilter.addEventListener('change', load);
 searchInput.addEventListener('input', load);
 refreshButton.addEventListener('click', load);
 await load();
+  <script defer src="assets/release-v40.js?v=40"></script>
 </script></body></html>

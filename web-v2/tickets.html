@@ -10,6 +10,9 @@
   <script type="module" src="assets/presence-v36.js?v=36.2"></script>
   <script type="module" src="assets/notifications-v36.js?v=36"></script>
   <link rel="stylesheet" href="assets/performance-v36-2.css?v=36.2">
+  <link rel="stylesheet" href="assets/release-v40.css?v=40">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#3972ff">
 </head><body><main class="dashboard app-page ticket-page"><div class="page-heading"><div><a class="back-link" href="dashboard.html">← Volver al panel</a><span class="eyebrow">Soporte</span><h1>Mis tickets</h1><p>Consulta tus solicitudes y continúa las conversaciones.</p></div><a class="btn primary compact" href="ticket-new.html">＋ Nuevo ticket</a></div><div class="filters"><select id="statusFilter"><option value="">Todos los estados</option><option value="open">Abiertos</option><option value="in_progress">En proceso</option><option value="waiting_user">Esperando usuario</option><option value="closed">Cerrados</option></select><button id="refresh" class="secondary compact">Actualizar</button></div><div id="msg" class="message"></div><section id="list" class="ticket-list"><div class="panel empty-state">Cargando…</div></section></main><script type="module">
 import { supabase } from './assets/auth.js';
 import { mountShell } from './assets/shell.js?v=36';
@@ -67,4 +70,5 @@ async function load() {
 filter.addEventListener('change', load);
 refreshButton.addEventListener('click', load);
 await load();
+  <script defer src="assets/release-v40.js?v=40"></script>
 </script></body></html>

@@ -10,6 +10,9 @@
   <script type="module" src="assets/presence-v36.js?v=36.2"></script>
   <script type="module" src="assets/notifications-v36.js?v=36"></script>
   <link rel="stylesheet" href="assets/performance-v36-2.css?v=36.2">
+  <link rel="stylesheet" href="assets/release-v40.css?v=40">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#3972ff">
 </head><body>
 <main class="dashboard app-page news-page">
   <div class="page-heading"><div><span class="eyebrow">Comunidad</span><h1>Noticias y anuncios</h1><p>Novedades oficiales publicadas por Owner y Staff.</p></div><a id="createNews" class="btn primary compact" href="news-editor.html" hidden>＋ Nueva publicación</a></div>
@@ -24,4 +27,5 @@ const msg=document.querySelector('#newsMessage'); const show=(t,e=false)=>{msg.t
 function card(post, featured=false){const author=post.profiles?.full_name||post.profiles?.username||'ArcadiaCorps';const cover=post.cover_url?`<img src="${escapeHtml(post.cover_url)}" alt="" class="news-cover">`:`<div class="news-cover placeholder">AC</div>`;return `<article class="news-card ${featured?'featured':''}">${cover}<div class="news-card-body">${post.is_pinned?'<span class="pin-badge">📌 Fijada</span>':''}<h3>${escapeHtml(post.title)}</h3><div class="news-meta"><span>${escapeHtml(author)}</span><span>${formatDate(post.published_at||post.created_at)}</span></div><p>${escapeHtml(post.excerpt||post.content.slice(0,180))}</p><a class="btn secondary" href="news-detail.html?slug=${encodeURIComponent(post.slug)}">Leer noticia</a></div></article>`}
 async function load(){document.querySelector('#newsList').innerHTML='<div class="panel empty-state">Cargando noticias…</div>';try{const posts=await listPublishedNews();const pinned=posts.filter(p=>p.is_pinned);const rest=posts.filter(p=>!p.is_pinned);document.querySelector('#pinnedSection').hidden=!pinned.length;document.querySelector('#pinnedNews').innerHTML=pinned.map(p=>card(p,true)).join('');document.querySelector('#newsList').innerHTML=rest.length?rest.map(p=>card(p)).join(''):'<div class="panel empty-state">Todavía no hay noticias publicadas.</div>';}catch(e){show(e.message,true);document.querySelector('#newsList').innerHTML='';}}
 document.querySelector('#refreshNews').onclick=load; await load();
+  <script defer src="assets/release-v40.js?v=40"></script>
 </script></body></html>
