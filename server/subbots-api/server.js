@@ -4,6 +4,8 @@ import cors from 'cors';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { createClient } from '@supabase/supabase-js';
+import { readFile } from 'node:fs/promises';
+import { randomUUID } from 'node:crypto';
 
 const exec=promisify(execFile);
 const app=express();
@@ -47,8 +49,41 @@ async function pm2(args){
   const {stdout}=await exec('pm2',args,{cwd:BOT,maxBuffer:5e6});
   return stdout;
 }
+const SUBBOT_REGISTRY=`${BOT}/runtime/subbots.json`;
+const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+async function readSubbotRuntime(phone){
+  try{
+    const data=JSON.parse(await readFile(SUBBOT_REGISTRY,'utf8'));
+    return data?.[String(phone)]||null;
+  }catch{return null}
+}
+async function waitForFreshPairingCode(phone,requestId,startedAt,timeoutMs=35000){
+  const deadline=Date.now()+timeoutMs;
+  while(Date.now()<deadline){
+    const entry=await readSubbotRuntime(phone);
+    if(entry?.pairingRequestId===requestId){
+      if(
+        /^[A-Z0-9]{8}$/.test(String(entry.pairingCode||'')) &&
+        Number(entry.pairingCodeAt||0)>=startedAt
+      ){
+        return String(entry.pairingCode).toUpperCase();
+      }
+      if(entry.status==='pairing-paused'){
+        throw new Error(
+          entry.lastDisconnectReason ||
+          'WhatsApp cerró la vinculación antes de aceptar el código.'
+        );
+      }
+      if(entry.status==='connected'){
+        throw new Error('Este Sub-Bot ya está vinculado.');
+      }
+    }
+    await wait(400);
+  }
+  throw new Error('El worker no devolvió un código fresco dentro del tiempo esperado.');
+}
 
-app.get('/health',(q,r)=>r.json({ok:true,version:'41.1',brand:BRAND_CREDIT}));
+app.get('/health',(q,r)=>r.json({ok:true,version:'41.2',brand:BRAND_CREDIT}));
 app.get('/public-stats',async(req,res)=>{
   try{
     const raw=JSON.parse(await pm2(['jlist']));
@@ -138,15 +173,29 @@ app.delete('/subbots/:id',user,async(req,res)=>{
 app.post('/subbots/:id/pairing-code',user,async(req,res)=>{
   try{
     const s=await own(req),name=`nero-subbot-${s.phone}`;
+    const requestId=randomUUID();
+    const startedAt=Date.now();
+
     await pm2(['delete',name]).catch(()=>{});
-    await pm2(['start',`${BOT}/src/subbot-worker.js`,'--name',name,'--','--id',s.phone,'--phone',s.phone]);
-    await new Promise(r=>setTimeout(r,5000));
-    const logs=await pm2(['logs',name,'--lines','80','--nostream']);
-    const matches=[...logs.matchAll(/\[SUBBOT_PAIRING_CODE\]\s+\S+\s+([A-Z0-9]{8})/gi)];
-    const m=matches.at(-1);
-    if(!m)throw new Error('El worker no devolvió un código nuevo.');
-    res.json({code:m[1]});
+    await pm2([
+      'start',
+      `${BOT}/src/subbot-worker.js`,
+      '--name',name,
+      '--',
+      '--id',s.phone,
+      '--phone',s.phone,
+      '--pairing-request-id',requestId
+    ]);
+
+    const code=await waitForFreshPairingCode(
+      s.phone,
+      requestId,
+      startedAt,
+      35000
+    );
+
+    res.json({code,requestId});
   }catch(e){res.status(400).json({error:e.message})}
 });
 app.post('/subbots/:id/qr',user,async(req,res)=>res.status(501).json({error:'QR quedará habilitado cuando el worker exponga la imagen QR.'}));
-app.listen(PORT,'127.0.0.1',()=>console.log(`Subbots API v41.1 en 127.0.0.1:${PORT}`));
+app.listen(PORT,'127.0.0.1',()=>console.log(`Subbots API v41.2 en 127.0.0.1:${PORT}`));
